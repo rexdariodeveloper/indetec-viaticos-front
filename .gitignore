@@ -37,11 +37,4 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
-src/assets/config/appconfig_local.json
-src/assets/config/appconfig_public.json
-package-lock.json
-package.json
-package.json
-package-lock.json
-package.json
 dist.rar
