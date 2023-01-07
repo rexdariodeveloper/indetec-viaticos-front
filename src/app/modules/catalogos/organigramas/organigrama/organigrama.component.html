@@ -1,0 +1,164 @@
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Catálogos ></li>
+</ol>
+
+<!-- HEAD -->
+<div class="row">
+  <div class="col-12">
+    <h2><span class="fi flaticon-layers px-3"></span>Organigrama</h2>
+  </div>
+</div>
+<!-- / HEAD -->
+
+<div class="sticky">
+  <div class="form-actions">
+    <div class="col-12">
+      <div class="row justify-content-end">
+        <button type="button" class="btn btn-default width-100 mr-3" (click)="deshacerModal.show()" [disabled]="!organigramaForm.dirty && !cambios">Deshacer</button>
+        <button type="button" (click)="validateOrganigrama()" class="btn btn-success width-100" [disabled]="!organigramaForm.dirty && !cambios">Guardar</button> 
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="row pt-3">
+  <div class="col-lg-12">
+    <section class="widget" widget>
+      <div class="widget-body">
+        <div class="row">
+          <div class="col-sm-12 col-md-5 col-lg-4 mb-3" (contextmenu)="openOrganigramaMenu($event, {id: null}); $event.preventDefault();">
+            <div class="row justify-content-end">
+              <div class="col-12">
+                <div class="dd" id="nestable-organigrama">
+                  <ol class="dd-list" id="nodo-organigrama">
+                  </ol>
+                </div>
+                
+                <div class="row d-flex justify-content-center align-items-center" *ngIf="!validarVacio()">
+                  <label class="col-12">&nbsp;</label>
+                  <div class="fileinput-new imagen-size thumbnail" data-trigger="fileinput">
+                    <img style="width: 200px; height: 200px" alt="..." src="assets/img/size/OrganigramaNuevo.png">
+                  </div>
+                  <label class="col-12">&nbsp;</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-12 col-md-7 col-lg-8">
+            <!-- FORM -->
+            <form [formGroup]="organigramaForm" class="row form-horizontal form-label-left parsleyjsOrganigrama"
+              method="post" data-parsley-priority-enabled="false" novalidate="novalidate">
+              <!-- DATOS GENERALES -->
+              <fieldset [disabled]="habilitarForm()" class="col">
+                <legend>
+                  Datos
+                </legend>
+                <div class="col">
+                  <div class="row">
+                    <div class="form-group col-sm-12 col-md-12 col-lg-8">
+                      <div class="row">
+                        <label class="form-control-label col-12" for="basic"><strong>Clave:</strong></label>
+                        <div class="col-12">
+                          <input type="text" class="form-control" (blur)="updateOrganigramaClave()" formControlName="clave" maxlength="10" (input)="changeDescripcion($event)"
+                            data-parsley-maxlength="10" required>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-group col-sm-12 col-md-12 col-lg-8">
+                      <div class="row">
+                        <label class="form-control-label col-12" for="basic"><strong>Descripción:</strong></label>
+                        <div class="col-12">
+                          <input type="text" class="form-control" formControlName="descripcion" (input)="changeDescripcion($event)"
+                            maxlength="500" required>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="form-group col-12">
+                      <div class="row">
+                        <label *ngIf="!organigramaForm.controls.permiteAutorizacion.value" class="form-control-label col-12" for="basic">Responsable:</label>
+                        <label *ngIf="organigramaForm.controls.permiteAutorizacion.value" class="form-control-label col-12" for="basic"><strong>Responsable:</strong></label>
+                        <div class="col-12">
+                          <ng-select #cboResponsable (close)="cboResponsable.blur(); cboResponsable.focus()" ngbTooltip="Tooltip text..."
+                            [searchable]="true" formControlName="responsableId" 
+                            [items]="listadoEmpleados" bindLabel="name" bindValue="id"
+                            placeholder="Seleccione una Opción">
+                            <ng-template ng-option-tmp let-item="item"><div [title]="item.name">{{item.name}}</div></ng-template>
+                          </ng-select>
+                          <ul *ngIf="organigramaForm.controls.permiteAutorizacion.value && !organigramaForm.controls.responsableId.value" class="parsley-errors-list filled" aria-hidden="false">
+                            <li class="parsley-required">Este valor es requerido.</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="form-group col-12">
+                      <div class="form-check pixvs-checkbox">
+                          <input class="form-check-input" id="cxPermiteAutorizacion" type="checkbox" formControlName="permiteAutorizacion" (click)="autorizacionChange($event.target.checked)">
+                          <label class="form-check-label" for="cxPermiteAutorizacion">Permite Autorización</label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="form-group col-12">
+                      <div class="form-check pixvs-checkbox">
+                          <input class="form-check-input" id="cxActivo" type="checkbox" formControlName="estatus" (click)="vertifyCheckbox($event)">
+                          <label class="form-check-label" for="cxActivo">Activo</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+              <!-- /DATOS GENERALES -->
+            </form>
+            <!-- /FORM -->
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+<!-- / CONTENT -->
+
+<!-- MENU MINI -->
+<ng-template #organigramaMenu let-data>
+  <section class="pixvs-menu-organigrama">
+    <button *ngIf="!data.id || organigramaForm.valid" class="btn btn-primary"
+      (click)="addOrganigrama(data)">Nuevo</button>
+    <button class="btn btn-danger" (click)="deleteOrganigrama(data)" *ngIf="data.id">Eliminar</button>
+  </section>
+</ng-template>
+<!-- /MENU MINI let -->
+
+<!-- SPINNER -->
+<ngx-spinner bdOpacity=0.9 bdColor="rgba(51,51,51,0.49)" size="medium" color="#fff" type="square-jelly-box"
+  [fullScreen]="false"></ngx-spinner>
+<!-- /SPINNER -->
+
+<!-- MODAL CONFIRM -->
+<div class="modal fade" bsModal #deshacerModal="bs-modal" [config]="{backdrop: 'static'}">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span>
+          <h6><strong>Se perderán los cambios realizados.</strong></h6>
+          ¿Desea continuar? 
+        </span> 
+      </div>
+      <div class="modal-body">
+        <button class="btn btn-success btn-xs float-right width-100"
+          (click)="cancelar(); deshacerModal.hide();">SI</button>
+        <button class="btn btn-secondary btn-xs float-right width-100 mr-3" (click)="deshacerModal.hide()">NO</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /MODAL CONFIRM -->

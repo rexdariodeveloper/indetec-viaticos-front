@@ -1,0 +1,170 @@
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">Alertas</li>
+    <li class="breadcrumb-item">Cambio Temporal Alertas ></li>  
+</ol>
+<div class="row">
+    <div class="col-12">
+        <h2><a class="fa fa-mail-reply px-3" (click)="validaDeshacer(true)" data-toggle="tooltip" title="Regresar"></a>Cambiar Alertas de Usuario<small> - {{ pageType == 'new' ? 'Nuevo' : 'Editar ' }}</small></h2>
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        <form name="rolesForm" [formGroup]="datosForm" class="parsleyjsCambioAlerta" 
+            novalidate data-parsley-priority-enabled="false" (ngSubmit)="guardar()"> 
+            <section class="widget" widget>
+                <div class="widget-body">
+                    <div class="row">
+                        <div class="col">
+                            <section class="">
+                                <div class="widget-body">
+                                    <legend>
+                                        Datos Generales
+                                    </legend>
+                                    <fieldset>
+                                        <div class="form-group row" *ngIf="pageType == 'edit'">
+                                            <div class="col">
+                                                <label class="col-12 form-control-label"><strong>Folio:</strong></label>
+                                                <div class="col-12">
+                                                    <label class="form-control-label">{{ cambioAlerta.folio }}</label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="form-group col-12 col-md-6">
+                                                <label class="col-12 form-control-label"><strong>Empleado Origen:</strong></label>
+                                                <div class="col-12">
+                                                    <ng-select #cboOrigen (close)="cboOrigen.blur(); cboOrigen.focus()" ngbTooltip="Tooltip text..." [searchable]="true" formControlName="empleadoOrigenId" [items]="listadoEmpleadosOrigen"
+                                                        bindLabel="name" bindValue="id" placeholder="Seleccione una Opción">
+                                                        <ng-template ng-option-tmp let-item="item"><div [title]="item.name">{{item.name}}</div></ng-template>
+                                                    </ng-select>
+                                                    <ul *ngIf="mostrarErroresForm && !datosForm.controls.empleadoOrigenId.value" class="parsley-errors-list filled" aria-hidden="false">
+                                                        <li class="parsley-required">Este valor es requerido.</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group col-12 col-md-6">
+                                                <label class="col-12 form-control-label"><strong>Empleado Destino:</strong></label>
+                                                <div class="col-12">
+                                                    <ng-select #cboDestino (close)="cboDestino.blur(); cboDestino.focus()" ngbTooltip="Tooltip text..." [searchable]="true" formControlName="empleadoDestinoId" [items]="listadoEmpleadosDestino"
+                                                        bindLabel="name" bindValue="id" placeholder="Seleccione una Opción">
+                                                        <ng-template ng-option-tmp let-item="item"><div [title]="item.name">{{item.name}}</div></ng-template>
+                                                    </ng-select>
+                                                    <ul *ngIf="mostrarErroresForm && !datosForm.controls.empleadoDestinoId.value" class="parsley-errors-list filled" aria-hidden="false">
+                                                        <li class="parsley-required">Este valor es requerido.</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+
+                                    <legend>
+                                        Periodo
+                                    </legend>
+                                    <fieldset>
+                                        <div class="form-group row">
+                                            <div class="form-group col-12 col-md-6">
+                                                <label class="col-12 form-control-label"><strong>Fecha Inicio:</strong></label>
+                                                <div class="col-12">
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                        <span class="input-group-text fa fa-calendar trigger"></span>
+                                                        </div>
+                                                        <input id="fechaInicio" required readonly
+                                                        class="form-control pixvs-cursor pixvs-input-date" 
+                                                        formControlName="fechaInicio"
+                                                        [min]="minFechaInicio"
+                                                        (ngModelChange)="fechaInicioChange()"
+                                                        [owlDateTimeTrigger]="fechaInicio" 
+                                                        [owlDateTime]="fechaInicio" 
+                                                        (dateTimeInput)="validateDate('fechaInicio')" data-parsley-errors-messages-disabled>
+                                                        <owl-date-time [pickerType]="'calendar'" #fechaInicio ></owl-date-time>
+                                                    </div>
+                                                    <ul *ngIf="mostrarErroresForm && !datosForm.controls.fechaInicio.value" class="parsley-errors-list filled" aria-hidden="false">
+                                                        <li class="parsley-required">Este valor es requerido.</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="form-group col-12 col-md-6">
+                                                <label class="col-12 form-control-label"><strong>Fecha Fin:</strong></label>
+                                                <div class="col-12">
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                        <span class="input-group-text fa fa-calendar trigger"></span>
+                                                        </div>
+                                                        <input id="fechaFin" required readonly
+                                                        class="form-control pixvs-cursor pixvs-input-date" 
+                                                        formControlName="fechaFin"
+                                                        [min]="minFechaFin"
+                                                        [owlDateTimeTrigger]="fechaFin" 
+                                                        [owlDateTime]="fechaFin" 
+                                                        (dateTimeInput)="validateDate('fechaFin')" data-parsley-errors-messages-disabled>
+                                                        <owl-date-time [pickerType]="'calendar'" #fechaFin ></owl-date-time>
+                                                    </div>
+                                                    <ul *ngIf="mostrarErroresForm && !datosForm.controls.fechaFin.value" class="parsley-errors-list filled" aria-hidden="false">
+                                                        <li class="parsley-required">Este valor es requerido.</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                    <div class="form-actions" *ngIf="mostrarPanelAcciones()">
+                        <div class="col-12">
+                            <div class="row justify-content-end">
+                                <button type="button" class="btn btn-default width-100 mr-3" (click)="validaDeshacer(false)" *ngIf="pageType == 'edit'" [disabled]="!datosForm.dirty">Deshacer</button>
+                                <button type="button" class="btn btn-default width-100 mr-3" (click)="validaDeshacer(true)" *ngIf="pageType == 'new'">Cancelar</button>
+                                <button type="button" class="btn btn-danger width-100 mr-3" (click)="confirmModal.show()" *ngIf="pageType == 'edit'" [disabled]="datosForm.dirty">Eliminar</button>
+                                <button type="submit" class="btn btn-success width-100" [disabled]="!datosForm.dirty && pageType == 'edit'">Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </form>
+    </div>
+    <!-- SPINNER -->
+    <ngx-spinner bdOpacity = 0.9 bdColor = "rgba(51,51,51,0.49)" size = "medium" color = "#fff" type = "square-jelly-box" [fullScreen] = "true"></ngx-spinner>
+    <!-- /SPINNER -->       
+</div>
+
+<!-- MODAL CONFIRM -->
+<div class="modal fade" bsModal #deshacerModal="bs-modal" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <span>
+            <h6><strong>Existen cambios pendientes por guardar.</strong></h6>Desea continuar?
+          </span>
+        </div>
+        <div class="modal-body">
+          <button class="btn btn-success btn-xs float-right width-100" (click)="cancelar(); deshacerModal.hide();">SI</button>
+          <button class="btn btn-secondary btn-xs float-right width-100 mr-3" (click)="deshacerModal.hide()">NO</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- /MODAL CONFIRM -->
+
+<!-- MODAL CONFIRM -->
+<div class="modal fade" bsModal #confirmModal="bs-modal" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>
+                    <h6><strong>Se eliminará el registro.</strong></h6>Desea continuar?
+                </span>
+            </div>
+            <div class="modal-body">
+                <button class="btn btn-success btn-xs float-right width-100" (click)="eliminar(); confirmModal.hide();">SI</button>
+                <button class="btn btn-secondary btn-xs float-right width-100 mr-3" (click)="confirmModal.hide()">NO</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /MODAL CONFIRM -->

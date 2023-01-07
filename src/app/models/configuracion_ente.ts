@@ -1,0 +1,130 @@
+import { Archivo } from './archivo';
+
+export class ConfiguracionEnte {
+    public id: number;
+    public nombreEnte: string;
+    public correoElectronico?: string;
+    public paginaWeb?: string;
+    public domicilio?: string;
+    public numero?: string;
+    public colonia?: string;
+    public paisId?: number;
+    public estadoId?: number;
+    public ciudadId?: number;
+    public telefono?: string;
+    public monedaPredeterminadaId?: number;
+    public porcentajeSinComprobante?: number;
+    public montoAnualSinComprobante?: number;
+    public fechaCreacion: Date;
+    public creadoPorId: number;
+    public fechaUltimaModificacion?: Date;
+    public modificadoPorId?: number;
+    public timestamp: string;
+    public archivo?: Archivo;
+    public nombreArchivoTemporal: string;
+    public archivoFotografia?: Archivo;
+    public fotografiaEliminada?: boolean;
+    public fotografia?: string;
+    public nombreUsuario?: string;
+    public email?: string;
+    public contrasenia?: string;
+    public contraseniaConfirmar : string;
+    public host?: string;
+    public puerto?: number;
+    public protocolo?: number;
+    public nombreNormativaViaticosArchivoTemp?: string;
+    public archivoNormativaViaticos?: Archivo;
+    public normativaViaticos?: string;
+    public areaResponsableTransparencia?: string;
+    public directorioPublico?: string;
+    public urlPublica?: string;
+    public directorioRemoto?: boolean;
+    public directorioFTP?: string;
+    public protocoloFTP?: number;
+    public servidorFTP?: string;
+    public usuarioFTP?: string;
+    public contraseniaFTP?: string;
+    public contraseniaConfirmarFTP?: string;
+    public puertoFTP?: number;
+
+    ConfiguracionEnte?(){
+        this.nombreEnte = '';
+        this.correoElectronico = '';
+        this.paginaWeb = '';
+        this.domicilio = '';
+        this.numero = '';
+        this.colonia = '';
+        this.paisId = null;
+        this.estadoId = null;
+        this.ciudadId = null;
+        this.telefono = '';
+        this.monedaPredeterminadaId = null;
+        this.porcentajeSinComprobante = null;
+        this.montoAnualSinComprobante = null;
+        this.fotografia = null;
+        this.nombreUsuario = '';
+        this.email = '';
+        this.contrasenia = '';
+        this.contraseniaConfirmar = this.contrasenia;
+        this.host = '';
+        this.puerto = 0;
+        this.protocolo = null;
+        this.normativaViaticos = null;
+        this.areaResponsableTransparencia = null;
+        this.directorioPublico = null;
+        this.urlPublica = null;
+        this.directorioRemoto = false;
+        this.directorioFTP = null;
+        this.protocoloFTP = null;
+        this.servidorFTP = null;
+        this.usuarioFTP = null;
+        this.contraseniaFTP = null;
+        this.contraseniaConfirmarFTP = this.contraseniaFTP;
+        this.puertoFTP = null;
+    }
+
+    constructor(ente?)
+    {
+        ente = ente || {};
+
+        this.id = ente.id || null;
+        this.nombreEnte = ente.numeroEmpleado || '';
+        this.correoElectronico = ente.correoElectronico || '';
+        this.paginaWeb = ente.paginaWeb || '';
+        this.domicilio = ente.domicilio || '';
+        this.numero = ente.numero || '';
+        this.colonia = ente.colonia || '';
+        this.paisId = ente.paisId || null;
+        this.estadoId = ente.estadoId || null;
+        this.ciudadId = ente.ciudadId || null;
+        this.telefono = ente.telefono || '';
+        this.monedaPredeterminadaId = ente.monedaPredeterminadaId || null;
+        this.porcentajeSinComprobante = ente.porcentajeSinComprobante || null;
+        this.montoAnualSinComprobante = ente.pontoAnualSinComprobante || null;
+        this.fechaCreacion = ente.fechaCreacion || '';  
+        this.creadoPorId = ente.creadoPorId || null;
+        this.fechaUltimaModificacion = ente.fechaUltimaModificacion || '';
+        this.modificadoPorId = ente.modificadoPorId || null;
+        this.timestamp = ente.timestamp || '';
+        this.fotografia = ente.fotografia || '',
+        this.nombreUsuario = ente.nombreUsuario || '';
+        this.email = ente.email || '';
+        this.contrasenia = ente.contrasenia || '';
+        this.contraseniaConfirmar = ente.contraseniaConfirmar || '';
+        this.host = ente.host || '';
+        this.puerto = ente.puerto || 0;
+        this.protocolo = ente.protocolo || null;
+        this.normativaViaticos = ente.normativaViaticos || '';
+        this.areaResponsableTransparencia = ente.areaResponsableTransparencia || '';
+        this.directorioPublico = ente.directorioPublico || null;
+        this.urlPublica = ente.urlPublica || '';
+        this.directorioRemoto = ente.directorioRemoto || false;
+        this.directorioFTP = ente.directorioFTP || null;
+        this.protocoloFTP = ente.protocoloFTP || null;
+        this.servidorFTP = ente.servidorFTP || '';
+        this.usuarioFTP = ente.usuarioFTP || '';
+        this.contraseniaFTP = ente.contraseniaFTP || '';
+        this.contraseniaConfirmarFTP = ente.contraseniaConfirmarFTP || '';
+        this.puertoFTP = ente.puertoFTP || null;
+    }
+}

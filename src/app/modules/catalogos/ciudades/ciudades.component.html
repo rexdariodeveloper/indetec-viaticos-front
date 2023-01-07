@@ -1,0 +1,208 @@
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">Catálogos ></li>
+</ol>
+
+<div class="form-group row">
+    <div class="col-10">
+        <h2><span class="fi flaticon-map-location px-3"></span>Ciudades</h2>
+    </div>
+    <div class="col-2">
+      <div class="row justify-content-end">
+        <div class="pr-3">
+
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="sticky">
+    <div class="form-actions">
+        <div class="col-12">
+            <div class="row justify-content-end">
+                <button type="button" class="btn btn-default width-100 mr-3" [disabled]="!modificado" (click)="deshacerModal.show()">Deshacer</button>
+                <button type="submit" class="btn btn-success width-100" [disabled]="!modificado" (click)="guardar()">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <section class="widget" widget>
+            <div class="widget-body">
+                <div class="mt">
+                    <div class="row">
+                        <div class="col">
+                            <div class="float-right mb">
+                                <div class="input-group input-group-rounded">
+                                    <span class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-search"></i>
+                                        </span>
+                                    </span>
+                                    <input class="form-control" (keyup)='updateFilter($event)' type="text" placeholder="Buscar">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">                        
+                            <form name="ciudadForm" class="parsleyjsCiudades row pt-3" [formGroup]="ciudadForm" method="post"
+                                data-parsley-priority-enabled="false" novalidate="novalidate">
+                                <div class="form-group col-sm-12 col-md-6">
+                                    <div class="row">
+                                        <label class="form-control-label col-12" for="basic"><strong>País:</strong></label>
+                                        <div class="col-12">
+                                            <ng-select #cboPais (close)="cboPais.blur(); cboPais.focus()" ngbTooltip="Tooltip text..." [searchable]="true" formControlName="paisId" [items]="listadoPaises"
+                                                bindLabel="name" bindValue="id" (change)="comboPaisChange($event)" placeholder="Seleccione una Opción">
+                                                <ng-template ng-option-tmp let-item="item"><div [title]="item.name">{{item.name}}</div></ng-template>
+                                            </ng-select>
+                                            <ul *ngIf="!paisValido" class="parsley-errors-list filled" aria-hidden="false">
+                                                <li class="parsley-required">Este valor es requerido.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-sm-12 col-md-6">
+                                    <div class="row">
+                                        <label class="form-control-label col-12" for="basic"><strong>Estado:</strong></label>
+                                        <div class="col-12">
+                                            <ng-select #cboEstado (close)="cboEstado.blur(); cboEstado.focus()" ngbTooltip="Tooltip text..." [searchable]="true" formControlName="estadoId" [items]="listadoEstados"
+                                                bindLabel="name" bindValue="id" (change)="comboEstadoChange($event)" placeholder="Seleccione una Opción">
+                                                <ng-template ng-option-tmp let-item="item"><div [title]="item.name">{{item.name}}</div></ng-template>
+                                            </ng-select>
+                                            <ul *ngIf="!estadoValido" class="parsley-errors-list filled" aria-hidden="false">
+                                                <li class="parsley-required">Este valor es requerido.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                        
+                                <div class="form-group col-sm-12 col-md-6">
+                                    <div class="row">
+                                        <label class="form-control-label col-12" for="basic"><strong>Ciudad:</strong></label>
+                                        <div class="col-12">
+                                            <input type="text" class="form-control" formControlName="nombre" maxlength="100" required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-sm-12 col-md-4 col-lg-4">
+                                    <div class="row">
+                                        <label class="form-control-label col-12" for="basic"><strong>Zona Económica:</strong></label>
+                                        <div class="col-12">
+                                            <ng-select #cboZona (close)="cboZona.blur(); cboZona.focus()" ngbTooltip="Tooltip text..." [searchable]="true" formControlName="zonaEconomicaId" [items]="listadoZonasEconomicas"
+                                                bindLabel="name" bindValue="id" (change)="comboZonaEconomicaChange($event)" placeholder="Seleccione una Opción">
+                                                <ng-template ng-option-tmp let-item="item"><div [title]="item.name">{{item.name}}</div></ng-template>
+                                            </ng-select>
+                                            <ul *ngIf="!zonaValida" class="parsley-errors-list filled" aria-hidden="false">
+                                                <li class="parsley-required">Este valor es requerido.</li>
+                                            </ul>
+                                        </div>
+                                    </div>                                    
+                                </div>
+                        
+                                <div class="form-group col-sm-12 col-md-2 col-lg-2 align-self-center">
+                                    <label class="col-12">&nbsp;</label>
+                                    <button type="submit" class="float-right btn btn-primary width-100"
+                                            [ngClass]="{ 'btn-primary': !modificando, 'btn-outline-primary': modificando }"
+                                            >{{modificando ? 'Actualizar' : 'Agregar'}}</button>
+                                    <label class="col-12">&nbsp;</label>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <ngx-datatable
+                        class="material"
+                        [rows]="dataTable"
+                        [columnMode]="'force'"
+                        [headerHeight]="50"
+                        [footerHeight]="50"
+                        [scrollbarH]="true"
+                        rowHeight="auto"
+                        [limit]="10"
+                        [offset]="tableOffset"
+                        [selected]="selected"
+                        [selectionType]="SelectionType.checkbox"
+                        (activate)="onActivate($event)"
+                        (page)="onPageChange($event)"
+                        [messages]="{emptyMessage: 'Sin registros', totalMessage: 'Total', selectedMessage: false}">
+
+                        <ngx-datatable-column
+                            [width]="45"
+                            [canAutoResize]="false"
+                            [draggable]="false"
+                            [resizeable]="false">
+                            <ng-template let-column="column" ngx-datatable-header-template>
+                                <div class="form-check pixvs-checkbox">
+                                    <input class="form-check-input" id="checkbox" type="checkbox" [checked]="dataTable.length > 0 && selected.length == dataTable.length" (change)="onSelectAll()">
+                                    <label class="form-check-label" for="checkbox"></label>
+                                </div>
+                            </ng-template>
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                <div class="form-check pixvs-checkbox">
+                                    <input class="form-check-input" id="checkbox{{row.id}}" type="checkbox" [checked]="getChecked(row)" (change)="onSelect(row)">
+                                    <label class="form-check-label" for="checkbox{{row.id}}"></label>
+                                </div>
+                            </ng-template>
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-column prop="pais.nombre" name="PAÍS">
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                {{row.pais.nombre}}
+                            </ng-template>
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-column prop="estado.nombre" name="ESTADO">
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                {{row.estado.nombre}}
+                            </ng-template>
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-column prop="nombre" name="CIUDAD">
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                {{row.nombre}}
+                            </ng-template>
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-column prop="zonaEconomica.valor" name="ZONA ECONÓMICA">
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                {{row.zonaEconomica.valor}}
+                            </ng-template>
+                        </ngx-datatable-column>
+                    </ngx-datatable>
+                </div>
+
+                <button type="button" class="btn btn-danger width-100" [disabled]="selected.length == 0"
+                    (click)="eliminar()">Eliminar</button>
+                
+            </div>
+        <!-- SPINNER -->
+        <ngx-spinner bdOpacity = 0.9 bdColor = "rgba(51,51,51,0.49)" size = "medium" color = "#fff" type = "square-jelly-box" [fullScreen] = "false"></ngx-spinner>
+        <!-- /SPINNER -->    
+        </section>
+    </div>
+</div>
+
+<!-- MODAL CONFIRM -->
+<div class="modal fade" bsModal #deshacerModal="bs-modal" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+            <span>
+                <h6><strong>Se perderán los cambios realizados.</strong></h6>
+                ¿Desea continuar? 
+            </span> 
+        </div>
+        <div class="modal-body">
+          <button class="btn btn-success btn-xs float-right width-100"
+            (click)="cancelar(); deshacerModal.hide();">SI</button>
+          <button class="btn btn-secondary btn-xs float-right width-100 mr-3" (click)="deshacerModal.hide()">NO</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- /MODAL CONFIRM -->

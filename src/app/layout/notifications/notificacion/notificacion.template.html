@@ -1,0 +1,66 @@
+<a class="list-group-item mb-1" (click)="onClick()">
+	<!-- <span class="thumb-sm float-left mr">
+		<img class="rounded-circle" src="{{ mensaje.path_imagen }}" alt="...">
+		<i class="status status-bottom bg-{{ mensaje.estado === 'online' ? 'success' : (mensaje.estado === 'away' ? 'warning' : 'default') }}"></i>
+	</span> -->
+	<h6 class="no-margin fw-bold mb-xs">
+		{{notificacion.tipoMovimiento}}
+	</h6>
+	<span>
+		<p class="deemphasize text-ellipsis no-margin" [innerHTML]= "notificacion.tramite | AlertaPipe"></p>
+		<time class="text-link help float-right">{{ notificacion.fecha}}</time>
+	</span>
+
+	<!-- <button (click)="onBorrar()" aria-label="Close" class="close ml-auto" type="button" style="position: absolute; top: 10px; right: 10px;">
+		<span aria-hidden="true">×</span>
+	</button> -->
+
+</a>
+
+<!-- <a *ngIf="mensaje" class="list-group-item" href="#" [ngClass]="{'bg-warning-light': !mensaje.visto }" (mouseover)="marcarVisto()" (click)="leer()">
+	
+	
+	<span class="thumb-sm float-left mr">
+		<img class="rounded-circle" src="{{ mensaje.path_imagen }}" alt="...">
+		<i class="status status-bottom bg-{{ mensaje.estado === 'online' ? 'success' : (mensaje.estado === 'away' ? 'warning' : 'default') }}"></i>
+	</span>
+	<span *ngIf="mensaje && mensaje.total>1" class="circle bg-warning fw-bold float-xs-left">
+		{{ mensaje.total }}
+	</span>
+	
+	<h6 class="no-margin fw-bold mb-xs">
+		{{ (mensaje.tipo_canal !== 'D' ? mensaje.nombre_equipo + ' > ' : '') + mensaje.nombre_canal }}
+	</h6>
+	
+	<p class="deemphasize text-ellipsis no-margin">
+		<b>{{ mensaje.tipo_canal !== 'D' ? mensaje.usuario + ': ' : '' }}</b>{{ mensaje.mensaje }}
+		<time class="text-link help float-right">{{ tiempo }}</time>
+	</p>
+
+</a>
+
+<a *ngIf="notificacion" class="list-group-item" [ngClass]="{'bg-attention': !notificacion.visto }" (mouseover)="marcarVisto()">
+	<div class="row" (click)="onSeleccionar()" >
+		<span *ngIf="notificacion.icono" class="col-md-2 d-flex align-items-center">
+			<i class="{{ notificacion.icono }}" style="font-size: 2em;"></i>
+		</span>
+		
+		<div class="col-md-10" style="padding-left: 0px;">
+
+			<h6 class="no-margin fw-bold mb-xs">{{ notificacion.titulo }}</h6>
+
+			<p class="overflow-hidden no-margin">
+				{{ notificacion.descripcion }}
+				<time class="help-block no-margin">
+					{{ tiempo }}
+				</time>
+			</p>
+		</div>
+
+	</div>
+	<button (click)="onBorrar()" aria-label="Close" class="close ml-auto" type="button" style="position: absolute; top: 10px; right: 10px;">
+		<span aria-hidden="true">×</span>
+	</button>
+	
+</a>
+ -->

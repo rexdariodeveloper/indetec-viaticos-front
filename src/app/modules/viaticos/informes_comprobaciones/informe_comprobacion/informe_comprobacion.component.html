@@ -1,0 +1,978 @@
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Viáticos</li>
+  <li class="breadcrumb-item">Informe y Comprobación ></li>  
+</ol>
+<section id="informe-comprobacion">
+  <!-- HEAD -->
+  <!-- <div class="row">
+    <div class="col-lg-12">
+      <div>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">CATÁLOGOS</li>
+          <li class="breadcrumb-item active outline-none-cursor" [routerLink]="['/app/catalogos/empleados']" >Empleados</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <div>
+        <h1 class="page-title">{{ pageType ? 'Nuevo' : 'Editar ' }} - <span class="fw-semi-bold">Empleado</span></h1>
+      </div>
+    </div>
+  </div> -->
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="form-group row">
+        <div class="col-12">
+          <h2><a class="fa fa-mail-reply px-3" (click)="validaDeshacer(true)" data-toggle="tooltip" title="Regresar"></a>Informe y Comprobación <small> - {{ solicitudViaticoComprobacion.id != null ? 'Editar' : 'Nuevo' }}</small></h2>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sticky">
+    <div class="tab-pane active" *ngIf="!soloLectura">
+      <div class="form-actions d-flex flex-row justify-content-end">
+        <button type="button" class="btn btn-default width-100" (click)="validaDeshacer(solicitudViaticoComprobacion.id == null)" [disabled]="deshabilitarGuardarDeshacer()">{{ solicitudViaticoComprobacion.id != null ? 'Deshacer' : 'Cancelar' }}</button>
+        <button type="button" class="btn btn-success width-100 ml-3" (click)="guardarInformeComprobacion()" *ngIf="!mostrarFinalizar()" [disabled]="deshabilitarGuardarDeshacer()">Guardar</button>
+        <button type="button" class="btn btn-success width-200 ml-3" (click)="finalizarComprobacion()" *ngIf="mostrarFinalizar()">Finalizar Comprobación</button>
+      </div>
+   </div>
+  </div>
+  
+  <!-- / HEAD -->
+  <!-- CONTENT -->
+  <!-- VISTA SOLICITUD VIATICO -->
+  <div class="row">
+    <div class="col-lg-12">
+      <solicitud_resumen ></solicitud_resumen>
+    </div>
+  </div>
+  <!-- /VISTA SOLICITUD VIATICO -->
+
+  <div class="row">
+    <div class="col-lg-12">
+
+      <div class="clearfix">
+        <ul class="nav nav-tabs float-left" id="myTab" role="tablist">
+          <!-- INFORME -->
+          <li class="nav-item">
+            <a class="nav-link active" id="informe-tab" data-toggle="tab" href="#informe" role="tab" aria-controls="informe" aria-expanded="true">Informe</a>
+          </li>
+          <!-- /INFORME -->
+          <!-- COMPROBACION -->
+          <li class="nav-item">
+            <a class="nav-link" id="comprobacion-tab" data-toggle="tab" href="#comprobacion" role="tab" aria-controls="comprobacion" aria-expanded="false">Comprobación</a>
+          </li>
+          <!-- /COMPROBACION -->
+        </ul>
+      </div>
+      <div class="tab-content mb-lg" id="myTabContent">
+        <div role="tabpanel" class="tab-pane active in clearfix" id="informe" aria-labelledby="informe-tab" aria-expanded="true">
+          <fieldset [disabled]="soloLectura">
+            <form [formGroup]="solicitudViaticoComprobacionForm">
+              <div class="row">
+                <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                  <label for="comisionNoRealizada">Comisión no realizada:</label>
+                  <div class="form-check pixvs-checkbox">
+                    <input class="form-check-input" type="checkbox" id="comisionNoRealizada" formControlName="comisionNoRealizada" aria-label="Comisión no realizada">
+                    <label class="form-check-label" for="comisionNoRealizada"></label>
+                  </div>
+                </div>
+                <div *ngIf="solicitudViaticoComprobacionForm.controls.comisionNoRealizada.value" class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                  <label for="motivoNoRealizada">Motivo:</label>
+                  <textarea class="form-control" id="motivoNoRealizada" rows="2" formControlName="motivoNoRealizada" maxlength="500" ></textarea>
+                </div>
+              </div>
+            </form>
+            <form [formGroup]="solicitudViaticoInformeForm">
+              <div class="row">
+                <div class="form-group col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                  <label for="informeObjetivoEstrategico">Objetivo Estratégico:</label>
+                  <textarea class="form-control" id="informeObjetivoEstrategico" rows="3" formControlName="objetivoEstrategico"></textarea>
+                </div>
+                <div class="form-group col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                  <label for="informeObjetivoEspecifico">Objetivo Especifico:</label>
+                  <textarea class="form-control" id="informeObjetivoEspecifico" rows="3" formControlName="objetivoEspecifico"></textarea>
+                </div>
+                <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                  <label for="informeActividadesRealizadas">Actividades Realizadas:</label>
+                  <textarea class="form-control" id="informeActividadesRealizadas" rows="2" formControlName="actividadesRealizadas"></textarea>
+                </div>
+                <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                  <label for="informeResultadosObtenidos">Resultados Obtenidos:</label>
+                  <textarea class="form-control" id="informeResultadosObtenidos" rows="5" formControlName="resultadosObtenidos"></textarea>
+                </div>
+                <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                  <label for="informeContribuciones">Contribuciones a la institución:</label>
+                  <textarea class="form-control" id="informeContribuciones" rows="5" formControlName="contribuciones"></textarea>
+                </div>
+                <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                  <label for="informeVinculosANotas">Vínculos a notas informativas:</label>
+                  <textarea class="form-control" id="informeVinculosANotas" rows="2" formControlName="vinculosANotas"></textarea>
+                </div>
+                <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                  <label for="informeListadoDocumentos">Listado de documentos de respaldo:</label>
+                  <textarea class="form-control" id="informeListadoDocumentos" rows="1" formControlName="listadoDocumentos"></textarea>
+                </div>
+                <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                  <label for="informeConclusiones">Conclusiones:</label>
+                  <textarea class="form-control" id="informeConclusiones" rows="2" formControlName="conclusiones"></textarea>
+                </div>
+              </div>
+              
+            </form>
+          </fieldset>
+        </div>
+        
+         <!-- COMPROBACION -->
+         <div class="tab-pane" id="comprobacion" role="tabpanel" aria-labelledby="comprobacion-tab" aria-expanded="false">
+          <!-- Changes Memo  -->
+          <!-- RESUMEN -->
+          <fieldset>
+            <legend>
+              Resumen
+            </legend>
+            <accordion [closeOthers]="true" class="mb-lg show" [isAnimated]="true">
+              <accordion-group>
+                <div accordion-heading>
+                  Resumen Viáticos Asignados y Comprobados
+                  <i class="la la-angle-down float-right"></i>
+                </div>
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="my-custom-scrollbar table-wrapper-scroll-y">  
+                    <table class="table table-lg mt-lg mb-0 align-right pixvs-table table-striped table-hover">
+                      <thead class="sticky-table">
+                        <tr>
+                          <th></th>
+                          <th>VIÁTICO</th>
+                          <th>MONTO ASIGNADO</th>
+                          <th>MONTO COMPROBADO</th>
+                          <th>DIFERENCIA</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let item of comprobacionesConBalance">
+                          <td [ngClass]="{'falta': item.Balance > 0,'ok': item.Balance == 0, 'warning': item.Balance < 0}">
+                            <span *ngIf="item.Balance == 0">
+                              &#10003;
+                              <!-- OK -->
+                            </span>
+                            <span *ngIf="item.Balance < 0">
+                              &#9888;
+                              <!-- sin nada -->
+                            </span>
+                            <!-- PENDIENTE -->
+                            <span *ngIf="item.Balance > 0">
+                              X
+                            </span>
+                          </td>
+                          <td class="align-left">
+                            {{ item.ConceptoViaticoNombre }}
+                          </td>
+                          <td class="align-right">
+                            {{ item.MontoAsignado | MoneyPipe }}
+                          </td>
+                          <td class="align-right">
+                            {{ item.MontoComprobado | MoneyPipe }}
+                          </td>
+                          <td class="align-right">
+                            {{ item.Balance | MoneyPipe }}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  </div>
+                </div>
+              </accordion-group>
+            </accordion>                        
+          </fieldset>
+          <!-- Changes Memo  -->
+
+          
+          <!-- COMPROBACION -->
+          <fieldset [disabled]="soloLectura" class="mb-5">
+            <legend>
+              Comprobación
+            </legend>
+            <div class="row">
+              <div class="col lg 12">
+                <div class="d-lg-flex flex-lg-row justify-content-lg-end">
+                  <!-- <button type="button" class="btn btn-primary" id="open-wizard-comprobacion" *ngIf="!soloLectura">Agregar Comprobante</button> -->
+                  <button type="button" class="btn btn-inverse" data-toggle="modal" data-target=".bd-example-modal-lg" *ngIf="!soloLectura" (click)="onClickOpenModalBootstrapWizard(false)">Agregar Comprobante</button>
+                </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-12 col-lg-12">
+                <ngx-datatable
+                class="material"
+                [rows]="solicitudViaticoComprobacionDetalleSinRMDataTable()"
+                [columnMode]="'force'"
+                [headerHeight]="50"
+                [footerHeight]="0"
+                [scrollbarH]="true"
+                rowHeight="auto"
+                [selected]="solicitudViaticoComprobacionDetalleSelected"
+                [selectionType]="'checkbox'"
+                [selectAllRowsOnPage]="false"
+                (select)="comprobacionSelect($event)"
+                [messages]="{emptyMessage: 'Sin registros', totalMessage: 'Total', selectedMessage: false}"
+                >
+                  <ngx-datatable-column
+                    [width]="100"
+                    [sortable]="false"
+                    [canAutoResize]="false"
+                    [draggable]="false"
+                    [resizeable]="false"
+                    headerClass="pixvs-div-checkbox"
+                    cellClass="pixvs-div-checkbox">
+                    <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected" let-selectFn="selectFn">
+                      <div class="pixvs-checkbox">
+                        <input class="form-check-input" id="checkboxComprobacion" type="checkbox"  [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)">
+                        <label class="form-check-label" for="checkboxComprobacion"></label>
+                    </div>
+                    </ng-template>
+                    <ng-template ngx-datatable-cell-template let-row="row" let-rowIndex="rowIndex" let-isSelected="isSelected" let-onCheckboxChangeFn="onCheckboxChangeFn">
+                      <div class="pixvs-checkbox">
+                        <input class="form-check-input" id="checkboxComprobacion{{rowIndex}}" type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)">
+                        <label class="form-check-label" for="checkboxComprobacion{{rowIndex}}"></label>
+                    </div>
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column prop="fechaComprobante" name="FECHA">
+                    <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                      <span>
+                        {{value | FechaPipe}}
+                      </span>
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column prop="categoria" name="CATEGORIA">
+                    <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                      <span>
+                        {{value.valor}}
+                      </span>
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column name="CONCEPTO">
+                    <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                      <span>
+                        {{ row.conceptoViatico ? row.conceptoViatico.concepto : row.conceptoViatico ? row.conceptoViatico.valor : '' }}
+                      </span>
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column prop="formaPago" name="FORMA PAGO">
+                    <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                      <span>
+                        {{value.valor}}
+                      </span>
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column name="PDF/XML">
+                    <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                      <div class="d-flex flex-row">
+                        <button *ngIf="getInfoFile(row, 1000156) != ''" class="btn bg-transparent border-0" [tooltip]="getInfoFile(row, 1000156)"><i class="fa fa-file-pdf-o fa-lg"></i></button>
+                        <button *ngIf="getInfoFile(row, 1000154) != ''" class="btn bg-transparent border-0" [tooltip]="getInfoFile(row, 1000154)"><i class="fa fa-file-code-o fa-lg"></i></button>
+                      </div>
+                      <!-- <span [tooltip]="getInfoFile(row, false)">
+                        {{ getInfoFile(row, true) | TruncatePipe : 10 }}
+                      </span> -->
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column prop="importePesos" name="IMPORTE PESOS MEX" width="180">
+                    <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                      <span>
+                        <div class="align-right">
+                          {{value | MoneyPipe}}
+                        </div>                      
+                      </span>
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column *ngIf="!solicitudViaticoComprobacion.solicitanteFinalizoComprobacion">
+                    <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                      <button class="btn btn-default" type="button" (click)="onClickEditComprobanteOrGasto(row, false)" [disabled]="solicitudViaticoComprobacion.solicitanteFinalizoComprobacion">Editar</button>
+                    </ng-template>
+                  </ngx-datatable-column>
+                </ngx-datatable>
+              </div>
+            </div>
+            <!-- REVISAR ESTA TABLA DE LOS RESULTADOS -->
+            <div class="row">
+              <div class="col-lg-3">
+                <button *ngIf="!soloLectura" [disabled]="!!solicitudViaticoComprobacion.solicitanteFinalizoComprobacion || solicitudViaticoComprobacionDetalleSelected.length === 0" type="button" class="btn btn-danger width-100" type="button" (click)="comprobacionRemove()">Eliminar</button>
+              </div>
+              <div class="col-lg-9 table-responsive">
+                <table class="table table-striped align-right">
+                  <thead>
+                  <tr>
+                    <th>TOTAL TRANSFERIDO</th>
+                    <th>GASTOS SIN COMPROBANTE</th>
+                    <th>GASTOS CON COMPROBANTE</th>
+                    <th>TOTAL COMISIÓN</th>
+                    <th>REINTEGRO</th>
+                    <th>BALANCE</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    <td>
+                      {{comprobacionTableResult.totalTransferido | MoneyPipe}}
+                    </td>
+                    <td>
+                      {{comprobacionTableResult.sinComprobante | MoneyPipe}}
+                    </td>
+                    <td>
+                      {{comprobacionTableResult.conComprobante | MoneyPipe}}
+                    </td>
+                    <td>
+                      {{comprobacionTableResult.totalComision | MoneyPipe}}
+                    </td>
+                    <td>
+                      {{comprobacionTableResult.reintegro | MoneyPipe}}
+                    </td>
+                    <td>
+                      {{comprobacionTableResult.balance | MoneyPipe}}
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </fieldset>
+          <!-- /COMPROBACION -->
+          
+          <!-- RECURSOS MATERIALES -->
+          <fieldset [disabled]="soloLectura || !rolPermisonRM">
+            <legend>
+              Recursos Materiales
+            </legend>
+            <accordion [closeOthers]="true" class="mb-lg show" id="accordion-recursos-materiales" [isAnimated]="true">
+              <accordion-group [isOpen]="rolPermisonRM">
+                <div accordion-heading>
+                  Comprobación por Recursos Materiales
+                  <i class="la la-angle-down float-right"></i>
+                </div>
+                <div>
+                  <div class="row">
+                    <div class="col lg 12">
+                      <div class="d-lg-flex flex-lg-row justify-content-lg-end">
+                        <!-- <button type="button" class="btn btn-primary" id="open-wizard-comprobacion-rm" *ngIf="!solicitudViaticoComprobacion.rmFinalizoComprobacion">Agregar Gasto</button> -->
+                        <button type="button" class="btn btn-inverse" data-toggle="modal" data-target=".bd-example-modal-lg" *ngIf="!soloLectura" (click)="onClickOpenModalBootstrapWizard(true)">Agregar Gasto</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <div class="col-12 col-lg-12">
+                      <ngx-datatable
+                      class="material"                     
+                      [rows]="solicitudViaticoComprobacionDetalleConRMDataTable()"
+                      [columnMode]="'force'"
+                      [headerHeight]="50"
+                      [footerHeight]="0"
+                      [scrollbarH]="true"
+                      rowHeight="auto"
+                      [selected]="solicitudViaticoComprobacionRMSelected"
+                      [selectionType]="'checkbox'"
+                      [selectAllRowsOnPage]="false"
+                      (select)="recursosMaterialesSelect($event)"
+                      [messages]="{emptyMessage: 'Sin registros', totalMessage: 'Total', selectedMessage: false}"
+                      >
+                        <ngx-datatable-column
+                          [width]="100"
+                          [sortable]="false"
+                          [canAutoResize]="false"
+                          [draggable]="false"
+                          [resizeable]="false"
+                          headerClass="pixvs-div-checkbox"
+                          cellClass="pixvs-div-checkbox">
+                          <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected" let-selectFn="selectFn">
+                            <div class="pixvs-checkbox">
+                              <input  class="form-check-input" id="checkboxRecursosMateriales" type="checkbox"  [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)">                             
+                              <label class="form-check-label" for="checkboxRecursosMateriales"></label>
+                          </div>
+                          </ng-template>
+                          <ng-template ngx-datatable-cell-template let-row="row" let-rowIndex="rowIndex" let-isSelected="isSelected" let-onCheckboxChangeFn="onCheckboxChangeFn">
+                            <div class="pixvs-checkbox">
+                              <input [disabled]="row.conceptoViaticoId<=3" class="form-check-input" id="checkboxRecursosMateriales{{rowIndex}}" type="checkbox" [checked]="row.conceptoViaticoId<=3?false:isSelected" (change)="onCheckboxChangeFn($event)">                             
+                              <label class="form-check-label" for="checkboxRecursosMateriales{{rowIndex}}"></label>
+                          </div>
+                          </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column prop="fechaComprobante" name="FECHA">
+                          <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                            {{value | FechaPipe}}
+                          </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column prop="categoria" name="CATEGORÍA">
+                          <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                            {{value.valor}}
+                          </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="CONCEPTO">
+                          <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                            {{ row.conceptoViatico ? row.conceptoViatico.concepto : row.conceptoViatico ? row.conceptoViatico.valor : '' }}
+                          </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column prop="formaPago" name="FORMA PAGO">
+                          <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                            {{value.valor}}
+                          </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="PDF / XML">
+                          <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                            <div class="d-flex flex-row">
+                              <button *ngIf="getInfoFile(row, 1000156) != ''" class="btn bg-transparent border-0" [tooltip]="getInfoFile(row, 1000156)"><i class="fa fa-file-pdf-o fa-lg"></i></button>
+                              <button *ngIf="getInfoFile(row, 1000154) != ''" class="btn bg-transparent border-0" [tooltip]="getInfoFile(row, 1000154)"><i class="fa fa-file-code-o fa-lg"></i></button>
+                            </div>
+                            <!-- <span [tooltip]="getInfoFile(row, false)">
+                              {{ getInfoFile(row, true) | TruncatePipe : 10 }}
+                            </span> -->
+                          </ng-template>
+                        </ngx-datatable-column>
+                        <!-- <ngx-datatable-column prop="folio" name="COMPROBANTE">
+                          <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                            <span [tooltip]="getInfoFile(row, false)">
+                              {{getInfoFile(row, true) | TruncatePipe : 10}}
+                            </span>
+                          </ng-template>
+                        </ngx-datatable-column> -->
+                        <ngx-datatable-column prop="importePesos" name="IMPORTE PESOS MEX" width="180">
+                          <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                            <div class="align-right">
+                              {{value | MoneyPipe}}
+                            </div>
+                          </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column  name="COMPROBACIÓN" *ngIf="!solicitudViaticoComprobacion.rmFinalizoComprobacion">
+                          <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                            <button *ngIf="row.fechaComprobante == null" class="btn btn-default" type="button" (click)="onClickEditComprobanteOrGasto(row, true)" [disabled]="solicitudViaticoComprobacion.rmFinalizoComprobacion">Comprobar</button>
+                            <button *ngIf="row.fechaComprobante != null" class="btn btn-default" type="button" (click)="onClickEditComprobanteOrGasto(row, true)" [disabled]="solicitudViaticoComprobacion.rmFinalizoComprobacion">Editar</button>
+                          </ng-template>
+                        </ngx-datatable-column>
+                      </ngx-datatable>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-3">
+                      <button *ngIf="!soloLectura && rolPermisonRM" [disabled]="!!solicitudViaticoComprobacion.rmFinalizoComprobacion || solicitudViaticoComprobacionRMSelected.length === 0" type="button" class="btn btn-danger width-100" type="button" (click)="recursosMaterialesRemove()">Eliminar</button>
+                    </div>
+                    <div class="col-lg-9 table-responsive">
+                      <table class="table table-striped align-right">
+                        <thead>
+                        <tr>
+                          <th>GASTOS SIN COMPROBANTE</th>
+                          <th>GASTOS CON COMPROBANTE</th>
+                          <th>TOTAL COMISIÓN</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                          <td>
+                            {{recursosMaterialesTableResult.sinComprobante | MoneyPipe}}
+                          </td>
+                          <td>
+                            {{recursosMaterialesTableResult.conComprobante | MoneyPipe}}
+                          </td>
+                          <td>
+                            {{recursosMaterialesTableResult.totalComision | MoneyPipe}}
+                          </td>
+                        </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </accordion-group>
+            </accordion>                        
+          </fieldset>
+          <!-- /RECURSOS MATERIALES -->
+        </div>
+        <!-- /COMPROBACION -->
+        
+        
+      </div>      
+    </div>
+  </div>
+  
+  <!-- / CONTENT -->
+
+  <!-- MODAL -->
+  <div class="modal bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ solicitudViaticoComprobacionDetalleForm.controls.esComprobadoPorRM.value ? 'Agregar Gasto' : 'Agregar Comprobante' }}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div #bootstrapWizardPixvs class="form-wizard">
+            <div class="row">
+              <div class="col-4 col-sm-4 col-lg-4">
+                <div class="d-flex flex-column justify-content-between h-100">
+                  <!-- Nav tabs -->
+                  <ul class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                    <li class="nav-item">
+                      <a class="nav-link mb-2 active" id="datos-generales-tab" data-toggle="tab" href="#datos-generales" role="tab" aria-controls="datos-generales" aria-selected="true">Datos Generales</a>
+                    </li>
+                    <li class="nav-item"  *ngIf="solicitudViaticoComprobacionDetalleForm.controls.tipoComprobanteId.value == tipoComprobanteListadoCMM.FACTURA_NACIONAL || solicitudViaticoComprobacionDetalleForm.controls.tipoComprobanteId.value == tipoComprobanteListadoCMM.COMPROBANTE_EXTRANJERO">
+                      <a class="nav-link mb-2" id="datos-proveedor-tab" data-toggle="tab" href="#datos-proveedor" role="tab" aria-controls="datos-proveedor" aria-selected="false">Datos Proveedor</a>
+                    </li>
+                    <li class="nav-item"  *ngIf="solicitudViaticoComprobacionDetalleForm.controls.categoriaId.value != categoriaViaticoListadoCMM.REINTEGRO">
+                      <a class="nav-link mb-2" id="datos-comprobante-tab" data-toggle="tab" href="#datos-comprobante" role="tab" aria-controls="datos-comprobante" aria-selected="false">Datos Comprobante</a>
+                    </li>
+                    <li class="nav-item" *ngIf="solicitudViaticoComprobacionDetalleForm.controls.categoriaId.value == categoriaViaticoListadoCMM.PASAJE || solicitudViaticoComprobacionDetalleForm.controls.categoriaId.value == categoriaViaticoListadoCMM.CARGO_SERVICIO">
+                      <a class="nav-link mb-2" id="datos-pasaje-tab" data-toggle="tab" href="#datos-pasaje" role="tab" aria-controls="datos-pasaje" aria-selected="false" >Datos Pasaje</a>
+                    </li>
+                    <li class="nav-item" >
+                      <a class="nav-link mb-2" id="finalizar-tab" data-toggle="tab" href="#finalizar" role="tab" aria-controls="finalizar" aria-selected="false">Finalizar</a>
+                    </li>
+                  </ul>
+                  <!-- Progress Bar -->
+                  <div class="bg-gray-lighter progress progress-xs">
+                    <div id="bar" class="progress-bar progress-xs progress-bar-gray-light" style="width: 25%;"></div>
+                  </div>
+                  <!-- /Progress Bar -->
+                </div>
+              </div>
+              <div class="col-8 col-sm-8 col-lg-8">
+                <div class="d-flex flex-column justify-content-between h-100">
+
+                  <!-- Tab panes -->
+                  <div class="tab-content">
+                    <!-- DATOS GENERALES -->
+                    <div class="tab-pane active" id="datos-generales" role="tabpanel" aria-labelledby="datos-generales-tab">
+                      <form [formGroup]="solicitudViaticoComprobacionDetalleForm">
+                        <div class="row">
+                          <div class="form-group col-md-12 col-lg-12">
+                            <label class="font-weight-bold">Categoría:</label>
+                            <ng-select data-parsley-required #cboCategoria (close)="cboCategoria.blur(); cboCategoria.focus()" ngbTooltip="Tooltip text..." [searchable]="true" [items]="categoriaViaticoList" formControlName="categoriaId" bindLabel="name" bindValue="id" placeholder="Seleccione una Opción" (change)="categoriaViaticoSelected($event)" [attr.disabled]="true"><ng-template ng-option-tmp let-item="item"><div [title]="item.name">{{item.name}}</div></ng-template></ng-select>
+                            <ul *ngIf="!solicitudViaticoComprobacionDetalleValid && solicitudViaticoComprobacionDetalleForm.controls.categoriaId.invalid" class="parsley-errors-list filled" aria-hidden="false"><li class="parsley-required">Este valor es requerido.</li></ul>
+                          </div>
+                          <!-- VIATICO -->
+                          <div class="form-group col-md-12 col-lg-12" *ngIf="solicitudViaticoComprobacionDetalleForm.controls.categoriaId.value == categoriaViaticoListadoCMM.VIATICO">
+                            <label class="font-weight-bold">Concepto:</label>
+                            <ng-select #cboConcepto (close)="cboConcepto.blur(); cboConcepto.focus()" ngbTooltip="Tooltip text..." [searchable]="true" [items]="conceptoViaticoViaticoList" formControlName="conceptoViaticoId" bindLabel="name" bindValue="id" placeholder="Seleccione una Opción" ><ng-template ng-option-tmp let-item="item"><div [title]="item.name">{{item.name}}</div></ng-template></ng-select>
+                            <ul *ngIf="!solicitudViaticoComprobacionDetalleValid && solicitudViaticoComprobacionDetalleForm.controls.conceptoViaticoId.invalid" class="parsley-errors-list filled" aria-hidden="false"><li class="parsley-required">Este valor es requerido.</li></ul>
+                          </div>
+                          <!-- /VIATICO -->
+                          <!-- PASAJE AND CARGO -->
+                          <div class="form-group col-md-12 col-lg-12" *ngIf="solicitudViaticoComprobacionDetalleForm.controls.categoriaId.value == categoriaViaticoListadoCMM.PASAJE || solicitudViaticoComprobacionDetalleForm.controls.categoriaId.value == categoriaViaticoListadoCMM.CARGO_SERVICIO">
+                            <label class="font-weight-bold">Tipo Pasaje:</label>
+                            <ng-select #cboPasaje (close)="cboPasaje.blur(); cboPasaje.focus()" ngbTooltip="Tooltip text..." [searchable]="true" [items]="conceptoViaticoPasajeList" formControlName="conceptoViaticoId" bindLabel="name" bindValue="id" placeholder="Seleccione una Opción" ><ng-template ng-option-tmp let-item="item"><div [title]="item.name">{{item.name}}</div></ng-template></ng-select>
+                            <ul *ngIf="!solicitudViaticoComprobacionDetalleValid && solicitudViaticoComprobacionDetalleForm.controls.conceptoViaticoId.invalid" class="parsley-errors-list filled" aria-hidden="false"><li class="parsley-required">Este valor es requerido.</li></ul>
+                          </div>
+                          <!-- /PASAJE AND CARGO -->
+                          <div class="form-group col-md-12 col-lg-12" *ngIf="solicitudViaticoComprobacionDetalleForm.controls.categoriaId.value && solicitudViaticoComprobacionDetalleForm.controls.esComprobadoPorRM.value">
+                            <label class="font-weight-bold">Cuenta Pago Gasto:</label>
+                            <ng-select ngbTooltip="Tooltip text..." [searchable]="true" [items]="cuentasGastoList" formControlName="cuentaPagoGastoId" bindLabel="nombre" bindValue="id" placeholder="Seleccione una Opción" required><ng-template ng-option-tmp let-item="item"><div [title]="item.nombre">{{item.nombre}}</div></ng-template></ng-select>
+                            <ul *ngIf="!solicitudViaticoComprobacionDetalleValid && solicitudViaticoComprobacionDetalleForm.controls.cuentaPagoGastoId.invalid" class="parsley-errors-list filled" aria-hidden="false"><li class="parsley-required">Este valor es requerido.</li></ul>
+                          </div>
+                          <div class="form-group col-md-12 col-lg-12" *ngIf="solicitudViaticoComprobacionDetalleForm.controls.categoriaId.value && solicitudViaticoComprobacionDetalleForm.controls.categoriaId.value != categoriaViaticoListadoCMM.REINTEGRO">
+                            <label class="font-weight-bold">Tipo Comprobante:</label>
+                            <ng-select #cboComprobante (close)="cboComprobante.blur(); cboComprobante.focus()" ngbTooltip="Tooltip text..." [searchable]="true" [items]="tipoComprobanteList" formControlName="tipoComprobanteId" bindLabel="name" bindValue="id" placeholder="Seleccione una Opción" (change)="tipoComprobanteSelected($event)" ><ng-template ng-option-tmp let-item="item"><div [title]="item.name">{{item.name}}</div></ng-template></ng-select>
+                            <ul *ngIf="!solicitudViaticoComprobacionDetalleValid && solicitudViaticoComprobacionDetalleForm.controls.tipoComprobanteId.invalid" class="parsley-errors-list filled" aria-hidden="false"><li class="parsley-required">Este valor es requerido.</li></ul>
+                          </div>
+                          <!-- FORMA COMPROBACION -->
+                          <div class="form-group col-md-12 col-lg-12" *ngIf="solicitudViaticoComprobacionDetalleForm.controls.tipoComprobanteId.value == tipoComprobanteListadoCMM.FACTURA_NACIONAL">
+                            <label class="font-weight-bold">Forma de Comprobación:</label>
+                            <ng-select #cboFormaComprobacion (close)="cboFormaComprobacion.blur(); cboFormaComprobacion.focus()" ngbTooltip="Tooltip text..." [searchable]="true" [items]="formaComprobacionList" formControlName="formaComprobacionId" bindLabel="name" bindValue="id" placeholder="Seleccione una Opción" (change)="onChangeFormaComprobacion($event)" ><ng-template ng-option-tmp let-item="item"><div [title]="item.name">{{item.name}}</div></ng-template></ng-select>
+                            <ul *ngIf="!solicitudViaticoComprobacionDetalleValid && solicitudViaticoComprobacionDetalleForm.controls.formaComprobacionId.invalid" class="parsley-errors-list filled" aria-hidden="false"><li class="parsley-required">Este valor es requerido.</li></ul>
+                          </div>
+                          <!-- /FORMA COMPROBACION -->
+                          <div *ngIf="solicitudViaticoComprobacionDetalleForm.controls.tipoComprobanteId.value == tipoComprobanteListadoCMM.FACTURA_NACIONAL && solicitudViaticoComprobacionDetalleForm.controls.formaComprobacionId.value && esVisibleArchivo" class="form-group col-md-12 col-lg-12">
+                            <label class="font-weight-bold">Archivo XML:</label>
+                            <div id="fileinputXML" class="fileinput input-group" [ngClass]="archivoTipoComprobante.referenciaId ? 'fileinput-exist' : 'fileinput-new'" data-provides="fileinput">
+                              <div class="form-control d-flex flex-row" data-trigger="fileinput">
+                                <i class="glyphicon glyphicon-file fileinput-exists mr-2"></i>
+                                <span class="fileinput-filename text-nowrap">{{ archivoTipoComprobante.referenciaId == null ? '' : archivoTipoComprobante.nombreArchivoTemporal }}</span>
+                              </div>
+                              <span class="input-group-addon btn btn-default btn-file">
+                                <span class="fileinput-new" [ngClass]="{'btn': isMobile}">{{ archivoTipoComprobante.referenciaId == null ? 'Seleccionar Archivo' : ''}}</span>
+                                <span class="fileinput-exists" [ngClass]="{'btn': isMobile}">Cambiar</span>
+                                <input accept='text/xml' type="file" name="..." (change)="onFileXML($event)">
+                
+                              </span>
+                              <a class="{{archivoTipoComprobante.referenciaId ? 'btn btn-default btn-file' : 'btn btn-default fileinput-exists'}}" data-dismiss="fileinput" (click)="cleanFileXML(true)">Eliminar</a>
+                            </div>
+                            <ul *ngIf="!solicitudViaticoComprobacionDetalleValid && solicitudViaticoComprobacionDetalleForm.controls.fileXML.invalid" class="parsley-errors-list filled" aria-hidden="false"><li class="parsley-required">Este valor es requerido.</li></ul>
+                          </div>
+                          <div *ngIf="solicitudViaticoComprobacionDetalleForm.controls.tipoComprobanteId.value" class="form-group col-md-12 col-lg-12">
+                            <label>Archivo PDF {{ solicitudViaticoComprobacionDetalleForm.controls.tipoComprobanteId.value == tipoComprobanteListadoCMM.FACTURA_NACIONAL ? '' : ', Word, Imagen, etc..' }} :</label>
+                            <div id="fileinputOtros" class="fileinput input-group" [ngClass]="archivoTipoComprobanteOther.referenciaId ? 'fileinput-exist' : 'fileinput-new'" data-provides="fileinput">
+                              <div class="form-control d-flex flex-row" data-trigger="fileinput">
+                                <i class="glyphicon glyphicon-file fileinput-exists mr-2"></i>
+                                <span class="fileinput-filename text-nowrap">{{ archivoTipoComprobanteOther.referenciaId == null ? '' : archivoTipoComprobanteOther.nombreArchivoTemporal }}</span>
+                              </div>
+                              <span class="input-group-addon btn btn-default btn-file">
+                                <span class="fileinput-new" [ngClass]="{'btn': isMobile}">{{ archivoTipoComprobanteOther.referenciaId == null ? 'Seleccionar Archivo' : ''}}</span>
+                                <span class="fileinput-exists" [ngClass]="{'btn': isMobile}">Cambiar</span>
+                                <input type="file" (change)="onFileOther($event)">
+                              </span>
+                              <a class="{{archivoTipoComprobanteOther.referenciaId ? 'btn btn-default btn-file' : 'btn btn-default fileinput-exists'}}" data-dismiss="fileinput" (click)="cleanFileOther()">Eliminar</a>
+                            </div>
+                            <ul *ngIf="!solicitudViaticoComprobacionDetalleValid && !solicitudViaticoComprobacionDetalleForm.controls.tipoComprobanteId.valid" class="parsley-errors-list filled" aria-hidden="false"><li class="parsley-required">Este valor es requerido.</li></ul>
+                          </div>  
+                          <!-- REINTEGRO -->
+                          <div class="form-group col-md-12 col-lg-12" *ngIf="solicitudViaticoComprobacionDetalleForm.controls.categoriaId.value == categoriaViaticoListadoCMM.REINTEGRO">
+                            <label class="font-weight-bold">Importe Reintegro:</label>
+                            <input type="text" class="form-control align-right" formControlName="importePesos" [textMask]="maskMoney" (blur)="convertStringToFloatMoney($event,'importePesos')">
+                            <ul *ngIf="!solicitudViaticoComprobacionDetalleValid && solicitudViaticoComprobacionDetalleForm.controls.importePesos.invalid && solicitudViaticoComprobacionDetalleForm.controls.importePesos.hasError('min')" class="parsley-errors-list filled" aria-hidden="false"><li class="parsley-required">El campo debe ser mayor que 0.</li></ul>
+                          </div>
+                          <div class="form-group col-md-12 col-lg-12" *ngIf="solicitudViaticoComprobacionDetalleForm.controls.categoriaId.value == categoriaViaticoListadoCMM.REINTEGRO">
+                            <label>Comprobante:</label>
+                            <div id="fileinputComprobantes" class="fileinput input-group" [ngClass]="archivoTipoComprobanteOther.referenciaId ? 'fileinput-exist' : 'fileinput-new'" data-provides="fileinput">
+                              <div class="form-control d-flex flex-row" data-trigger="fileinput">
+                                <i class="glyphicon glyphicon-file fileinput-exists mr-2"></i>
+                                <span class="fileinput-filename text-nowrap">{{ archivoTipoComprobanteOther.referenciaId == null ? '' : archivoTipoComprobanteOther.nombreArchivoTemporal }}</span>
+                              </div>
+                              <span class="input-group-addon btn btn-default btn-file">
+                                <span class="fileinput-new" [ngClass]="{'btn': isMobile}">{{ archivoTipoComprobanteOther.referenciaId == null ? 'Seleccionar Archivo' : ''}}</span>
+                                <span class="fileinput-exists" [ngClass]="{'btn': isMobile}">Cambiar</span>
+                                <input type="file" (change)="onFileOther($event)">
+                              </span>
+                              <a class="{{archivoTipoComprobanteOther.referenciaId ? 'btn btn-default btn-file' : 'btn btn-default fileinput-exists'}}" data-dismiss="fileinput" (click)="cleanFileOther()">Eliminar</a>
+                            </div>
+                            <!-- <ul *ngIf="!solicitudViaticoComprobacionDetalleValid && !solicitudViaticoComprobacionDetalleForm.controls.tipoComprobanteId.valid" class="parsley-errors-list filled" aria-hidden="false"><li class="parsley-required">Este valor es requerido.</li></ul> -->
+                          </div> 
+                          <!-- /REINTEGRO -->    
+                        </div>
+                      </form>
+                    </div>
+                    <!-- /DATOS GENERALES -->
+                    <!-- DATOS PROVEEDOR -->
+                    <div class="tab-pane" id="datos-proveedor" role="tabpanel" aria-labelledby="datos-proveddor-tab">
+                      <form [formGroup]="solicitudViaticoComprobacionDetalleForm">
+                        <div class="row">
+                          <div class="form-group col-md-9 col-lg-9" [ngClass]="{'col-md-12 col-lg-12': solicitudViaticoComprobacionDetalleForm.controls.tipoComprobanteId.value == tipoComprobanteListadoCMM.FACTURA_NACIONAL}">
+                            <label>Razón Social:</label>
+                            <ng-select data-parsley-required #cboCategoria ngbTooltip="Tooltip text..." [searchable]="true" [items]="proveedoresList" formControlName="proveedorId" bindLabel="razonSocial" bindValue="id" placeholder="Seleccione una Opción" (change)="onChangeProveedor($event)" (open)="onOpenProveedor()" [attr.disabled]="true"><ng-template ng-option-tmp let-item="item"><div [title]="item.razonSocial" required>{{item.razonSocial}}</div></ng-template></ng-select>
+                            <!-- <input type="text" class="form-control" formControlName="razonSocial" maxlength="50"> -->
+                          </div>
+                          <div class="form-group col-md-3 col-lg-3 d-flex align-items-end" *ngIf="solicitudViaticoComprobacionDetalleForm.controls.tipoComprobanteId.value == tipoComprobanteListadoCMM.COMPROBANTE_EXTRANJERO" >
+                            <div>
+                              <button type="submit" class="btn btn-default width-100" (click)="onClickNewProveedor()" [disabled]="solicitudViaticoComprobacionDetalleForm.controls.proveedorId.value">Nuevo</button>
+                            </div>
+                          </div>
+                        </div>
+                        <fieldset>
+                          <div class="row">
+                            <div class="form-group col-md-12 col-lg-12">
+                              <label>Nombre del proveedor:</label>
+                              <!-- <input type="text" class="form-control" [value]="proveedor.RazonSocial" [(ngModel)]="proveedor.RazonSocial" [ngModelOptions]="{standalone: true}" minlength="4" maxlength="100"> -->
+                              <input type="text" class="form-control" formControlName="razonSocial" minlength="4" maxlength="100" required>
+                              <ul *ngIf="!solicitudViaticoComprobacionDetalleValid && solicitudViaticoComprobacionDetalleForm.controls.razonSocial.invalid" class="parsley-errors-list filled" aria-hidden="false"><li class="parsley-required">Este valor es requerido.</li></ul>
+                              <ul *ngIf="!solicitudViaticoComprobacionDetalleValid && solicitudViaticoComprobacionDetalleForm.controls.razonSocial.invalid && solicitudViaticoComprobacionDetalleForm.controls.razonSocial.hasError('minlength')" class="parsley-errors-list filled" aria-hidden="false"><li class="parsley-required">El campo debe ser 4 ó mas caracteres.</li></ul>
+                              <!-- <input type="text" class="form-control" formControlName="razonSocial" maxlength="50"> -->
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="form-group col-md-6 col-lg-6">
+                              <label >RFC:</label>
+                              <!-- <input type="text" class="form-control" [value]="proveedor.RFC" [(ngModel)]="proveedor.RFC" [ngModelOptions]="{standalone: true}" minlength="12" maxlength="13" required> -->
+                              <input type="text" class="form-control" formControlName="rfc" minlength="12" maxlength="13" required>
+                              <ul *ngIf="!solicitudViaticoComprobacionDetalleValid && solicitudViaticoComprobacionDetalleForm.controls.rfc.invalid" class="parsley-errors-list filled" aria-hidden="false"><li class="parsley-required">Este valor es requerido.</li></ul>
+                              <ul *ngIf="!solicitudViaticoComprobacionDetalleValid && solicitudViaticoComprobacionDetalleForm.controls.rfc.invalid && solicitudViaticoComprobacionDetalleForm.controls.rfc.hasError('minlength')" class="parsley-errors-list filled" aria-hidden="false"><li class="parsley-required">El campo debe ser 12 ó 13 caracteres.</li></ul>
+                            </div> 
+                            <div class="form-group col-md-6 col-lg-6">
+                              <label >Pais:</label>
+                              <ng-select data-parsley-required #cboPais (close)="cboPais.blur(); cboPais.focus()" ngbTooltip="Tooltip text..." [searchable]="true" [items]="paisesList" formControlName="proveedorPaisId" bindLabel="nombre" bindValue="id" placeholder="Seleccione un pais"><ng-template ng-option-tmp let-item="item"><div [title]="item.nombre">{{item.nombre}}</div></ng-template></ng-select>
+                              <ul *ngIf="!solicitudViaticoComprobacionDetalleValid && !solicitudViaticoComprobacionDetalleForm.controls.proveedorPaisId.value" class="parsley-errors-list filled" aria-hidden="false"><li class="parsley-required">Este valor es requerido.</li></ul>
+                            </div>   
+                          </div>
+                        </fieldset>
+                      </form>  
+                    </div>
+                    <!-- /DATOS PROVEEDOR -->
+                    <!-- DATOS COMPROBANTE -->
+                    <div class="tab-pane" id="datos-comprobante" role="tabpanel" aria-labelledby="datos-comprobante-tab">
+                      <form [formGroup]="solicitudViaticoComprobacionDetalleForm">
+                        <div class="row">
+                          <div class="form-group col-md-6 col-lg-6">
+                            <label class="font-weight-bold" for="fechaComprobanteViatico">Fecha:</label>
+                            <div class="input-group">
+                              <input id="fechaComprobanteViatico"
+                                  
+                                  class="form-control"
+                                  formControlName="fechaComprobante"
+                                  [owlDateTimeTrigger]="fechaComprobanteViaticoComponent"
+                                  [owlDateTime]="fechaComprobanteViaticoComponent"
+                                  [max]="maxDatosComprobante"
+                                  [min]="minDatosComprobante"
+                                 
+                                  > 
+                                  <!-- [owlDateTimeFilter]="filterDateSetValue" -->
+                              <div class="input-group-prepend">
+                                  <span class="input-group-text fa fa-calendar trigger" [owlDateTimeTrigger]="fechaComprobanteViaticoComponent" ></span>
+                              </div>
+                              <owl-date-time [startAt]="minDatosComprobante" [startView]="'month'"  [pickerType]="'calendar'" #fechaComprobanteViaticoComponent></owl-date-time>
+                            </div>
+                            <ul *ngIf="!solicitudViaticoComprobacionDetalleValid && solicitudViaticoComprobacionDetalleForm.controls.fechaComprobante.invalid" class="parsley-errors-list filled" aria-hidden="false"><li class="parsley-required">Este valor es requerido.</li></ul>
+                          </div>
+                          <div class="form-group col-md-6 col-lg-6">
+                            <label>Folio:</label>
+                            <input type="text" class="form-control" formControlName="folio" maxlength="50">
+                          </div>       
+                        </div>
+                        <div class="row" *ngIf="solicitudViaticoComprobacionDetalleForm.controls.tipoComprobanteId.value != tipoComprobanteListadoCMM.FACTURA_NACIONAL && solicitudViaticoComprobacionDetalleForm.controls.tipoComprobanteId.value != tipoComprobanteListadoCMM.COMPROBANTE_EXTRANJERO">
+                          <div class="form-group col-md-6 col-lg-6">
+                            <label >RFC:</label>
+                            <input type="text" class="form-control" formControlName="rfc" maxlength="50">
+                          </div>
+                          <div class="form-group col-md-6 col-lg-6">
+                            <label>Razón Social:</label>
+                            <input type="text" class="form-control" formControlName="razonSocial" maxlength="50">
+                          </div>       
+                        </div>
+                        <!-- Concepto Detalle -->
+                        <div class="row" *ngIf="solicitudViaticoComprobacionDetalleForm.controls.tipoComprobanteId.value == tipoComprobanteListadoCMM.FACTURA_NACIONAL && solicitudViaticoComprobacionDetalleForm.controls.formaComprobacionId.value == formaComprobacionListadoCMM.POR_DETALLES">
+                          <div class="form-group col-md-12 col-lg-12" >
+                            <label class="font-weight-bold">Concepto Detalle:</label>
+                            <ng-select data-parsley-required #cboCategoria ngbTooltip="Tooltip text..." [searchable]="true" [items]="facturaConceptosList" formControlName="numeroPartida" bindLabel="name" bindValue="id" placeholder="Seleccione una Opción" (change)="onChangeConceptoDescripcion($event)" [attr.disabled]="true"><ng-template ng-option-tmp let-item="item"><div [title]="item.name" required>{{item.name}}</div></ng-template></ng-select>
+                            <ul *ngIf="!solicitudViaticoComprobacionDetalleValid && solicitudViaticoComprobacionDetalleForm.controls.numeroPartida.invalid" class="parsley-errors-list filled" aria-hidden="false"><li class="parsley-required">Este valor es requerido.</li></ul>
+                          </div>
+                        </div>
+                        <!-- /Concepto Detalle -->
+                        <div class="row">
+                          <div class="form-group col-md-12 col-lg-12">
+                            <label class="font-weight-bold" >Forma de Pago:</label>
+                            <ng-select #cboPago (close)="cboPago.blur(); cboPago.focus()" ngbTooltip="Tooltip text..." [searchable]="true" [items]="formaPagoList" formControlName="formaPagoId" bindLabel="name" bindValue="id" placeholder="Seleccione una Opción"><ng-template ng-option-tmp let-item="item"><div [title]="item.name">{{item.name}}</div></ng-template></ng-select>
+                            <ul *ngIf="!solicitudViaticoComprobacionDetalleValid && solicitudViaticoComprobacionDetalleForm.controls.formaPagoId.invalid" class="parsley-errors-list filled" aria-hidden="false"><li class="parsley-required">Este valor es requerido.</li></ul>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="form-group col-md-6 col-lg-6">
+                            <label class="font-weight-bold">Moneda:</label>
+                            <ng-select #cboMoneda (close)="cboMoneda.blur(); cboMoneda.focus()" ngbTooltip="Tooltip text..." [searchable]="true" [items]="monedaList" formControlName="monedaId" bindLabel="name" bindValue="id" placeholder="Seleccione una Opción" (change)="onMoneda($event)"><ng-template ng-option-tmp let-item="item"><div [title]="item.name">{{item.name}}</div></ng-template></ng-select>
+                            <ul *ngIf="!solicitudViaticoComprobacionDetalleValid && solicitudViaticoComprobacionDetalleForm.controls.monedaId.invalid" class="parsley-errors-list filled" aria-hidden="false"><li class="parsley-required">Este valor es requerido.</li></ul>
+                          </div>
+                          <div class="form-group col-md-6 col-lg-6">
+                            <label>Tipo de Cambio:</label>
+                            <input type="text" class="form-control align-right" formControlName="tipoCambio" [textMask]="maskMoney" (input)="datosComprobacionCalculatorTipoCambio($event)" (blur)="convertStringToFloatMoney($event,'tipoCambio')">
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="form-group col-md-6 col-lg-6">
+                            <label class="font-weight-bold">Importe:</label>
+                            <input type="text" class="form-control align-right" formControlName="importe" (keydown)="dividirMonto($event,false)" (input)="datosComprobacionCalculatorImporte($event)" (blur)="convertStringToFloatMoney($event,'importe')">
+                            <ul *ngIf="!solicitudViaticoComprobacionDetalleValid && solicitudViaticoComprobacionDetalleForm.controls.importe.hasError('required')" class="parsley-errors-list filled" aria-hidden="false"><li class="parsley-required">Este valor es requerido.</li></ul>
+                            <ul *ngIf="!solicitudViaticoComprobacionDetalleValid && solicitudViaticoComprobacionDetalleForm.controls.importe.invalid && solicitudViaticoComprobacionDetalleForm.controls.importe.hasError('min')" class="parsley-errors-list filled" aria-hidden="false"><li class="parsley-required">El campo debe ser mayor que 0.</li></ul>
+                          </div>
+                          <div class="form-group col-md-6 col-lg-6">
+                            <label class="font-weight-bold">Importe en pesos:</label>
+                            <input type="text" class="form-control align-right" formControlName="importePesos" [textMask]="maskMoney" (blur)="convertStringToFloatMoney($event,'importePesos')">
+                            <ul *ngIf="!solicitudViaticoComprobacionDetalleValid && solicitudViaticoComprobacionDetalleForm.controls.importePesos.invalid" class="parsley-errors-list filled" aria-hidden="false"><li class="parsley-required">Este valor es requerido.</li></ul>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="form-group col-md-12 col-lg-12">
+                            <label>Comentarios:</label>
+                            <textarea class="form-control" rows="2" formControlName="comentarios"></textarea>
+                          </div>
+                        </div>
+                      </form>  
+                    </div>
+                    <!-- /DATOS COMPROBANTE -->
+                    <!-- DATOS PASAJE -->
+                    <div class="tab-pane" id="datos-pasaje" role="tabpanel" aria-labelledby="datos-pasaje-tab">
+                      <form [formGroup]="solicitudViaticoComprobacionPasajeForm">
+                        <div class="row">
+                          <div class="form-group col-md-6 col-lg-6">
+                            <label class="font-weight-bold" for="fechaCompraPasaje">Fecha de compra:</label>
+                            <div class="input-group">
+                              <input id="fechaCompraPasaje"
+                                  [max]="maxDatosComprobante"
+                                  [min]="minDatosComprobante"
+                                  class="form-control"
+                                  formControlName="fechaCompra"
+                                  [owlDateTimeTrigger]="fechaCompraPasajeComponent"
+                                  [owlDateTime]="fechaCompraPasajeComponent">
+                              <div class="input-group-prepend">
+                                  <span class="input-group-text fa fa-calendar trigger" [owlDateTimeTrigger]="fechaCompraPasajeComponent" ></span>
+                              </div>
+                              <owl-date-time [pickerType]="'calendar'" [startAt]="minDatosComprobante" [startView]="'month'" #fechaCompraPasajeComponent></owl-date-time>
+                            </div>
+                            <ul *ngIf="!solicitudViaticoComprobacionDetalleValid && solicitudViaticoComprobacionPasajeForm.controls.fechaCompra.invalid" class="parsley-errors-list filled" aria-hidden="false"><li class="parsley-required">Este valor es requerido.</li></ul>
+                          </div>
+                          <div class="form-group col-md-6 col-lg-6 d-flex align-items-center justify-content-end">
+                            <div>
+                              <div class="form-check abc-checkbox abc-checkbox-success abc-checkbox-circle mr-4">
+                                <input class="form-check-input" name="viajeRedondo" id="viajeRedondoSencilloPasaje" [value]="false" formControlName="viajeRedondo" type="radio">
+                                <label class="form-check-label" for="viajeRedondoSencilloPasaje">
+                                  Sencillo
+                                </label>
+                              </div>
+                              <div class="form-check abc-checkbox abc-checkbox-success abc-checkbox-circle">
+                                <input class="form-check-input" name="viajeRedondo" id="viajeRedondoIdaYVueltaPasaje" [value]="true" formControlName="viajeRedondo" type="radio"  checked>
+                                <label class="form-check-label" for="viajeRedondoIdaYVueltaPasaje">
+                                  Ida y Vuelta
+                                </label>
+                              </div>
+                            </div>
+                          </div>       
+                        </div>
+                        <div class="row">
+                          <div class="form-group col-md-12 col-lg-12">
+                            <label class="font-weight-bold">Nombre de línea:</label>
+                            <input type="text" class="form-control" formControlName="nombreLinea" maxlength="50">
+                            <ul *ngIf="!solicitudViaticoComprobacionDetalleValid && solicitudViaticoComprobacionPasajeForm.controls.nombreLinea.invalid" class="parsley-errors-list filled" aria-hidden="false"><li class="parsley-required">Este valor es requerido.</li></ul>
+                          </div>      
+                        </div>
+                        <div class="row">
+                          <div class="form-group col-md-5 col-lg-5">
+                            <label class="font-weight-bold" for="fechaSalidaPasaje">Fecha y hora de salida:</label>
+                            <div class="input-group">
+                              <input id="fechaSalidaPasaje"
+                                  class="form-control"
+                                  [min]="minDatosComprobante"
+                                  [max]="minFechaHoraRegreso"
+                                  formControlName="fechaSalida"
+                                  [owlDateTimeTrigger]="fechaSalidaPasajeComponent"
+                                  [owlDateTime]="fechaSalidaPasajeComponent" >
+                              <div class="input-group-prepend">
+                                  <span class="input-group-text fa fa-calendar trigger" [owlDateTimeTrigger]="fechaSalidaPasajeComponent"></span>
+                              </div>
+                              <owl-date-time #fechaSalidaPasajeComponent ></owl-date-time>
+                            </div>
+                            <ul *ngIf="!solicitudViaticoComprobacionDetalleValid && solicitudViaticoComprobacionPasajeForm.controls.fechaSalida.invalid" class="parsley-errors-list filled" aria-hidden="false"><li class="parsley-required">Este valor es requerido.</li></ul>
+                          </div>
+                          <div class="form-group col-md-5 col-lg-5">
+                            <label class="font-weight-bold">Número de boleto ida:</label>
+                            <input type="text" class="form-control" formControlName="numeroBoletoIda" maxlength="50">
+                            <ul *ngIf="!solicitudViaticoComprobacionDetalleValid && solicitudViaticoComprobacionPasajeForm.controls.numeroBoletoIda.invalid" class="parsley-errors-list filled" aria-hidden="false"><li class="parsley-required">Este valor es requerido.</li></ul>
+                          </div>  
+                          <div class="form-group col-md-2 col-lg-2">
+                            <label for="boletoUtilizadoIdaPasaje">Utilizado</label>
+                            <div class="d-flex justify-content-center"> 
+                              <div class="form-check abc-checkbox abc-checkbox-success">
+                                <input class="form-check-input" name="boletoUtilizadoIda" id="boletoUtilizadoIdaPasaje" formControlName="boletoUtilizadoIda" type="checkbox" [value]="solicitudViaticoComprobacionPasajeForm.controls.boletoUtilizadoIda.value">
+                                <label class="form-check-label" for="boletoUtilizadoIdaPasaje"></label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row" *ngIf="solicitudViaticoComprobacionPasajeForm.controls.viajeRedondo.value">
+                          <div class="form-group col-md-5 col-lg-5">
+                            <label class="font-weight-bold" for="fechaRegresoPasaje">Fecha y hora de regreso:</label>
+                            <div class="input-group">
+                              <input id="fechaRegresoPasaje"
+                                  class="form-control"
+                                  [min]="maxFechaHoraSalida"
+                                  [max]="maxFechaHoraRegreso"
+                                  formControlName="fechaRegreso"
+                                  [owlDateTimeTrigger]="fechaRegresoPasajeComponent"
+                                  [owlDateTime]="fechaRegresoPasajeComponent" >
+                              <div class="input-group-prepend">
+                                  <span class="input-group-text fa fa-calendar trigger" [owlDateTimeTrigger]="fechaRegresoPasajeComponent"></span>
+                              </div>
+                              <owl-date-time #fechaRegresoPasajeComponent ></owl-date-time>
+                            </div>
+                            <ul *ngIf="!solicitudViaticoComprobacionDetalleValid && solicitudViaticoComprobacionPasajeForm.controls.fechaRegreso.invalid" class="parsley-errors-list filled" aria-hidden="false"><li class="parsley-required">Este valor es requerido.</li></ul>
+                          </div>
+                          <div class="form-group col-md-5 col-lg-5">
+                            <label class="font-weight-bold">Número de boleto regreso:</label>
+                            <input type="text" class="form-control" formControlName="numeroBoletoRegreso" maxlength="50">
+                            <ul *ngIf="!solicitudViaticoComprobacionDetalleValid && solicitudViaticoComprobacionPasajeForm.controls.numeroBoletoRegreso.invalid" class="parsley-errors-list filled" aria-hidden="false"><li class="parsley-required">Este valor es requerido.</li></ul>
+                          </div>  
+                          <div class="form-group col-md-2 col-lg-2">
+                            <label for="boletoUtilizadoRegresoPasaje">Utilizado</label>
+                            <div class="d-flex justify-content-center"> 
+                              <div class="form-check abc-checkbox abc-checkbox-success">
+                                <input class="form-check-input" name="boletoUtilizadoRegreso" id="boletoUtilizadoRegresoPasaje" formControlName="boletoUtilizadoRegreso" type="checkbox" [value]="solicitudViaticoComprobacionPasajeForm.controls.boletoUtilizadoRegreso.value">
+                                <label class="form-check-label" for="boletoUtilizadoRegresoPasaje"></label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="form-group col-md-12 col-lg-12">
+                            <label>Comentarios:</label>
+                            <textarea class="form-control" rows="3" formControlName="comentarios"></textarea>
+                          </div>
+                        </div>
+                      </form> 
+                    </div>
+                    <div class="tab-pane" id="finalizar" role="tabpanel" aria-labelledby="finalizar-tab" >
+                      <div class="row">
+                        <div class="col-lg-12 mb-3">
+                          <div class="bg-success text-white p-2">
+                            {{ modoButtonEdit ? solicitudViaticoComprobacionDetalleForm.controls.esComprobadoPorRM.value ? 'Gasto actualizado correctamente' : 'Comprobante actualizado correctamente' : solicitudViaticoComprobacionDetalleForm.controls.esComprobadoPorRM.value ? 'Gasto agregado correctamente' : 'Comprobante agregado correctamente' }}
+                          </div>
+                        </div>
+                        <div class="col-lg-12" *ngIf="!modoButtonEdit">
+                          <button class="btn btn-default" (click)="onClickNewComprobanteOrGasto()">
+                            {{ solicitudViaticoComprobacionDetalleForm.controls.esComprobadoPorRM.value ? 'Agregar nuevo Gasto' : 'Agregar nuevo Comprobante' }}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- /DATOS PASAJE -->
+  
+                  <div class="row">
+                    <div class="col-12 col-sm-12 col-lg-12">
+                      <ul class="pager wizard">
+                        <li class="previous">
+                          <button class="btn btn-default btn-rounded pull-left">
+                            <i class="fa fa-caret-left"></i> &nbsp; Atras
+                          </button>
+                        </li>
+                        <li class="next">
+                          <button class="btn btn-primary btn-rounded pull-right" >
+                            Siguiente &nbsp; <i class="fa fa-caret-right"></i></button>
+                        </li>
+                        <li class="finish" style="display: none">
+                          <button class="btn btn-success btn-rounded pull-right" >
+                            Cerrar &nbsp; <i class="glyphicon glyphicon-ok"></i>
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- /MODAL -->
+
+  <!-- MODAL COMPROBACION -->
+  
+  <!-- /MODAL CARGO EDIT -->
+  <!-- /MODAL RECURSOS MATERIALES -->
+
+  <!-- MODAL DESHACER -->
+  <div class="modal" bsModal #deshacerModal="bs-modal" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <span>
+              <h6><strong>Se perderán los cambios realizados.</strong></h6>
+              ¿Desea continuar? 
+            </span>                 
+          </div>
+          <div class="modal-body">
+            <button class="btn btn-success btn-xs float-right width-100" (click)="deshacer(); deshacerModal.hide();">SI</button>
+            <button class="btn btn-secondary btn-xs float-right width-100 mr-3" (click)="deshacerModal.hide()">NO</button>
+          </div>
+        </div>
+    </div>
+  </div>
+  <!-- /MODAL DESHACER -->
+
+
+  <!-- SPINNER -->
+  <ngx-spinner bdOpacity = 0.9 bdColor = "rgba(51,51,51,0.49)" size = "medium" color = "#fff" type = "square-jelly-box" [fullScreen] = "true"></ngx-spinner>
+  <!-- /SPINNER -->
+</section>
+
+

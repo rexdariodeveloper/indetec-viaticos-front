@@ -1,0 +1,75 @@
+<a class="list-group-item" (click)="onClick()">
+	<!-- <span class="thumb-sm float-left mr">
+		<img class="rounded-circle" src="{{ mensaje.path_imagen }}" alt="...">
+		<i class="status status-bottom bg-{{ mensaje.estado === 'online' ? 'success' : (mensaje.estado === 'away' ? 'warning' : 'default') }}"></i>
+	</span> -->
+	<h5 class="no-margin fw-bold mb-xs">
+		{{ autorizacion.tipoMovimiento}}
+	</h5>
+
+	<span>
+		<p class="deemphasize text-ellipsis no-margin" [innerHTML]= "autorizacion.tramite | AlertaPipe"></p>
+		<time class="text-link help float-right">{{ autorizacion.fecha}}</time>
+	</span>
+	<!-- <p class="deemphasize text-ellipsis no-margin" [innerHTML]= "autorizacion.tramite | AlertaPipe">
+
+		<time class="text-link help float-right">{{ autorizacion.fecha}}</time>
+	</p> -->
+
+	<!-- <button (click)="onBorrar()" aria-label="Close" class="close ml-auto" type="button" style="position: absolute; top: 10px; right: 10px;">
+		<span aria-hidden="true">×</span>
+	</button> -->
+
+</a>
+
+<!-- Modal Notificación -->
+<!-- <div bsModal #modalNotificacion="bs-modal" class="modal fade modalNotificacion" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" style="z-index: 1050" [config]="{backdrop: 'static'}">
+	<div class="modal-dialog modal-lg" style="z-index: 1060">
+		<div class="modal-content">
+			<div class="modal-header flex-column">
+				<button (click)="modalNotificacion.hide()" aria-label="Close" class="close ml-auto" type="button">
+					<span aria-hidden="true">×</span>
+				</button>
+				<h4 class="modal-title text-center fw-bold" id="myModalLabel18">Notificación</h4>
+			</div>
+			<div class="modal-body" *blockUI="'contenido'">
+				<div class="row">
+					<div class="col-12">
+						<span>{{ autorizacion?.alerta?.textoRepresentativo }}</span>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12">
+					</div>
+				</div>
+				<div class="row">
+					<label class="form-control-label col-12" for="requisicion-comentarios">
+						<b>Motivo de rechazo:</b>
+					</label>
+					<div class="col-12 my-0">
+						<small class="text-muted">(en caso de rechazar o mandar a revisión)</small>
+					</div>
+					<div class="col-12">
+						<textarea
+							[(ngModel)]="motivoRechazo"
+							id="motivo-rechazo"
+							name="motivo-rechazo"
+							rows="3"
+							class="autogrow form-control transition-height"
+							id="elastic-textarea"
+							autosize
+							placeholder=""
+							maxlength="2000">
+						</textarea>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer" *blockUI="'contenido'">
+				<button type="button" class="btn btn-default btn-rounded mr-auto" (click)="modalNotificacion.hide()">Cerrar</button>
+				<button type="button" class="btn btn-danger btn-rounded" style="background-color: black; border-color: black;" (click)="onRechazar(autorizacion?.id,motivoRechazo)">Rechazar</button>
+				<button type="button" class="btn btn-warning btn-rounded" style="background-color: purple; border-color: purple;" (click)="onMandarRevision(autorizacion?.id,motivoRechazo)">Mandar a Revisión</button>
+				<button type="button" class="btn btn-success btn-rounded" style="background-color: #00a0c6; border-color: #00a0c6;" (click)="onAutorizar(autorizacion?.id)">Autorizar</button>
+			</div>
+		</div>
+	</div>
+</div> -->

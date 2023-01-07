@@ -1,0 +1,828 @@
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">Viáticos</li>
+    <li class="breadcrumb-item">Solicitudes ></li>  
+</ol>
+
+<section id="solicitud">
+    <div class="form-group row">
+        <div class="col-12">
+            <h2><a class="fa fa-mail-reply px-3" (click)="validaDeshacer(true)" data-toggle="tooltip" title="Regresar"></a>Solicitud<small> - {{ pageType == 'new' ? 'Nueva' : 'Editar ' }}</small></h2>
+        </div>
+    </div>
+    <form name="solicitudForm" [formGroup]="datosForm" class="parsleyjs" (ngSubmit)="guardar()" data-parsley-validate>        
+    <div class="sticky">
+        <div *ngIf="mostrarFormActions" class="form-actions">
+            <div class="col-12">
+                <div class="row justify-content-end">
+                    <button type="button" class="btn btn-default width-100" (click)="validaDeshacer(false)" *ngIf="pageType == 'edit' && !deshabilitarForm()" [disabled]="!datosForm.dirty">Deshacer</button>
+                    <button type="button" class="btn btn-default width-100 ml-3" (click)="validaDeshacer(true)" *ngIf="pageType == 'new'">Cancelar</button>
+                    <button type="button" class="btn btn-default width-120 ml-3" (click)="modalCancelar.show()" *ngIf="mostrarCancelarSolicitud">Cancelar Solicitud</button>
+                    <button type="button" class="btn btn-danger width-100 ml-3" (click)="modalEliminar.show()" *ngIf="mostrarEliminarAutorizar" [disabled]="datosForm.dirty">Eliminar</button>
+                    <button type="button" class="btn btn-success width-120 ml-3" (click)="modalEnviarAutorizar.show()" *ngIf="mostrarEliminarAutorizar && !datosForm.dirty">Enviar a Autorizar</button>
+                    <button type="submit" class="btn btn-success width-100 ml-3" *ngIf="!deshabilitarForm() && (pageType=='new' || datosForm.dirty)">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+        <div class="widget">
+            <div class="row">
+                <div class="col-12">
+                    <div class="float-right mb" *ngIf="pageType == 'edit'">
+                        <button type="button" class="btn btn-primary round_button_blue" (click)="modalHistorial.show()">
+                            <i class="fa fa-clock-o"></i>
+                        </button>
+
+                        <button *ngIf="mostrarImprimir" type="button" class="btn btn-primary round_button_blue ml-3" (click)="imprimir()">
+                            <i class="fa fa-print"></i>
+                        </button>
+                    </div>
+                    
+                    <section [ngClass]="{'pt-4': pageType == 'edit'}">
+                        <header>
+                            <legend>
+                                Datos del Solicitante
+                            </legend>
+                        </header>
+                        <div class="widget-body">
+                            <div class="form-group row">
+                                <div class="col-3 col-md-2 col-lg-2">
+                                    <div class="d-flex justify-content-center align-items-center">
+                                        <span class="thumb-xl avatar">
+                                            <img *ngIf="fotografias && !fotografias[empleado.id]" class="img-circle" src="assets/img/default_user.jpg" alt="" height="50">
+                                            <img *ngIf="fotografias && fotografias[empleado.id]" class="img-circle" [src]="fotografias[empleado.id] | SanitizeUrlPipe" alt="" height="50">
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-9 col-md-10 col-lg-10">
+                                    <div class="row">
+                                        <div class="form-group col-12 col-md-7 col-lg-4">
+                                            <label class="col-md-4 form-control-label"><strong>Nombre:</strong></label>
+                                            <div class="col-12">
+                                                <ng-select *ngIf="permisoEmpleados" #cboEmpleado (close)="cboEmpleado.blur(); cboEmpleado.focus()" ngbTooltip="Tooltip text..." [searchable]="true" formControlName="empleadoId" [items]="listadoEmpleados"
+                                                    bindLabel="name" bindValue="id" (change)="cboEmpleadoChange($event)"
+                                                    placeholder="Seleccione una Opción">
+                                                    <ng-template ng-option-tmp let-item="item"><div [title]="item.name">{{item.name}}</div></ng-template>
+                                                </ng-select>
+                                                <ul *ngIf="mostrarErroresForm && !datosForm.controls.empleadoId.value" class="parsley-errors-list filled" aria-hidden="false">
+                                                    <li class="parsley-required">Este valor es requerido.</li>
+                                                </ul>
+                                                <label *ngIf="!permisoEmpleados" class="form-control-label">{{ datosForm.controls.nombre.value }}</label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-12 col-md-5 col-lg-4">
+                                            <label class="col-md-4 form-control-label"><strong>Puesto:</strong></label>
+                                            <div class="col-12">
+                                                <label class="form-control-label">{{ datosForm.controls.puesto.value }}</label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-12 col-md-7 col-lg-4">
+                                            <label class="col-md-4 form-control-label"><strong>Cargo:</strong></label>
+                                            <div class="col-12">
+                                                <label class="form-control-label">{{ datosForm.controls.cargo.value }}</label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-12 col-md-5 col-lg-4">
+                                            <label class="col-12 form-control-label"><strong>Área de Adscripción:</strong></label>
+                                            <div class="col-12">
+                                                <label class="form-control-label">{{ datosForm.controls.areaAdscripcion.value }}</label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-12 col-md-7 col-lg-4" *ngIf="pageType == 'edit'">
+                                            <label class="col-12 form-control-label"><strong>Número de Solicitud:</strong></label>
+                                            <div class="col-12">
+                                                <label class="form-control-label">{{ solicitud.numeroSolicitud }}</label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-12 col-md-5 col-lg-4" *ngIf="pageType == 'edit'">
+                                            <label class="col-12 form-control-label"><strong>Estatus de Solicitud:</strong></label>
+                                            <div class="col-12">
+                                                <label class="form-control-label">{{ solicitud.estatus.valor }}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+
+                
+
+                <div *ngIf="asignacion" class="clearfix">
+                    <ul class="nav nav-tabs float-left" id="myTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="resumen-tab" data-toggle="tab" href="#resumen" role="tab"
+                                aria-controls="resumen" aria-expanded="true">Resumen</a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a class="nav-link" id="asignacion-tab" data-toggle="tab" href="#asignacion" role="tab"
+                                aria-controls="asignacion" aria-expanded="false">Asignación</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="tab-content" id="myTabContent">
+                    <div role="tabpanel" class="tab-pane active in clearfix" id="resumen" aria-labelledby="resumen-tab" aria-expanded="true">
+                        <fieldset [disabled]="deshabilitarForm()">
+                            <div class="row">
+                                <div class="col-12">
+                                    <legend>
+                                        Datos del Programa
+                                    </legend>
+
+                                    <div class="row">
+                                        <div class="form-group col-6 col-sm-5 col-md-4 col-lg-3">
+                                            <label class="col-md-6 form-control-label" for="cboEjercicio"><strong>Ejercicio:</strong></label>
+                                            <div class="col-12">
+                                                <ng-select #cboEjercicio (close)="cboEjercicio.blur(); cboEjercicio.focus()" ngbTooltip="Tooltip text..." [searchable]="true" formControlName="ejercicio" [items]="listadoEjercicios"
+                                                    bindLabel="name" bindValue="id" (change)="cboEjercicioChange($event)"
+                                                    placeholder="Seleccione una Opción">
+                                                    <ng-template ng-option-tmp let-item="item"><div [title]="item.name">{{item.name}}</div></ng-template>
+                                                </ng-select>
+                                                <ul *ngIf="mostrarErroresForm && !datosForm.controls.ejercicio.value" class="parsley-errors-list filled" aria-hidden="false">
+                                                    <li class="parsley-required">Este valor es requerido.</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="form-group col-12 col-md-6 col-lg-6">
+                                            <label class="col-md-6 form-control-label" for="cboPrograma"><strong>Programa:</strong></label>
+                                            <div class="col-12">
+                                                <ng-select #cboPrograma (close)="cboPrograma.blur(); cboPrograma.focus()" ngbTooltip="Tooltip text..." [searchable]="true" formControlName="programaGobiernoId" [items]="listadoProgramas"
+                                                    bindLabel="name" bindValue="id" (change)="cboProgramaChange($event)"
+                                                    placeholder="Seleccione una Opción">
+                                                    <ng-template ng-option-tmp let-item="item"><div [title]="item.name">{{item.name}}</div></ng-template>
+                                                </ng-select>
+                                                <ul *ngIf="mostrarErroresForm && !datosForm.controls.programaGobiernoId.value" class="parsley-errors-list filled" aria-hidden="false">
+                                                    <li class="parsley-required">Este valor es requerido.</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-12 col-md-6 col-lg-6">
+                                            <label class="col-md-4 form-control-label" for="cboProyecto"><strong>Proyecto:</strong></label>
+                                            <div class="col-12">
+                                                <ng-select #cboProyecto (close)="cboProyecto.blur(); cboProyecto.focus()" ngbTooltip="Tooltip text..." [searchable]="true" formControlName="proyectoId" [items]="listadoProyectos"
+                                                    bindLabel="name" bindValue="id" (change)="cboProyectoChange($event)"
+                                                    placeholder="Seleccione una Opción">
+                                                    <ng-template ng-option-tmp let-item="item"><div [title]="item.name">{{item.name}}</div></ng-template>
+                                                </ng-select>
+                                                <ul *ngIf="mostrarErroresForm && !datosForm.controls.proyectoId.value" class="parsley-errors-list filled" aria-hidden="false">
+                                                    <li class="parsley-required">Este valor es requerido.</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-12 col-md-6 col-lg-6">
+                                            <label class="col-12 form-control-label" for="cboFuenteFinanciamiento"><strong>Fuente Financiamiento:</strong></label>
+                                            <div class="col-12">
+                                                <ng-select #cboFuentesFinanciamiento (close)="cboFuentesFinanciamiento.blur(); cboFuentesFinanciamiento.focus()" ngbTooltip="Tooltip text..." [searchable]="true" formControlName="ramoId" [items]="listadoFuentesFinanciamiento"
+                                                    bindLabel="name" bindValue="id" (change)="cboFuenteFinanciamientoChange($event)"
+                                                    placeholder="Seleccione una Opción">
+                                                    <ng-template ng-option-tmp let-item="item"><div [title]="item.name">{{item.name}}</div></ng-template>
+                                                </ng-select>
+                                                <ul *ngIf="mostrarErroresForm && !datosForm.controls.ramoId.value" class="parsley-errors-list filled" aria-hidden="false">
+                                                    <li class="parsley-required">Este valor es requerido.</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-12 col-md-6 col-lg-6">
+                                            <label class="col-12 form-control-label" for="cboDependencia"><strong>Dependencia Administrativa:</strong></label>
+                                            <div class="col-12">
+                                                <ng-select #cboDependencia (close)="cboDependencia.blur(); cboDependencia.focus()" ngbTooltip="Tooltip text..." [searchable]="true" formControlName="dependenciaId" [items]="listadoDependencias"
+                                                    bindLabel="name" bindValue="id" (change)="cboDependenciaChange($event)"
+                                                    placeholder="Seleccione una Opción">
+                                                    <ng-template ng-option-tmp let-item="item"><div [title]="item.name">{{item.name}}</div></ng-template>
+                                                </ng-select>
+                                                <ul *ngIf="mostrarErroresForm && !datosForm.controls.dependenciaId.value" class="parsley-errors-list filled" aria-hidden="false">
+                                                    <li class="parsley-required">Este valor es requerido.</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-12">                                    
+                                    <legend>
+                                        Datos del Viaje
+                                    </legend>
+                                        
+                                    <div class="row">
+                                        <div class="form-group col-12 col-md-4 col-lg-4">
+                                            <label class="col-12 form-control-label" for="txtNoOficio"><strong>No. Acuerdo /
+                                                    Oficio:</strong></label>
+                                            <div class="col-12">
+                                                <input id="txtNoOficio" type="text" class="form-control" formControlName="noOficio" maxlength="50" required>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-12 col-md-4 col-lg-4">
+                                            <label class="col-12 form-control-label" for="cboTipoViaje"><strong>Tipo Viaje:</strong></label>
+                                            <div class="col-12">
+                                                <ng-select #cboTipoViaje (close)="cboTipoViaje.blur(); cboTipoViaje.focus()" ngbTooltip="Tooltip text..." [searchable]="true" formControlName="tipoViajeId" [items]="listadoTiposViaje"
+                                                    bindLabel="name" bindValue="id" (change)="cboTipoViajeChange($event)"
+                                                    placeholder="Seleccione una Opción">
+                                                    <ng-template ng-option-tmp let-item="item"><div [title]="item.name">{{item.name}}</div></ng-template>
+                                                </ng-select>
+                                                <ul *ngIf="mostrarErroresForm && !datosForm.controls.tipoViajeId.value" class="parsley-errors-list filled" aria-hidden="false">
+                                                    <li class="parsley-required">Este valor es requerido.</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-12 col-md-4 col-lg-4">
+                                            <label class="col-12 form-control-label" for="cboTipoRepresentacion"><strong>Tipo Representación:</strong></label>
+                                            <div class="col-12">
+                                                <ng-select #cboTipoRepresentacion (close)="cboTipoRepresentacion.blur(); cboTipoRepresentacion.focus()" ngbTooltip="Tooltip text..." [searchable]="true" formControlName="tipoRepresentacionId" [items]="listadoTiposRepresentacion"
+                                                    bindLabel="name" bindValue="id" (change)="cboTipoRepresentacionChange($event)"
+                                                    placeholder="Seleccione una Opción">
+                                                    <ng-template ng-option-tmp let-item="item"><div [title]="item.name">{{item.name}}</div></ng-template>
+                                                </ng-select>
+                                                <ul *ngIf="mostrarErroresForm && !datosForm.controls.tipoRepresentacionId.value" class="parsley-errors-list filled" aria-hidden="false">
+                                                    <li class="parsley-required">Este valor es requerido.</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-12 col-md-4 col-lg-4">
+                                            <label class="col-12 form-control-label" for="txtFechaSalida"><strong>Fecha y Hora Salida:</strong></label>
+                                            <div class="col-12">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text fa fa-calendar trigger pixvs-cursor"></span>
+                                                    </div>
+                                                    <input id="txtFechaSalida" required readonly
+                                                        class="form-control pixvs-cursor pixvs-input-date"
+                                                        formControlName="fechaSalida"
+                                                        [min]="minFechaSalida"
+                                                        [max]="maxFechaSalida"
+                                                        data-parsley-trigger="change"
+                                                        [owlDateTimeTrigger]="fechaSalidaComponent"
+                                                        [owlDateTime]="fechaSalidaComponent"
+                                                        (dateTimeChange)="fechaSalidaChange()"
+                                                        (dateTimeInput)="validateDate('txtFechaSalida')" data-parsley-errors-messages-disabled [attr.data-parsley-range-message]="'Este valor debe estar entre ' + (minFechaSalida | FechaPipe : true) + ' y ' + (maxFechaSalida | FechaPipe : true)"> 
+                                                    <owl-date-time #fechaSalidaComponent></owl-date-time>
+                                                </div>
+                                                <ul *ngIf="mostrarErroresForm && !datosForm.controls.fechaSalida.value" class="parsley-errors-list filled" aria-hidden="false">
+                                                    <li class="parsley-required">Este valor es requerido.</li>
+                                                </ul>
+                                                <ul *ngIf="mostrarErroresForm && datosForm.controls.fechaSalida.value && datosForm.controls.fechaSalida.invalid" class="parsley-errors-list filled" aria-hidden="false">
+                                                    <li class="parsley-required">{{ 'Este valor debe estar entre ' + (minFechaSalida | FechaPipe : true) + ' y ' + (maxFechaSalida | FechaPipe : true) }}</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-12 col-md-4 col-lg-4">
+                                            <label class="col-12 form-control-label" for="txtFechaRegreso"><strong>Fecha y Hora Regreso:</strong></label>
+                                            <div class="col-12">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text fa fa-calendar trigger pixvs-cursor"></span>
+                                                    </div>
+                                                    <input id="txtFechaRegreso" required readonly
+                                                        class="form-control pixvs-cursor pixvs-input-date"
+                                                        formControlName="fechaRegreso"
+                                                        [min]="minFechaRegreso"
+                                                        [max]="maxFechaRegreso"
+                                                        data-parsley-trigger="change"
+                                                        [owlDateTimeTrigger]="fechaRegresoComponent"
+                                                        [owlDateTime]="fechaRegresoComponent"
+                                                        (dateTimeChange)="fechaRegresoChange()"
+                                                        (dateTimeInput)="validateDate('txtFechaRegreso')" data-parsley-errors-messages-disabled [attr.data-parsley-min-message]="'Este valor no debe ser menor que ' + (datosForm.controls.fechaSalida.value | FechaPipe : true)">
+                                                    <owl-date-time #fechaRegresoComponent></owl-date-time>
+                                                </div>
+                                                <ul *ngIf="mostrarErroresForm && !datosForm.controls.fechaRegreso.value" class="parsley-errors-list filled" aria-hidden="false">
+                                                    <li class="parsley-required">Este valor es requerido.</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-12 col-md-4 col-lg-4">
+                                            <label class="col-12 form-control-label" for="txtDiasComision"><strong>Días en Comisión:</strong></label>
+                                            <div class="col-12">
+                                                <input id="txtDiasComision" type="text" class="form-control" formControlName="duracionComision" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-12 col-md-4 col-lg-4">
+                                            <label class="col-12 form-control-label" for="cboPaisOrigen"><strong>País Origen:</strong></label>
+                                            <div class="col-12">
+                                                <ng-select #cboPaisOrigen (close)="cboPaisOrigen.blur(); cboPaisOrigen.focus()" ngbTooltip="Tooltip text..." [searchable]="true" formControlName="paisOrigenId" [items]="listadoPaisesOrigen"
+                                                    bindLabel="name" bindValue="id" (change)="cboPaisOrigenChange($event)"
+                                                    placeholder="Seleccione una Opción">
+                                                    <ng-template ng-option-tmp let-item="item"><div [title]="item.name">{{item.name}}</div></ng-template>
+                                                </ng-select>
+                                                <ul *ngIf="mostrarErroresForm && !datosForm.controls.paisOrigenId.value" class="parsley-errors-list filled" aria-hidden="false">
+                                                    <li class="parsley-required">Este valor es requerido.</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-12 col-md-4 col-lg-4">
+                                            <label class="col-12 form-control-label" for="cboEstadoOrigen"><strong>Estado Origen:</strong></label>
+                                            <div class="col-12">
+                                                <ng-select #cboEstadoOrigen (close)="cboEstadoOrigen.blur(); cboEstadoOrigen.focus()" ngbTooltip="Tooltip text..." [searchable]="true" formControlName="estadoOrigenId" [items]="listadoEstadosOrigen"
+                                                    bindLabel="name" bindValue="id" (change)="cboEstadoOrigenChange($event)"
+                                                    placeholder="Seleccione una Opción">
+                                                    <ng-template ng-option-tmp let-item="item"><div [title]="item.name">{{item.name}}</div></ng-template>
+                                                </ng-select>
+                                                <ul *ngIf="mostrarErroresForm && !datosForm.controls.estadoOrigenId.value" class="parsley-errors-list filled" aria-hidden="false">
+                                                    <li class="parsley-required">Este valor es requerido.</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-12 col-md-4 col-lg-4">
+                                            <label class="col-12 form-control-label" for="cboCiudadOrigen"><strong>Ciudad Origen:</strong></label>
+                                            <div class="col-12">
+                                                <ng-select #cboCiudadOrigen (close)="cboCiudadOrigen.blur(); cboCiudadOrigen.focus()" ngbTooltip="Tooltip text..." [searchable]="true" formControlName="ciudadOrigenId" [items]="listadoCiudadesOrigen"
+                                                    bindLabel="name" bindValue="id" (change)="cboCiudadOrigenChange($event)"
+                                                    placeholder="Seleccione una Opción">
+                                                    <ng-template ng-option-tmp let-item="item"><div [title]="item.name">{{item.name}}</div></ng-template>
+                                                </ng-select>
+                                                <ul *ngIf="mostrarErroresForm && !datosForm.controls.ciudadOrigenId.value" class="parsley-errors-list filled" aria-hidden="false">
+                                                    <li class="parsley-required">Este valor es requerido.</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-12 col-md-4 col-lg-4">
+                                            <label class="col-12 form-control-label" for="cboPaisDestino"><strong>País Destino:</strong></label>
+                                            <div class="col-12">
+                                                <ng-select #cboPaisDestino (close)="cboPaisDestino.blur(); cboPaisDestino.focus()" ngbTooltip="Tooltip text..." [searchable]="true" formControlName="paisDestinoId" [items]="listadoPaisesDestino"
+                                                    bindLabel="name" bindValue="id" (change)="cboPaisDestinoChange($event)"
+                                                    placeholder="Seleccione una Opción">
+                                                    <ng-template ng-option-tmp let-item="item"><div [title]="item.name">{{item.name}}</div></ng-template>
+                                                </ng-select>
+                                                <ul *ngIf="mostrarErroresForm && !datosForm.controls.paisDestinoId.value" class="parsley-errors-list filled" aria-hidden="false">
+                                                    <li class="parsley-required">Este valor es requerido.</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-12 col-md-4 col-lg-4">
+                                            <label class="col-12 form-control-label" for="cboEstadoDestino"><strong>Estado Destino:</strong></label>
+                                            <div class="col-12">
+                                                <ng-select #cboEstadoDestino (close)="cboEstadoDestino.blur(); cboEstadoDestino.focus()" ngbTooltip="Tooltip text..." [searchable]="true" formControlName="estadoDestinoId" [items]="listadoEstadosDestino"
+                                                    bindLabel="name" bindValue="id" (change)="cboEstadoDestinoChange($event)"
+                                                    placeholder="Seleccione una Opción">
+                                                    <ng-template ng-option-tmp let-item="item"><div [title]="item.name">{{item.name}}</div></ng-template>
+                                                </ng-select>
+                                                <ul *ngIf="mostrarErroresForm && !datosForm.controls.estadoDestinoId.value" class="parsley-errors-list filled" aria-hidden="false">
+                                                    <li class="parsley-required">Este valor es requerido.</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-12 col-md-4 col-lg-4">
+                                            <label class="col-12 form-control-label" for="cboCiudadDestino"><strong>Ciudad Destino:</strong></label>
+                                            <div class="col-12">
+                                                <ng-select #cboCiudadDestino (close)="cboCiudadDestino.blur(); cboCiudadDestino.focus()" ngbTooltip="Tooltip text..." [searchable]="true" formControlName="ciudadDestinoId" [items]="listadoCiudadesDestino"
+                                                    bindLabel="name" bindValue="id" (change)="cboCiudadDestinoChange($event)"
+                                                    placeholder="Seleccione una Opción">
+                                                    <ng-template ng-option-tmp let-item="item"><div [title]="item.name">{{item.name}}</div></ng-template>
+                                                </ng-select>
+                                                <ul *ngIf="mostrarErroresForm && !datosForm.controls.ciudadDestinoId.value" class="parsley-errors-list filled" aria-hidden="false">
+                                                    <li class="parsley-required">Este valor es requerido.</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="form-group col-12 col-md-4 col-lg-4">
+                                            <label class="col-12 form-control-label" for="cboTipoGasto"><strong>Tipo Gasto:</strong></label>
+                                            <div class="col-12">
+                                                <ng-select #cboTipoGasto (close)="cboTipoGasto.blur(); cboTipoGasto.focus()" ngbTooltip="Tooltip text..." [searchable]="true" formControlName="gastoRepresentacionId" [items]="listadoGastoRepresentacion"
+                                                    bindLabel="name" bindValue="id" (change)="cboGastoRepresentacionChange($event)"
+                                                    placeholder="Seleccione una Opción">
+                                                    <ng-template ng-option-tmp let-item="item"><div [title]="item.name">{{item.name}}</div></ng-template>
+                                                </ng-select>
+                                                <ul *ngIf="mostrarErroresForm && !datosForm.controls.gastoRepresentacionId.value" class="parsley-errors-list filled" aria-hidden="false">
+                                                    <li class="parsley-required">Este valor es requerido.</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-8">
+                                            <label class="col-12 form-control-label" for="txtSugerencias">Sugerencias:</label>
+                                            <div class="col-12">
+                                                <textarea id="txtSugerencias" rows="2" class="form-control" formControlName="sugerencias" maxlength="4000"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-12">
+                                    <legend>
+                                        Datos del Evento
+                                    </legend>
+                                    
+                                    <div class="row">
+                                        <div class="form-group col-12 col-md-4 col-lg-4">
+                                            <label class="col-12 form-control-label" for="txtFechaInicioEvento"><strong>Fecha y Hora Inicio Evento:</strong></label>
+                                            <div class="col-12">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text fa fa-calendar trigger pixvs-cursor"></span>
+                                                    </div>
+                                                    <input id="txtFechaInicioEvento" required readonly
+                                                        class="form-control pixvs-cursor pixvs-input-date"
+                                                        formControlName="fechaInicioEvento"
+                                                        [min]="minFechaInicioEvento"
+                                                        [max]="maxFechaInicioEvento"
+                                                        data-parsley-trigger="change"
+                                                        [owlDateTimeTrigger]="fechaInicioEventoComponent"
+                                                        [owlDateTime]="fechaInicioEventoComponent"
+                                                        (dateTimeChange)="fechaInicioEventoChange()"
+                                                        (dateTimeInput)="validateDate('txtFechaInicioEvento')" data-parsley-errors-messages-disabled [attr.data-parsley-range-message]="'Este valor debe estar entre ' + (minFechaInicioEvento | FechaPipe : true) + ' y ' + (maxFechaInicioEvento | FechaPipe : true)">
+                                                    <owl-date-time #fechaInicioEventoComponent></owl-date-time>
+                                                </div>
+                                                <ul *ngIf="mostrarErroresForm && !datosForm.controls.fechaInicioEvento.value" class="parsley-errors-list filled" aria-hidden="false">
+                                                    <li class="parsley-required">Este valor es requerido.</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-12 col-md-4 col-lg-4">
+                                            <label class="col-12 form-control-label" for="txtFechaFinEvento"><strong>Fecha y Hora Fin Evento:</strong></label>
+                                            <div class="col-12">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text fa fa-calendar trigger pixvs-cursor"></span>
+                                                    </div>
+                                                    <input id="txtFechaFinEvento" required readonly
+                                                        class="form-control pixvs-cursor pixvs-input-date"
+                                                        formControlName="fechaFinEvento"
+                                                        [min]="minFechaFinEvento"
+                                                        [max]="maxFechaFinEvento"
+                                                        data-parsley-trigger="change"
+                                                        [owlDateTimeTrigger]="fechaFinEventoComponent"
+                                                        [owlDateTime]="fechaFinEventoComponent"
+                                                        (dateTimeChange)="fechaFinEventoChange()"
+                                                        (dateTimeInput)="validateDate('txtFechaFinEvento')" data-parsley-errors-messages-disabled [attr.data-parsley-min-message]="'Este valor no debe ser menor que ' + (datosForm.controls.fechaInicioEvento.value | FechaPipe : true)">
+                                                    <owl-date-time #fechaFinEventoComponent></owl-date-time>
+                                                </div>
+                                                <ul *ngIf="mostrarErroresForm && !datosForm.controls.fechaFinEvento.value" class="parsley-errors-list filled" aria-hidden="false">
+                                                    <li class="parsley-required">Este valor es requerido.</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-12 col-md-4 col-lg-4">
+                                            <label class="col-12 form-control-label" for="txtDiasEvento"><strong>Días de Evento:</strong></label>
+                                            <div class="col-12">
+                                                <input id="txtDiasEvento" type="text" class="form-control" formControlName="duracionEvento" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-12">
+                                            <label class="col-md-6 form-control-label" for="txtMotivo"><strong>Motivo:</strong></label>
+                                            <div class="col-12">
+                                                <textarea id="txtMotivo" rows="3" class="form-control" formControlName="motivo" maxlength="4000" required></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-12">
+                                            <label class="col-md-6 form-control-label" for="txtDescripcionComision"><strong>Descripción de la Comisión:</strong></label>
+                                            <div class="col-12">
+                                                <textarea id="txtDescripcionComision" rows="3" class="form-control" formControlName="descripcionComision" maxlength="4000" required></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-12">
+                                            <label class="col-md-6 form-control-label" for="txtOrganizador"><strong>Organizador:</strong></label>
+                                            <div class="col-12">
+                                                <input id="txtOrganizador" type="text" class="form-control" formControlName="organizador" maxlength="1000" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="form-group col-12">
+                                            <label class="col-md-6 form-control-label" for="txtLinkEvento">Link del Evento:</label>
+                                            <div class="col-12">
+                                                <input id="txtLinkEvento" type="text" class="form-control" formControlName="linkEvento" maxlength="1000">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        
+                    </div>
+
+                    <div *ngIf="asignacion" role="tabpanel" class="tab-pane" id="asignacion" aria-labelledby="asignacion-tab" aria-expanded="false">
+                        <div *ngIf="viaticosDataTable.length > 0" class="row">
+                            <div class="col-12">
+                                <legend>
+                                    Viáticos
+                                </legend>
+
+                                <div class="row">
+                                    <div class="form-group col-12">
+                                        <ngx-datatable
+                                            class="material"
+                                            [rows]="viaticosDataTable"
+                                            [columnMode]="'force'"
+                                            [headerHeight]="50"
+                                            [footerHeight]="0"
+                                            [scrollbarH]="true"
+                                            rowHeight="auto">
+            
+                                            <ngx-datatable-column prop="conceptoViaticoNombre" name="Concepto Viático" [width]="200"></ngx-datatable-column>
+                                            <ngx-datatable-column prop="montoConPernocta" name="CON PERNOCTA {{pernoctaCon > 1 ? pernoctaCon + ' DÍAS' : pernoctaCon + ' DÍA'}}" [width]="200">
+                                                <ng-template let-column="column" ngx-datatable-header-template>
+                                                <div class="align-right">
+                                                    <span>{{column.name}}</span>
+                                                </div>
+                                                </ng-template>
+                                                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                                                    <div class="align-right">
+                                                        <span>{{value | MoneyPipe}}</span>
+                                                    </div>
+                                                </ng-template>
+                                            </ngx-datatable-column>
+                                            <ngx-datatable-column prop="montoSinPernocta" name="SIN PERNOCTA {{pernoctaSin > 1 ? pernoctaSin + ' DÍAS' : pernoctaSin + ' DÍA'}}" [width]="200">
+                                                <ng-template let-column="column" ngx-datatable-header-template>
+                                                <div class="align-right">
+                                                    <span>{{column.name}}</span>
+                                                </div>
+                                                </ng-template>
+                                                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                                                    <div class="align-right">
+                                                        <span>{{value | MoneyPipe}}</span>
+                                                    </div>
+                                                </ng-template>
+                                            </ngx-datatable-column>
+                                            <ngx-datatable-column prop="montoPorTransferir" name="MONTO TRANSFERIR" [width]="200">
+                                                <ng-template let-column="column" ngx-datatable-header-template>
+                                                <div class="align-right">
+                                                    <span>{{column.name}}</span>
+                                                </div>
+                                                </ng-template>
+                                                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                                                    <div class="align-right">
+                                                        <span>{{value | MoneyPipe}}</span>
+                                                    </div>
+                                                </ng-template>
+                                            </ngx-datatable-column>
+                                        </ngx-datatable>
+                                    </div>
+                                </div>
+
+                                <div class="row justify-content-end">
+                                    <div class="col-12 col-lg-9 col-xl-7 table-responsive">
+                                        <table class="table table-striped align-right">
+                                            <thead>
+                                                <tr>
+                                                    <th>CON PERNOCTA</th>
+                                                    <th>SIN PERNOCTA</th>
+                                                    <th>TOTAL VIÁTICOS</th>
+                                                    <th>TOTAL TRANSFERIR</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>{{ viaticosTotalPernocta | MoneyPipe }}</td>
+                                                    <td>{{ viaticosTotalSinPernocta | MoneyPipe }}</td>
+                                                    <td>{{ (viaticosTotalPernocta + viaticosTotalSinPernocta) | MoneyPipe }}</td>
+                                                    <td>{{ viaticosTotalTransferir | MoneyPipe }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div *ngIf="pasajesDataTable.length > 0" class="row">
+                            <div class="col-12">
+                                <legend>
+                                    Pasajes
+                                </legend>
+
+                                <div class="row">
+                                    <div class="form-group col-12">
+                                        <ngx-datatable
+                                            class="material"
+                                            [rows]="pasajesDataTable"
+                                            [columnMode]="'force'"
+                                            [headerHeight]="50"
+                                            [footerHeight]="0"
+                                            [scrollbarH]="true"
+                                            rowHeight="auto">
+            
+                                            <ngx-datatable-column prop="conceptoViatico.concepto" name="VIAJE" [width]="80">
+                                                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                                                    <span>{{value}}</span>
+                                                </ng-template>
+                                            </ngx-datatable-column>
+                                            <ngx-datatable-column prop="viajeRedondo" name="TIPO" [width]="80">
+                                                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                                                    <span>{{ row.asignadoAFuncionario ? '' : value ? 'Redondo' : 'Sencillo'}}</span>
+                                                </ng-template>
+                                            </ngx-datatable-column>
+                                            <ngx-datatable-column name="PERIODO VIAJE" [width]="250">
+                                                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                                                    <div *ngIf="row.fechaSalida">
+                                                    <small>
+                                                        <span class="fw-semi-bold">Salida:</span>
+                                                        &nbsp; {{row.fechaSalida | FechaPipe : true}}
+                                                    </small>
+                                                    </div>
+                                                    <div *ngIf="row.fechaRegreso">
+                                                    <small>
+                                                        <span class="fw-semi-bold">Regreso:</span>
+                                                        &nbsp; {{row.fechaRegreso | FechaPipe : true}}
+                                                    </small>
+                                                    </div>
+                                                </ng-template>
+                                            </ngx-datatable-column>
+                                            <ngx-datatable-column prop="codigoReservacion" name="CÓDIGO RESERVACIÓN" [width]="200">
+                                                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                                                    <span>{{value}}</span>
+                                                </ng-template>
+                                            </ngx-datatable-column>
+                                                <ngx-datatable-column prop="nombreLinea" name="LÍNEA" [width]="150">
+                                                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                                                    <span>{{value}}</span>
+                                                </ng-template>
+                                            </ngx-datatable-column>
+                                            <ngx-datatable-column name="COSTO" [width]="150">
+                                                <ng-template let-column="column" ngx-datatable-header-template>
+                                                    <div class="align-right">
+                                                        <span>{{column.name}}</span>
+                                                    </div>
+                                                </ng-template>
+                                                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                                                    <div class="align-right">
+                                                        <span>{{value | MoneyPipe}}</span>
+                                                    </div>
+                                                </ng-template>
+                                            </ngx-datatable-column>
+                                        </ngx-datatable>
+                                    </div>
+                                </div>
+
+                                <div class="row justify-content-end">
+                                    <div class="col-12 col-lg-9 col-xl-7 table-responsive">
+                                        <table class="table table-striped align-right">
+                                            <thead>
+                                                <tr>
+                                                    <th>AÉREO</th>
+                                                    <th>TERRESTRE</th>
+                                                    <th>MARÍTIMO</th>
+                                                    <th>TOTAL PASAJE</th>
+                                                    <th>TOTAL TRANSFERIR</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>{{ pasajeTotalAereo | MoneyPipe }}</td>
+                                                    <td>{{ pasajeTotalTerrestre | MoneyPipe }}</td>
+                                                    <td>{{ pasajeTotalMaritimo | MoneyPipe }}</td>
+                                                    <td>{{ (pasajeTotalAereo + pasajeTotalTerrestre + pasajeTotalMaritimo) | MoneyPipe }}</td>
+                                                    <td>{{ pasajeTotalTransferir | MoneyPipe }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>                    
+                </div>            
+            </div>
+        </div>
+    </form>
+</section>
+
+<!-- SPINNER -->
+<ngx-spinner bdOpacity=0.9 bdColor="rgba(51,51,51,0.49)" size="medium" color="#fff" type="square-jelly-box" [fullScreen]="true"></ngx-spinner>
+<!-- /SPINNER -->
+
+<!-- MODAL CONFIRM -->
+<div class="modal fade" bsModal #deshacerModal="bs-modal" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>
+                    <h6><strong>Se perderán los cambios realizados.</strong></h6>
+                    ¿Desea continuar? 
+                </span> 
+            </div>
+            <div class="modal-body">
+                <button class="btn btn-success btn-xs float-right width-100" (click)="cancelar(); deshacerModal.hide();">SI</button>
+                <button class="btn btn-secondary btn-xs float-right width-100 mr-3" (click)="deshacerModal.hide()">NO</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /MODAL CONFIRM -->
+
+<!-- MODAL CONFIRM -->
+<div class="modal fade" bsModal #modalEliminar="bs-modal" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>
+                    <h6><strong>Se eliminará la solicitud.</strong></h6>¿Desea continuar?
+                </span>
+            </div>
+            <div class="modal-body">
+                <button class="btn btn-success btn-xs float-right width-100" (click)="eliminar(); modalEliminar.hide();">SI</button>
+                <button class="btn btn-secondary btn-xs float-right width-100 mr-3" (click)="modalEliminar.hide()">NO</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /MODAL CONFIRM -->
+
+<!-- MODAL CONFIRM -->
+<div class="modal fade" bsModal #modalCancelar="bs-modal" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>
+                    <h6><strong>Se cancelará la solicitud.</strong></h6>¿Desea continuar?
+                </span>
+            </div>
+            <div class="modal-body">
+                <button class="btn btn-success btn-xs float-right width-100" (click)="cancelarSolicitud(); modalCancelar.hide();">SI</button>
+                <button class="btn btn-secondary btn-xs float-right width-100 mr-3" (click)="modalCancelar.hide()">NO</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /MODAL CONFIRM -->
+
+<div class="modal fade" bsModal #modalEnviarAutorizar="bs-modal" [config]="{backdrop: 'static'}">
+   <div class="modal-dialog modal-sm">
+       <div class="modal-content">
+           <div class="modal-header">
+             <span>
+               <h6><strong>Se enviará la solicitud a Autorizar y ya no podrá ser editada.</strong></h6>
+               ¿Desea continuar? 
+             </span>                
+           </div>
+           <div class="modal-body">
+               <button class="btn btn-success btn-xs float-right width-100" (click)="enviarAutorizar(); modalEnviarAutorizar.hide();">SI</button>
+               <button class="btn btn-secondary btn-xs float-right width-100 mr-3" (click)="modalEnviarAutorizar.hide()">NO</button>
+           </div>
+       </div>
+   </div>
+</div>
+
+<div class="modal fade" bsModal #modalHistorial="bs-modal" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+              <span>
+                Historial de Solicitud:
+                <h6><strong>{{solicitud.numeroSolicitud}}</strong></h6>                
+              </span>
+              <button type="button" class="close pull-right" (click)="modalHistorial.hide()">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="timeline">
+                            <div class="timeline-item" *ngFor="let row of historial">
+                                <div class="timeline-badge"></div>
+                                <div class="timeline-panel-right">
+                                    <div class="align-left">
+                                        <legend><h6 class="timeline-title fw-bold">{{row.proceso}}</h6></legend>
+                                        <small class="timeline-title fw-bold">{{row.empleado}}</small>
+                                        <p *ngIf="row.motivo"><small class="text-muted align-left">{{row.motivo}}</small></p>
+                                    </div>
+                                    <p class="deemphasize text-ellipsis no-margin">
+                                        <time class="text-link help float-right">{{row.fecha}}</time>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

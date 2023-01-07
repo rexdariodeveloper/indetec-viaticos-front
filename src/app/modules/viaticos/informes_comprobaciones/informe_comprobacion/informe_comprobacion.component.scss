@@ -1,0 +1,24 @@
+@import '../../../../styles/pixvs.scss';
+@import '../../../../styles/variables';
+
+.form-wizard .nav-pills > li > a{
+    background-color: transparent;
+    border: 1px solid $gray-600;
+    color: $gray-600;
+}
+
+
+.nav-pills .nav-link.active{
+    background-color: $gray-600 !important;
+    opacity: 1 !important;
+    color: white !important;
+}
+
+.done > .nav-link{
+    background-color: $gray-600 !important;
+    opacity: .75 !important;
+}
+
+.tab-content > .tab-pane{
+    padding: unset !important;
+}

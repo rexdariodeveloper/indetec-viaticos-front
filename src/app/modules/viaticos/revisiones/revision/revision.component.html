@@ -1,0 +1,632 @@
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Viáticos</li>
+  <li class="breadcrumb-item">Revisión ></li>  
+</ol>
+<section id="revision">
+  <!-- HEAD -->
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="form-group row">
+        <div class="col-12">
+          <h2><a class="fa fa-mail-reply px-3" (click)="goBack()" data-toggle="tooltip" title="Regresar"></a>Revisión</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- / HEAD -->
+  <!-- CONTENT -->
+  <!-- VISTA SOLICITUD VIATICO -->
+  <div class="row">
+    <div class="col-lg-12">
+      <solicitud_resumen ></solicitud_resumen>
+    </div>
+  </div>
+  <!-- /VISTA SOLICITUD VIATICO -->
+
+  <div class="row">
+    <div class="col-12 col-md-6 col-lg-3">
+      <section class="widget">
+        <div class="widget-body clearfix">
+          <div style="height: 160px;">
+
+            <div class="row flex-nowrap">
+              <div class="col-3">
+                <span class="widget-icon">
+                  <i class="glyphicon glyphicon-globe text-primary"></i>
+                </span>
+              </div>
+              <div class="col-9">
+                <h6 class="m-0">TOTAL COMISIÓN</h6>
+                <p class="h2 m-0 fw-normal">{{ convertToDecimal(totalComision.totalComision) }}</p>
+              </div>
+            </div>
+            <div class="row text-center">
+              <div class="col-12">
+                <h6 class="m-0">Viáticos</h6>
+                <p class="value5">{{ convertToDecimal(totalComision.viatico) }}</p>
+              </div>
+              <div class="col-12">
+                <h6 class="m-0">Pasaje</h6>
+                <p class="value5">{{ convertToDecimal(totalComision.pasaje) }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+    <div class="col-12 col-md-6 col-lg-3">
+      <section class="widget">
+        <div class="widget-body clearfix">
+          <div style="height: 160px;">
+            <div class="row flex-nowrap">
+              <div class="col-3">
+                <span class="widget-icon">
+                  <i class="glyphicon glyphicon-user text-info"></i>
+                </span>
+              </div>
+              <div class="col-9">
+                <div live-tile class="live-tile" data-mode="carousel" data-speed="750" data-delay="4000" data-height="60">
+                  <div>
+                    <h6 class="m-0">SOLICITANTE</h6>
+                    <p class="h2 m-0 fw-normal">{{ convertToDecimal(solicitante.solicitante) }}</p>
+                  </div>
+                  <div>
+                    <h6 class="m-0">RECURSOS MATERIALES</h6>
+                    <p class="h2 m-0 fw-normal">{{ convertToDecimal(recursosMateriales.recursosMateriales) }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row text-center">
+              <div class="col-12">
+                <h6 class="m-0">Viáticos</h6>
+                <div live-tile class="live-tile" data-mode="carousel" data-speed="750" data-delay="4000" data-height="25">
+                  <div>
+                    <p class="value5">{{ convertToDecimal(solicitante.viatico) }}</p>
+                  </div>
+                  <div>
+                    <p class="value5">{{ convertToDecimal(recursosMateriales.viatico) }}</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12">
+                <h6 class="m-0">Pasaje</h6>
+                <div live-tile class="live-tile" data-mode="carousel" data-speed="750" data-delay="4000" data-height="26">
+                  <div>
+                    <p class="value5">{{ convertToDecimal(solicitante.pasaje) }}</p>
+                  </div>
+                  <div>
+                    <p class="value5">{{ convertToDecimal(recursosMateriales.pasaje) }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+    <div class="col-12 col-md-6 col-lg-3">
+      <section class="widget">
+        <div class="widget-body clearfix">
+          <div live-tile class="live-tile" data-mode="fade" data-speed="750" data-delay="4000" data-height="160">
+            <div class="bg-white text-gray">
+              <div class="row flex-nowrap">
+                <div class="col-3">
+                  <span class="widget-icon">
+                    <i class="glyphicon glyphicon-user"></i>
+                  </span>
+                </div>
+                <div class="col-9">
+                  <h6 class="m-0">GASTO SOLICITANTE</h6>
+                  <p class="h2 m-0 fw-normal">{{ convertToDecimal(gastoSolicitante.gastoSolicitante) }}</p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                  <h6 class="m-0">Con Comprobante</h6>
+                  <p class="value5">{{ convertToDecimal(gastoSolicitante.conComprobante) }}</p>
+                </div>
+                <div class="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                  <h6 class="m-0">Sin Comprobante</h6>
+                  <p class="value5">{{ convertToDecimal(gastoSolicitante.sinComprobante) }}</p>
+                </div>
+                <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center">
+                  <h6 class="m-0">Reintegro</h6>
+                  <p class="value5">{{ convertToDecimal(gastoSolicitante.reintegro) }}</p>
+                </div>
+                
+              </div>
+            </div>
+            <div class="text-gray">
+              <div class="row flex-nowrap">
+                <div class="col-3">
+                  <span class="widget-icon">
+                    <i class="glyphicon glyphicon-tags"></i>
+                  </span>
+                </div>
+                <div class="col-9">
+                  <h6 class="m-0">GASTO RM</h6>
+                  <p class="h2 m-0 fw-normal">{{ convertToDecimal(gastoRM.gastoRM) }}</p>
+                </div>
+              </div>
+              <div class="row text-center">
+                <div class="col-12">
+                  <h6 class="m-0">Con Comprobante</h6>
+                  <p class="value5">{{ convertToDecimal(gastoRM.conComprobante) }}</p>
+                </div>
+                <div class="col-12">
+                  <h6 class="m-0">Sin Comprobante</h6>
+                  <p class="value5">{{ convertToDecimal(gastoRM.sinComprobante) }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+    <div class="col-12 col-md-6 col-lg-3">
+      <section class="widget">
+        <div class="widget-body clearfix">
+          <div style="height: 160px;">
+            <div class="row flex-nowrap">
+              <div class="col-3">
+                <span class="widget-icon">
+                  <i class="glyphicon glyphicon-usd text-success"></i>
+                </span>
+              </div>
+              <div class="col-9">
+                <h6 class="m-0">TOTAL COMPROBADO</h6>            
+                <p class="h2 m-0 fw-normal">{{ convertToDecimal(totalComprobado.totalComprobado-(viatico.reintegro+pasaje.reintegro)) }}</p>
+              </div>
+            </div>
+            <div class="row text-center">
+              <div class="col-12">
+                <h6 class="m-0">Solicitante</h6>
+                <p class="value5">{{ convertToDecimal(totalComprobado.solicitante-(viatico.reintegro)) }}</p>
+              </div>
+              <div class="col-12">
+                <h6 class="m-0">RM</h6>
+                <p class="value5">{{ convertToDecimal(totalComprobado.rm-pasaje.reintegro) }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Changes Memo --> 
+  <div class="row">
+        <div class="col-lg-12">
+            <section class="widget" widget>
+              <fieldset>
+                <!-- <legend>
+                  Resumen Viáticos Asignados y Comprobados
+                </legend> -->
+                    <accordion [closeOthers]="true" class="mb-lg show" [isAnimated]="true">
+                      <accordion-group>
+                        <div accordion-heading>
+                          Resumen Viáticos Asignados y Comprobados
+                          <i class="la la-angle-down float-right"></i>
+                        </div>                          
+                            <div class="my-custom-scrollbar table-wrapper-scroll-y">
+                              <table class="table table-lg mt-lg mb-0 align-right pixvs-table table-striped table-hover">
+                                <thead class="sticky-table">
+                                  <tr>
+                                    <th></th>
+                                    <th>VIÁTICO</th>
+                                    <th>MONTO ASIGNADO</th>
+                                    <th>MONTO COMPROBADO</th>
+                                    <th>DIFERENCIA</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                <tr *ngFor="let item of comprobacionesConBalance">
+                                  <td [ngClass]="{'falta': item.Balance > 0,'ok': item.Balance == 0, 'warning': item.Balance < 0}">
+                                    <span *ngIf="item.Balance == 0">
+                                      &#10003;
+                                    </span>
+                                    <span *ngIf="item.Balance < 0">
+                                      &#9888;
+                                    </span>
+                                    <span *ngIf="item.Balance > 0">
+                                      X
+                                    </span>
+                                  </td>
+                                  <td class="align-left">
+                                    {{item.ConceptoViaticoNombre}}
+                                  </td>
+                                  <td class="align-right">
+                                    {{item.MontoAsignado | MoneyPipe}}
+                                  </td>
+                                  <td class="align-right">
+                                    {{ item.MontoComprobado | MoneyPipe }}
+                                  </td>
+                                  <td class="align-right">
+                                    {{ item.Balance | MoneyPipe }}
+                                  </td>
+                                </tr>
+                                </tbody>
+                              </table>
+                            </div>                            
+                      </accordion-group>
+                    </accordion>
+                  </fieldset>
+              </section>            
+        </div>
+  </div>
+  <!-- Changes Memo -->
+
+  <div class="row">
+    <div class="col-lg-12">
+      <section class="widget" widget>
+        <div class="widget-body">
+          <!-- SOLICITANTE -->
+          <!-- <fieldset class="mb-5">
+            <legend class="d-flex flex-row align-items-center justify-content-between">
+              Resumen Comprobación            
+              <div class="btn-group" dropdown placement="bottom right">
+                <a id="button-alignment" *ngIf="false" aria-controls="dropdown-alignment" class="nav-link dropdown-toggle" dropdownToggle href (click)="false">
+                  <span class="small text-secondary">{{ solicitudViaticoComprobacionDetalleValidacion.length > 1 ? 'Validaciones' : 'Validacion' }}</span>
+                  <span class="ml-1 circle bg-warning text-secondary fw-bold">{{ solicitudViaticoComprobacionDetalleValidacion.length }}</span>
+                </a>
+                <div id="dropdown-alignment" *dropdownMenu class="dropdown-menu dropdown-menu-right notifications pixvs-dropdown" role="menu" aria-labelledby="button-alignment">
+                  <header class="card-header">
+                    <div class="text-center">
+                      <strong>{{ solicitudViaticoComprobacionDetalleValidacion.length > 1 ? 'Aplican '+solicitudViaticoComprobacionDetalleValidacion.length+' Validaciones' : 'Apilca 1 Validacion' }}</strong>
+                    </div>
+                  </header>
+                  <div class="container-fluid list-group thin-scroll">
+                    <div class="list-group-item pixvs-dropdown-item" *ngFor="let validacion of solicitudViaticoComprobacionDetalleValidacion">
+                      <span class="widget-icon mr-3">
+                        <i class="glyphicon glyphicon-warning-sign"></i>
+                      </span>
+                      <div>
+                        <p class="m-0 pixvs-validacion-text">{{ validacion.textoValidacion }}</p>
+                      </div>
+                    </div> -->
+                    <!-- <div class="list-group-item pixvs-dropdown-item">
+                      <span class="widget-icon mr-3">
+                        <i class="fa fa-bed"></i>
+                      </span>
+                      <div>
+                        <p class="m-0">Viáticos - Hospedaje!</p>
+                        <p class="m-0">Monto Asignado $6,700.00</p>
+                        <p class="m-0">Monto Comprobado $8,650.30</p>
+                      </div>
+                    </div>
+                    <div class="list-group-item pixvs-dropdown-item">
+                      <span class="widget-icon mr-3">
+                        <i class="fa fa-plane"></i>
+                      </span>
+                      <div>
+                        <p class="m-0">Pasaje!</p>
+                        <p class="m-0">Monto Asignado $12,450.00</p>
+                        <p class="m-0">Monto Comprobado $17,000.50</p>
+                      </div>
+                    </div>
+                    <div class="list-group-item pixvs-dropdown-item">
+                      <span class="widget-icon mr-3">
+                        <i class="fa fa-tags"></i>
+                      </span>
+                      <div>
+                        <p class="m-0">Procentaje Sin Comprobante!</p>
+                        <p class="m-0">Monto Asignado $2,500.00</p>
+                        <p class="m-0">Monto Comprobado $7,520.00</p>
+                      </div>
+                    </div> -->
+                  <!-- </div>
+                  
+              </div>
+              </div>
+            </legend>            
+          </fieldset> -->
+          <!-- /SOLICITANTE -->
+          <!-- COMPROBACION -->
+          <fieldset class="mb-5">
+            <legend>
+              Comprobado por Solicitante
+            </legend>
+            <div class="row mb-3">
+              <div class="col-12 col-lg-12">
+                <ngx-datatable
+                class="material"
+                [rows]="solicitudViaticoComprobacionDetalleComprobacionDataTable"
+                [columnMode]="'force'"
+                [headerHeight]="50"
+                [footerHeight]="0"
+                [scrollbarH]="true"
+                rowHeight="auto"
+                [messages]="{emptyMessage: 'Sin registros', totalMessage: 'Total', selectedMessage: false}"
+                >
+                  <ngx-datatable-column prop="fechaComprobante" name="FECHA">
+                    <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                      <span>
+                        {{convertDateFormat(value)}}
+                      </span>
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column prop="categoria" name="CATEGORIA">
+                    <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                      {{value.valor}}
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column name="CONCEPTO">
+                    <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                      {{ row.conceptoViatico ? row.conceptoViatico.concepto : row.tipoPasaje ? row.tipoPasaje.valor : '' }}
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column prop="formaPago" name="FORMA PAGO">
+                    <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                      {{value.valor}}
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <!-- <ngx-datatable-column name="COMPROBANTE">
+                    <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                      <span [tooltip]="getInfoFile(row)">
+                        {{getInfoFile(row) | TruncatePipe : 10}}
+                      </span>
+                    </ng-template>
+                  </ngx-datatable-column> -->
+                  <ngx-datatable-column name="PDF/XML">
+                    <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                      <div class="d-flex flex-row">
+                        <div class="dropdown" *ngIf="getInfoFile(row, 1000156) != ''">
+                          
+                          <button class="btn bg-transparent border-0" id="dropdownMenuLink" data-toggle="dropdown" [tooltip]="getInfoFile(row, 1000156)"><i class="fa fa-file-pdf-o fa-lg"></i></button>
+                        
+                          <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <a class="dropdown-item" (click)="seeFile(row, 1000156)">Ver</a>
+                            <a class="dropdown-item" (click)="downloadFile(row, 1000156)">Descargar</a>
+                          </div>
+                        </div>
+                        <div class="dropdown" *ngIf="getInfoFile(row, 1000154) != ''">
+                          
+                          <button class="btn bg-transparent border-0" id="dropdownMenuLink" data-toggle="dropdown" [tooltip]="getInfoFile(row, 1000154)"><i class="fa fa-file-code-o fa-lg"></i></button>
+                          <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <a class="dropdown-item" (click)="seeFile(row, 1000154)">Ver</a>
+                            <a class="dropdown-item" (click)="downloadFile(row, 1000154)">Descargar</a>
+                          </div>
+                        </div>
+                        <!-- <button class="btn btn-default mr-3" (click)="seeFile(row)" tooltip="Ver"><i class="fa fa-file-pdf-o"></i></button>
+                        <button class="btn btn-default" (click)="downloadFile(row)" tooltip="Descargar"><i class="glyphicon glyphicon-download" data-toggle="tooltip" data-placement="top" title="" data-original-title="Descargar"></i></button> -->
+                      </div>
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column prop="importePesos" name="IMPORTE PESOS MEX" width="180">
+                    <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                      {{convertToDecimal(value)}}
+                    </ng-template>
+                  </ngx-datatable-column>
+                </ngx-datatable>
+              </div>
+            </div>
+            <div class="row justify-content-end">
+              <div class="col-lg-9">
+                <table class="table table-striped">
+                  <thead>
+                  <tr>
+                    <th>TOTAL TRANSFERIDO</th>
+                    <th>GASTOS SIN COMPROBANTE</th>
+                    <th>GASTOS CON COMPROBANTE</th>
+                    <th>TOTAL COMISIÓN</th>
+                    <th>REINTEGRO</th>
+                    <th>BALANCE</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    <td>
+                      {{convertToDecimal(comprobacion.totalTransferido)}}
+                    </td>
+                    <td>
+                      {{convertToDecimal(comprobacion.sinComprobante)}}
+                    </td>
+                    <td>
+                      {{convertToDecimal(comprobacion.conComprobante)}}
+                    </td>
+                    <td>
+                      {{convertToDecimal(comprobacion.totalComision)}}
+                    </td>
+                    <td>
+                      {{convertToDecimal(comprobacion.reintegro)}}
+                    </td>
+                    <td [ngClass]="comprobacion.balance==0?'balance-border-bottom-success':'balance-border-bottom-warning'">
+                      {{convertToDecimal(comprobacion.balance)}}
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </fieldset>
+          <!-- /COMPROBACION -->
+          <!-- RECURSOS MATERIALES -->
+          <fieldset class="mb-5">
+            <legend>
+            Comprobado por Recursos Materiales
+            </legend>
+            <div class="row mb-3">
+              <div class="col-12 col-lg-12">
+                <ngx-datatable
+                class="material"
+                [rows]="solicitudViaticoComprobacionDetalleRMDataTable"
+                [columnMode]="'force'"
+                [headerHeight]="50"
+                [footerHeight]="0"
+                [scrollbarH]="true"
+                rowHeight="auto"
+                [messages]="{emptyMessage: 'Sin registros', totalMessage: 'Total', selectedMessage: false}"
+                >
+                  <ngx-datatable-column prop="fechaComprobante" name="FECHA">
+                    <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                      <span>
+                        {{convertDateFormat(value)}}
+                      </span>
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column prop="categoria" name="CATEGORIA">
+                    <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                      {{value.valor}}
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column name="CONCEPTO">
+                    <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                      {{ row.conceptoViatico ? row.conceptoViatico.concepto : row.tipoPasaje ? row.tipoPasaje.valor : '' }}
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column prop="formaPago" name="FORMA PAGO">
+                    <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                      {{value.valor}}
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column prop="folio" name="COMPROBANTE">
+                    <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                      {{value}}
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column>
+                    <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                      <div>
+                        <button class="btn btn-default mr-3" (click)="seeFile(row)" tooltip="Ver"><i class="glyphicon glyphicon-eye-open" data-toggle="tooltip" data-placement="top" title="" data-original-title="Ver"></i></button>
+                        <button class="btn btn-default" (click)="downloadFile(row)" tooltip="Descargar"><i class="glyphicon glyphicon-download" data-toggle="tooltip" data-placement="top" title="" data-original-title="Descargar"></i></button>
+                      </div>
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column prop="importePesos" name="IMPORTE PESOS MEX" width="180">
+                    <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                      {{convertToDecimal(value)}}
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <!-- <ngx-datatable-column  name="COMPROBACIÓN">
+                    <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                      <button *ngIf="row.fechaComprobante == null" class="btn btn-default" type="button" (click)="recursosMaterialesDataEdit(row)" [disabled]="solicitudViaticoComprobacion.rmFinalizoComprobacion">Comprobar</button>
+                      <button *ngIf="row.fechaComprobante != null" class="btn btn-default" type="button" (click)="recursosMaterialesDataEdit(row)" [disabled]="solicitudViaticoComprobacion.rmFinalizoComprobacion">Editar</button>
+                    </ng-template>
+                  </ngx-datatable-column> -->
+                </ngx-datatable>
+              </div>
+            </div>
+            <div class="row justify-content-end">
+              <div class="col-lg-9">
+                <table class="table table-striped">
+                  <thead>
+                  <tr>
+                    <th>GASTOS SIN COMPROBANTE</th>
+                    <th>GASTOS CON COMPROBANTE</th>
+                    <th>TOTAL COMISIÓN</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    <td>
+                      {{convertToDecimal(recursosMateriales.sinComprobante)}}
+                    </td>
+                    <td>
+                      {{convertToDecimal(recursosMateriales.conComprobante)}}
+                    </td>
+                    <td>
+                      {{convertToDecimal(recursosMateriales.totalComision)}}
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- {{estatusSolicitud.EN_PROCESO_AUTORIZACION_REVISION | json}} -->
+            <div class="form-group col-12 col-md-4 col-lg-4 float-right" *ngIf="(mostrarAcciones && solicitudViaticoComprobacion.solicitudViatico.estatusId != estatusSolicitud.EN_PROCESO_AUTORIZACION_REVISION) && comprobacion.balance==0">
+               <label class="col-12 form-control-label" for="txtFechaPolizaComprobacion"><strong>{{esCancelacion?'Fecha Cancelación:':'Fecha Comprobación:'}}</strong></label>
+              <div class="col-12">
+                  <div class="input-group">
+                      <div class="input-group-prepend">
+                          <span class="input-group-text fa fa-calendar trigger pixvs-cursor"></span>
+                      </div>
+                      <input id="txtFechaPolizaComprobacion" required readonly                                         
+                          class="form-control pixvs-cursor pixvs-input-date"                          
+                          [min]="minFechaPolizaComprobacion"
+                          [max]="maxFechaPolizaComprobacion"                  
+                          [owlDateTimeTrigger]="fechaPolizaComprobacionComponent"
+                          [owlDateTime]="fechaPolizaComprobacionComponent"> 
+                      <owl-date-time #fechaPolizaComprobacionComponent [pickerType]="'calendar'"  [startAt]="startAt"></owl-date-time>
+                      <ul *ngIf="!fechaPolizaVaida" class="parsley-errors-list filled" aria-hidden="false">
+                        <li class="parsley-required">Este valor es requerido.</li>
+                      </ul>
+                  </div>                  
+              </div>
+          </div>
+          </fieldset>
+          <!-- /RECURSOS MATERIALES -->
+          <div class="form-actions d-flex flex-row justify-content-end" *ngIf="mostrarAcciones">
+            <button type="button" *ngIf="!esCancelacion" class="btn btn-warning width-100 mr-3" (click)="modalComentarios.show()">Envirar a Revisión</button>
+            <button type="button" class="btn btn-success width-100" (click)="validateDate('txtFechaPolizaComprobacion')==true?modalFinalizar.show():false;" *ngIf="(solicitudViatico.estatusId == estatusSolicitud.COMPROBACION_FINALIZADA || solicitudViatico.estatusId == estatusSolicitud.AUTORIZACION_REVISION_APROBADA) &&comprobacion.balance==0">Generar Póliza</button>
+            <button type="button" class="btn btn-success width-100" (click)="modalAutorizar.show()" *ngIf="solicitudViatico.estatusId == estatusSolicitud.EN_PROCESO_AUTORIZACION_REVISION">Autorizar</button>
+            <button type="submit" class="btn btn-danger" (click)="validateDate('txtFechaPolizaComprobacion')==true?modalFinalizar.show():false;" *ngIf="esCancelacion">Cancelar Póliza {{solicitudViaticoComprobacion.numeroPolizaGastoComprobado}}</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  
+  <!-- / CONTENT -->
+
+  <!-- SPINNER -->
+  <ngx-spinner bdOpacity = 0.9 bdColor = "rgba(51,51,51,0.49)" size = "medium" color = "#fff" type = "square-jelly-box" [fullScreen] = "true"></ngx-spinner>
+  <!-- /SPINNER -->
+
+  <div class="modal fade" bsModal #modalFinalizar="bs-modal" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <span>
+            <h6><strong>
+              {{esCancelacion?'Cancelara la Póliza Gasto Comprobado':'La revisión se va Finalizar y se generara la Póliza Gasto Comprobado'}}
+              
+            </strong></h6>¿Desea continuar?
+          </span>
+        </div>
+        <div class="modal-body">
+          <button class="btn btn-success btn-xs float-right width-100" (click)="modalFinalizar.hide(); finalizar()">SI</button>
+          <button class="btn btn-secondary btn-xs float-right width-100 mr-3" (click)="modalFinalizar.hide()">NO</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" bsModal #modalAutorizar="bs-modal" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <span>
+            <h6><strong>
+              La solicitud se va Autorizar.
+            </strong></h6>¿Desea continuar?
+          </span>
+        </div>
+        <div class="modal-body">
+          <button class="btn btn-success btn-xs float-right width-100" (click)="modalAutorizar.hide(); autorizar()">SI</button>
+          <button class="btn btn-secondary btn-xs float-right width-100 mr-3" (click)="modalAutorizar.hide()">NO</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" bsModal #modalComentarios="bs-modal" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <span>
+            <h6><strong>
+              La solicitud se enviará a Revisión.
+            </strong></h6>¿Desea continuar?
+          </span>
+        </div>
+        <div class="modal-body">
+          <h6 class="modal-title"><span class="fw-semi-bold">Motivo:</span></h6>
+          <textarea id="txtMotivo" rows="5" class="form-control mb-3 mt-3" maxlength="2000" [(ngModel)]="motivo"></textarea>                    
+          <button class="btn btn-success btn-xs float-right width-100" (click)="modalComentarios.hide(); revision()">SI</button>
+          <button class="btn btn-secondary btn-xs float-right width-100 mr-3" (click)="modalComentarios.hide()">NO</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

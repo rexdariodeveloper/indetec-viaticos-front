@@ -1,0 +1,220 @@
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Catálogos ></li>
+</ol>
+
+<!-- HEAD -->
+<div class="form-group row">
+  <div class="row">
+    <div class="col-12">
+      <h2><span class="fi flaticon-list-1 px-3"></span>Conceptos Viáticos</h2>
+    </div>
+  </div>
+</div>
+<!-- HEAD -->
+
+<div class="sticky">
+  <div class="form-actions">
+    <div class="col-12">
+      <div class="row justify-content-end">
+        <button type="button" class="btn btn-default width-100 mr-3" [disabled]="!modificado" (click)="deshacerModal.show()">Deshacer</button>
+        <button type="button" class="btn btn-success width-100" [disabled]="!modificado" (click)="guardar()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="row">
+  <div class="col-12">
+      <section class="widget" widget>
+          <div class="widget-body">
+              <div class="mt">
+                <!-- SEARCH -->
+                <div class="row">
+                  <div class="col">
+                      <div class="float-right mb">
+                          <div class="input-group input-group-rounded">
+                              <span class="input-group-prepend">
+                                  <span class="input-group-text">
+                                      <i class="fa fa-search"></i>
+                                  </span>
+                              </span>
+                              <input class="form-control" (keyup)='searchViatico($event)' type="text" placeholder="Buscar">
+                          </div>
+                      </div>
+                  </div>
+                </div>
+                <!-- SEARCH -->
+
+                <div class="row">
+                  <div class="col">
+                    <form name="conceptoViaticosForm" class="row form-horizontal form-label-left parsleyjsConceptoViaticos row pt-3" [formGroup]="conceptoViaticosForm" (ngSubmit)="agregar()"
+                      data-parsley-priority-enabled="false" novalidate="novalidate">
+                      <div class="form-group col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                        <div class="row">
+                          <label class="form-control-label col-12" for="basic"><strong>Código:</strong></label>
+                          <div class="col-12">
+                            <input type="text" class="form-control" formControlName="codigo" maxlength="10" required>
+                          </div>
+                        </div>
+                      </div>
+                
+                      <div class="form-group col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                        <div class="row">
+                          <label class="form-control-label col-12" for="basic"><strong>Concepto:</strong></label>
+                          <div class="col-12">
+                            <input type="text" class="form-control" formControlName="concepto" maxlength="100" required>
+                          </div>
+                        </div>
+                      </div>
+                
+                      <div class="form-group col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                        <div class="row">
+                          <label class="form-control-label col-12" for="basic"><strong>Partida Presupuestal:</strong></label>
+                          <div class="col-12">
+                            <ng-select #cboPresupuesto (close)="cboPresupuesto.blur(); cboPresupuesto.focus()" ngbTooltip="Tooltip text..." [searchable]="true" formControlName="objetoGastoId" [items]="listadoPresupuestos" bindLabel="name" bindValue="id"
+                              (change)="isSelectedObjetoGasto($event)" placeholder="Seleccione una Opción">
+                              <ng-template ng-option-tmp let-item="item"><div [title]="item.name">{{item.name}}</div></ng-template>
+                            </ng-select>
+                            <ul *ngIf="!presupuestoValido" class="parsley-errors-list filled" aria-hidden="false">
+                              <li class="parsley-required">Este valor es requerido.</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                
+                      <div class="form-group col-9 col-sm-9 col-md-9 col-lg-5 col-xl-5">
+                        <label class="col-12">&nbsp;</label>
+                        <div class="col-12">
+                          <div class="row">
+                            <div class="form-check pixvs-checkbox col-8 col-lg-6 col-xl-8">
+                              <input class="form-check-input" type="checkbox" id="cxPernocta" formControlName="noPermitirSinPernocta">
+                              <label class="form-check-label" for="cxPernocta">No Permitir sin Pernocta</label>
+                            </div>
+                            <div class="form-check pixvs-checkbox col-4 col-lg-6 col-xl-4">
+                              <input class="form-check-input" type="checkbox" id="cxActivo" formControlName="estatus" (click)="vertifyCheckbox($event)">
+                              <label class="form-check-label" for="cxActivo">Activo</label>
+                            </div>
+                          </div>
+                        </div>
+                        <label class="col-12">&nbsp;</label>
+                      </div>
+                
+                      <div class="form-group col-3 col-sm-3 col-md-3 col-lg-1 col-xl-1">
+                        <label class="col-12">&nbsp;</label>
+                        <button *ngIf="conceptoViaticosForm.controls.orden.value ? false : true" class="float-right btn btn-primary width-100" type="submit">Agregar</button>
+                        <button *ngIf="conceptoViaticosForm.controls.orden.value ? true : false" class="float-right btn btn-outline-primary width-100" (click)="updateViatico()">Actualizar</button>
+                        <label class="col-12">&nbsp;</label>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+                
+                <ngx-datatable 
+                  class="material" 
+                  [rows]="conceptoViaticosDataTable" 
+                  [columnMode]="'force'" 
+                  [headerHeight]="50"
+                  [footerHeight]="50" 
+                  rowHeight="auto" 
+                  [limit]="10" 
+                  [offset]="tableOffset"
+                  (activate)="onActivate($event)" 
+                  [selected]="conceptoViaticosSelected"
+                  [selectionType]="'checkbox'" 
+                  [selectAllRowsOnPage]="false" 
+                  (select)="selectViatico($event)"
+                  [scrollbarH]="true"
+                  (page)="onPageChange($event)"
+                  [messages]="{emptyMessage: 'Sin registros', totalMessage: 'Total', selectedMessage: false}">
+                  <ngx-datatable-column [width]="45" [sortable]="false" [canAutoResize]="false" [draggable]="false" [resizeable]="false">
+                    <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected" let-selectFn="selectFn">
+                      <div class="form-check pixvs-checkbox">
+                        <input class="form-check-input" id="checkboxViatico" type="checkbox" [checked]="allRowsSelected"
+                          (change)="selectFn(!allRowsSelected)">
+                        <label class="form-check-label" for="checkboxViatico"></label>
+                      </div>
+                    </ng-template>
+                    <ng-template ngx-datatable-cell-template let-row="row" let-isSelected="isSelected"
+                      let-onCheckboxChangeFn="onCheckboxChangeFn">
+                      <div class="form-check pixvs-checkbox">
+                        <input class="form-check-input" id="checkboxCargo{{row.orden}}" type="checkbox" [checked]="isSelected"
+                          (change)="onCheckboxChangeFn($event)">
+                        <label class="form-check-label" for="checkboxCargo{{row.orden}}"></label>
+                      </div>
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column prop="codigo" name="CÓDIGO" [width]="80">
+                    <ng-template ngx-datatable-cell-template let-value="value">
+                      <span>{{ value }}</span>
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column prop="concepto" name="CONCEPTO" [width]="120">
+                    <ng-template ngx-datatable-cell-template let-value="value">
+                      <span>{{ value }}</span>
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column prop="objetoGastoId" name="PARTIDA PRESUPUESTAL" [width]="250">
+                    <ng-template ngx-datatable-cell-template let-value="value">
+                      <span>{{ setObjetoGasto(value) }}</span>
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column prop="estatusId" name="ESTATUS" [width]="80">
+                    <ng-template ngx-datatable-cell-template let-value="value">
+                      {{setEstatus(value)}}
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column name="NO PERMITIR SIN PERNOCTA" [width]="240">
+										<ng-template let-column="column" ngx-datatable-header-template>
+											<span>{{column.name}}</span>
+										</ng-template>
+										<ng-template let-row="row" ngx-datatable-cell-template>
+											<div class="form-check pixvs-checkbox">
+												<input class="form-check-input" id="checkboxPernocta{{row.id}}"
+													type="checkbox" [checked]="row.noPermitirSinPernocta" disabled>
+												<label class="form-check-label" for="checkboxPernocta{{row.id}}"></label>
+											</div>
+										</ng-template>
+									</ngx-datatable-column>
+                </ngx-datatable>
+              </div>
+
+              <button [disabled]="conceptoViaticosSelected.length === 0" type="button" class="btn btn-danger width-100" type="button"
+                (click)="eliminar()">Eliminar</button>
+
+              <!-- <div class="form-actions">
+                <div class="col-12">
+                  <div class="row justify-content-end">
+                    <button type="button" class="btn btn-default width-100 mr-3" [disabled]="!modificado" (click)="deshacerModal.show()">Deshacer</button>
+                    <button type="button" class="btn btn-success width-100" [disabled]="!modificado" (click)="guardar()">Guardar</button>
+                  </div>
+                </div>
+              </div> -->
+          </div>
+          <!-- SPINNER -->
+          <ngx-spinner bdOpacity = 0.9 bdColor = "rgba(51,51,51,0.49)" size = "medium" color = "#fff" type = "square-jelly-box" [fullScreen] = "false"></ngx-spinner>
+          <!-- /SPINNER -->
+      </section>
+  </div>
+</div>
+<!-- CONTENT -->
+
+<!-- MODAL CONFIRM -->
+<div class="modal fade" bsModal #deshacerModal="bs-modal" [config]="{backdrop: 'static'}">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span>
+          <h6><strong>Se perderán los cambios realizados.</strong></h6>
+          ¿Desea continuar? 
+        </span> 
+      </div>
+      <div class="modal-body">
+        <button class="btn btn-success btn-xs float-right width-100"
+          (click)="cancelar(); deshacerModal.hide();">SI</button>
+        <button class="btn btn-secondary btn-xs float-right width-100 mr-3" (click)="deshacerModal.hide()">NO</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /MODAL CONFIRM -->

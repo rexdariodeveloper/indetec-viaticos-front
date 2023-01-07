@@ -1,0 +1,374 @@
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Catálogos</li>
+  <li class="breadcrumb-item">Empleados ></li>  
+</ol>
+<section id="empleado">
+  <!-- HEAD -->
+  <div class="row">
+    <div class="col-12">
+      <h2><a class="fa fa-mail-reply px-3" (click)="validaDeshacer(true)" data-toggle="tooltip" title="Regresar"></a>Empleado<small> - {{ pageType ? 'Nuevo' : 'Editar ' }}</small></h2>
+    </div>
+  </div>
+  <!-- / HEAD -->
+  <!-- CONTENT -->
+  <div class="row">
+    <div class="col-12" *ngIf="empleadoForm"> 
+      <!-- FORM -->     
+      <form name="empleadoForm" [formGroup]="empleadoForm" class="parsleyjsEmpleado" (ngSubmit)="guardar()" data-parsley-validate>
+        <div class="sticky">  
+          <div class="form-actions">
+            <div class="col-12">
+              <div class="d-flex flex-column flex-sm-column flex-md-row flex-lg-row flex-xl-row justify-content-md-end justify-content-lg-end justify-content-xl-end align-items-center align-items-sm-center">
+                <button type="button" class="btn btn-default width-100 mr-0 mr-sm-0 mr-md-3 mr-lg-3 mr-xl-3" (click)="validaDeshacer(false)" *ngIf="!pageType" [disabled]="!empleadoForm.dirty && !validaCambioPermisos() && !cambios">Deshacer</button>
+                <button type="button" class="btn btn-default width-100 mt-3 mt-sm-0 mt-md-0 mt-lg-0 mt-xl-0 mr-0 mr-sm-3 mr-md-3 mr-lg-3 mr-xl-3" (click)="validaDeshacer(true)" *ngIf="pageType">Cancelar</button>
+                <button type="button" class="btn btn-danger width-100 mt-3 mt-sm-0 mt-md-0 mt-lg-0 mt-xl-0 mr-0 mr-sm-3 mr-md-3 mr-lg-3 mr-xl-3" (click)="confirmModal.show()" *ngIf="!pageType" [disabled]="empleadoForm.dirty || validaCambioPermisos() && !cambios">Eliminar</button>
+                <button type="submit" class="btn btn-success width-100 mt-3 mt-sm-0 mt-md-0 mt-lg-0 mt-xl-0" [disabled]="!empleadoForm.dirty && !validaCambioPermisos() && !cambios && !pageType">Guardar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <section class="widget" widget>
+          <div class="widget-body">            
+            <div class="row">
+              <div class="col-12">
+                <!-- DATOS GENERALES -->
+                <fieldset>
+                  <legend>
+                    Datos Generales
+                  </legend>
+                  <div class="row">
+                    <div class="form-group col-md-12 col-lg-4 col-xl-3">
+                      <div class="d-flex justify-content-center align-items-center">                    
+                        <div class="fileinput fileinput-new" data-provides="fileinput">
+                          <div class="fileinput-new imagen-size thumbnail" data-trigger="fileinput">
+                            <img *ngIf="!urlTmp" style="width: 150px; height: 200px" alt="..." src="assets/img/size/400x400.png">
+                            <img *ngIf="urlTmp" style="width: 150px; height: 200px; border-radius: 50%" [src]="urlTmp | SanitizeUrlPipe" alt="no es una imagen">
+                          </div>
+                          <div class="fileinput-preview imagen-size fileinput-exists file-size thumbnail"></div>
+                          <div>
+                            <span class="input-group-addon btn btn-default btn-file file-size">
+                              <span class="fileinput-new file-size">Seleccionar Imagen</span>
+                              <span class="fileinput-exists file-size">Seleccionar Imagen</span>
+                              <input accept='image/*' type="file" name="..." (change)="onArchivo($event)">
+                            </span>
+                            <a href="#" id="eliminar" class="{{urlTmp? 'btn btn-default btn-file file-size' : 'btn btn-default fileinput-exists file-size'}}" data-dismiss="fileinput" (click)="eliminarImagen()">Eliminar</a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-group col-md-12 col-lg-8 col-xl-9">
+                      <div class="row">
+                        <div class="form-group col-md-4">
+                          <label class="font-weight-bold">Número Empleado:</label>
+                          <input type="text" class="form-control" formControlName="numeroEmpleado" maxlength="20" required data-parsley-trigger="change">
+                        </div>
+                        <div class="form-group col-md-4">
+                          <label class="font-weight-bold">RFC:</label>
+                          <input type="text" class="form-control" formControlName="rfc" maxlength="13" required data-parsley-trigger="change">
+                        </div>
+                        <div class="form-group col-md-4">
+                          <label class="font-weight-bold">&nbsp;</label>
+                          <div class="d-lg-flex flex-lg-row align-items-lg-center">
+                            <div class="form-check pixvs-checkbox">
+                              <input class="form-check-input" type="checkbox" id="cxEmpleado" formControlName="estatusEmpelado" (click)="vertifyCheckbox($event)" checked>
+                              <label  class="form-check-label" for="cxEmpleado">Activo</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="form-group col-md-4">
+                          <label class="font-weight-bold">Nombre(s):</label>
+                          <input type="text" class="form-control" formControlName="nombre" maxlength="50" required data-parsley-trigger="change">
+                        </div>
+                        <div class="form-group col-md-4">
+                          <label class="font-weight-bold">Primer Apellido:</label>
+                          <input type="text" class="form-control" formControlName="primerApellido" maxlength="50"  required data-parsley-trigger="change">
+                        </div>
+                        <div class="form-group col-md-4">
+                          <label>Segundo Apellido:</label>
+                          <input type="text" class="form-control" formControlName="segundoApellido" maxlength="50">
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="form-group col-md-6">
+                          <label [ngClass]="{'font-weight-bold': !empleadoForm.controls.emailPersonal.value ? true : false}">Correo Institucional:</label>
+                          <input type="email" class="form-control" data-parsley-type="email" formControlName="emailInstitucional" maxlength="100" [attr.data-parsley-required]="!empleadoForm.controls.emailPersonal.value ? true: alse" data-parsley-trigger="change" >
+                        </div>
+                        <div class="form-group col-md-6">
+                          <label [ngClass]="{'font-weight-bold': !this.empleadoForm.controls.emailInstitucional.value ? true : false}">Correo Personal:</label>
+                          <input type="email" class="form-control" data-parsley-type="email" formControlName="emailPersonal" maxlength="100" [attr.data-parsley-required]="!empleadoForm.controls.emailInstitucional.value ? true : false" data-parsley-trigger="change">
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="form-group col-12">
+                          <label class="font-weight-bold">Cuenta contable:</label>
+                          <ng-select #cboCuentaContable (close)="cboCuentaContable.blur(); cboCuentaContable.focus()" ngbTooltip="Tooltip text..."
+                                    [searchable]="true" formControlName="catalogoCuentaId" 
+                                    [items]="listCatalogoCuenta" bindLabel="name" bindValue="id"
+                                    (change)="onCuentaCatalogoSelected($event)"
+                                    placeholder="Seleccione una Opción">
+                                    <ng-template ng-option-tmp let-item="item"><div [title]="item.name">{{item.name}}</div></ng-template>
+                          </ng-select>
+                          <ul *ngIf="!catalogoCuentaValido" class="parsley-errors-list filled" aria-hidden="false"><li class="parsley-required">Este valor es requerido.</li></ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </fieldset>
+                <!-- /DATOS GENERALES -->
+                
+                <!-- DATOS LABORALES -->
+                <fieldset>
+                  <legend>
+                    Datos Laborales
+                  </legend>
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <div class="row">
+                        <div class="form-group col-lg-6">
+                          <label class="font-weight-bold">Área Adscripción:</label>
+                          <ng-select #cboAreaAdscripcion (close)="cboAreaAdscripcion.blur(); cboAreaAdscripcion.focus()" ngbTooltip="Tooltip text..."
+                                    [searchable]="true" formControlName="areaAdscripcionId" 
+                                    [items]="listAreaAdscripcion" bindLabel="name" bindValue="id" 
+                                    (change)="onAreaAdscripcionSelected($event)"
+                                    placeholder="Seleccione una Opción">
+                                    <ng-template ng-option-tmp let-item="item"><div [title]="item.name">{{item.name}}</div></ng-template>
+                          </ng-select>
+                          <ul *ngIf="!areaAdscripcionValida" class="parsley-errors-list filled" aria-hidden="false"><li class="parsley-required">Este valor es requerido.</li></ul>
+                          </div>
+                        <div class="form-group col-lg-6 ">
+                          <label class="font-weight-bold">Puesto:</label>
+                          <ng-select #cboPuesto (close)="cboPuesto.blur(); cboPuesto.focus()" ngbTooltip="Tooltip text..."
+                                    [searchable]="true" formControlName="puestoId" 
+                                    [items]="listPuestos" bindLabel="name" bindValue="id" 
+                                    (change)="onPuestoSelected($event)"
+                                    placeholder="Seleccione una Opción">
+                                    <ng-template ng-option-tmp let-item="item"><div [title]="item.name">{{item.name}}</div></ng-template>
+                          </ng-select>
+                          <ul *ngIf="!puestoValido" class="parsley-errors-list filled" aria-hidden="false"><li class="parsley-required">Este valor es requerido.</li></ul>
+                        </div>
+                      </div>
+                    </div>
+                    
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <div class="row">
+                        <div class="form-group col-lg-6">
+                          <label class="font-weight-bold">Cargo:</label>
+                          <ng-select #cboCargo (close)="cboCargo.blur(); cboCargo.focus()" ngbTooltip="Tooltip text..."
+                                    [searchable]="true" formControlName="cargoId" 
+                                    [items]="listCargos" bindLabel="name" bindValue="id" 
+                                    (change)="onCargoSelected($event)"
+                                    placeholder="Seleccione una Opción">
+                                    <ng-template ng-option-tmp let-item="item"><div [title]="item.name">{{item.name}}</div></ng-template>
+                          </ng-select>
+                          <ul *ngIf="!cargoValido" class="parsley-errors-list filled" aria-hidden="false"><li class="parsley-required">Este valor es requerido.</li></ul>
+                        </div>
+                        <div class="form-group col-lg-6">
+                          <label class="font-weight-bold">Tipo de Empleado:</label>
+                          <ng-select #cboTipoEmpleado (close)="cboTipoEmpleado.blur(); cboTipoEmpleado.focus()" ngbTooltip="Tooltip text..."
+                                    [searchable]="true" formControlName="tipoEmpleadoId" 
+                                    [items]="listTipoEmpleado" bindLabel="name" bindValue="id" 
+                                    (change)="onTipoEmpleadoSelected($event)"
+                                    placeholder="Seleccione una Opción">
+                                    <ng-template ng-option-tmp let-item="item"><div [title]="item.name">{{item.name}}</div></ng-template>
+                          </ng-select>
+                          <ul *ngIf="!tipoEmpleadoValido" class="parsley-errors-list filled" aria-hidden="false"><li class="parsley-required">Este valor es requerido.</li></ul>
+                      </div>
+                      </div>
+                    </div>
+                  </div>
+                </fieldset>
+                <!-- /DATOS LABORALES -->
+                
+                <!-- DATOS USUARIO -->
+                <fieldset>
+                  <legend>
+                    Datos Usuario
+                  </legend>
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <div class="row">
+                        <div class="form-group col-lg-4">
+                          <label class="font-weight-bold">Usuario:</label>
+                          <input type="text" class="form-control" formControlName="usuario" maxlength="50" required data-parsley-trigger="change">
+                        </div>
+                        <div class="form-group col-lg-4">
+                          <label class="font-weight-bold">Contraseña:</label>
+                          <div class="input-group">
+                            <span class="input-group-prepend">
+                              <span class="input-group-text">
+                                <i class="fa fa-lock"></i>
+                              </span>
+                            </span>                              
+                            <input type="password" class="form-control input-password" formControlName="contrasenia" id="contrasenia" maxlength="20" required data-parsley-trigger="change">
+                          </div>
+                        </div>
+                        <div class="form-group col-lg-4">
+                          <label class="font-weight-bold">Confirmar Contraseña:</label>
+                          <div class="input-group">
+                            <span class="input-group-prepend">
+                              <span class="input-group-text">
+                                <i class="fa fa-lock"></i>
+                              </span>
+                            </span> 
+                            <input type="password" class="form-control input-password" formControlName="contraseniaConfirmar" data-parsley-equalto="#contrasenia" maxlength="20" required data-parsley-trigger="change">
+                          </div>
+                        </div>          
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <div class="row">
+                        <div class="form-group col-lg-4">
+                          <label class="font-weight-bold">Rol:</label>
+                          <ng-select #cboRol (close)="cboRol.blur(); cboRol.focus()" ngbTooltip="Tooltip text..."
+                                    [searchable]="true" formControlName="rolId" 
+                                    [items]="listRoles" bindLabel="name" bindValue="id" 
+                                    (change)="onRolSelected($event)"
+                                    placeholder="Seleccione una Opción">
+                                    <ng-template ng-option-tmp let-item="item"><div [title]="item.name">{{item.name}}</div></ng-template>
+                          </ng-select>
+                          <ul *ngIf="!rolValido" class="parsley-errors-list filled" id="parsley-id-13" aria-hidden="false"><li class="parsley-required">Este valor es requerido.</li></ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </fieldset>
+                <!-- /DATOS USUARIO -->
+
+                <!-- PERMISOS -->
+                <fieldset>
+                  <legend>
+                    Permisos
+                  </legend>
+
+                  <div class="row">
+                    <div class="col-12 col-lg-6">
+                      <div class="form-group row">
+                        <div class="col">
+                            <div class="form-check pixvs-checkbox">
+                              <input class="form-check-input" id="chkCrearSolicitudes" type="checkbox" formControlName="crearSolicitudesTerceros">
+                              <label class="form-check-label" for="chkCrearSolicitudes">Permitir Crear Solicitudes de Terceros</label>
+                            </div>
+                        </div>
+                      </div>
+
+                      <div class="form-group row">
+                        <div class="col">
+                            <div class="form-check pixvs-checkbox">
+                              <input class="form-check-input" id="chkVisualizarSolicitudes" type="checkbox" formControlName="visualizarSolicitudesTerceros">
+                              <label class="form-check-label" for="chkVisualizarSolicitudes">Permitir Visualizar Solicitudes de Terceros</label>
+                            </div>
+                        </div>
+                      </div>
+                    </div>                    
+
+                    <div class="col-12 col-lg-6">
+                      <section class="">
+                        <div class="widget-body">
+                          <fieldset>
+                            <ngx-datatable
+                              *ngIf="empleadoForm.controls.visualizarSolicitudesTerceros.value"
+                              class="material"
+                              [rows]="nodosOrgnigrama"
+                              [columnMode]="'force'"
+                              [headerHeight]="50"
+                              [footerHeight]="50"
+                              [scrollbarH]="true"
+                              rowHeight="auto"
+                              [limit]="10"
+                              [selected]="selectedItems"
+                              [selectionType]="'checkbox'"
+                              (select)="organigramaSelect($event)"
+                              [messages]="{emptyMessage: 'Sin registros', totalMessage: 'Total', selectedMessage: false}">
+
+                              <ngx-datatable-column
+                                [width]="45"
+                                [canAutoResize]="false"
+                                [draggable]="false"
+                                [resizeable]="false"
+                                headerClass="pixvs-div-checkbox"
+                                cellClass="pixvs-div-checkbox">
+                                
+                                <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected" let-selectFn="selectFn">
+                                  <div class="pixvs-checkbox">
+                                    <input class="form-check-input" id="checkbox" type="checkbox" [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)">
+                                    <label class="form-check-label" for="checkbox"></label>
+                                  </div>
+                                </ng-template>                            
+                                <ng-template ngx-datatable-cell-template let-row="row" let-rowIndex="rowIndex" let-isSelected="isSelected" let-onCheckboxChangeFn="onCheckboxChangeFn">
+                                  <div class="pixvs-checkbox">
+                                    <input class="form-check-input" id="checkbox{{row.id}}" type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)">
+                                    <label class="form-check-label" for="checkbox{{row.id}}"></label>
+                                  </div>
+                                </ng-template>
+                              </ngx-datatable-column>
+
+                              <ngx-datatable-column prop="nombre" name="Organigrama" [width]="200"></ngx-datatable-column>
+                            </ngx-datatable>
+                          </fieldset>
+                        </div>
+                      </section>
+                    </div>
+                  </div>
+                </fieldset>
+                <!-- PERMISOS -->
+              </div>
+            </div>           
+          </div>
+        </section>
+      </form>
+      <!-- /FORM -->          
+    </div>
+  </div>
+  
+  <!-- / CONTENT -->
+  
+  <!-- MODAL CONFIRM -->
+  <div class="modal fade" bsModal #deshacerModal="bs-modal" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <span>
+              <h6><strong>Se perderán los cambios realizados.</strong></h6>
+              ¿Desea continuar? 
+            </span>                
+          </div>
+          <div class="modal-body">
+            <button class="btn btn-success btn-xs float-right width-100" (click)="cancelar(); deshacerModal.hide();">SI</button>
+            <button class="btn btn-secondary btn-xs float-right width-100 mr-3" (click)="deshacerModal.hide()">NO</button>
+          </div>
+        </div>
+    </div>
+  </div>
+  <!-- /MODAL CONFIRM -->
+
+
+  <!-- MODAL CONFIRM -->
+  <div class="modal fade" bsModal #confirmModal="bs-modal" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+              <span>
+                <h6><strong>Se eliminará el registro.</strong></h6>
+                ¿Desea continuar? 
+              </span>                
+            </div>
+            <div class="modal-body">
+                <button class="btn btn-success btn-xs float-right width-100" (click)="eliminar(); confirmModal.hide();">SI</button>
+                <button class="btn btn-secondary btn-xs float-right width-100 mr-3" (click)="confirmModal.hide()">NO</button>
+            </div>
+        </div>
+    </div>
+  </div>
+  <!-- /MODAL CONFIRM -->
+
+  <!-- SPINNER -->
+  <ngx-spinner bdOpacity = 0.9 bdColor = "rgba(51,51,51,0.49)" size = "medium" color = "#fff" type = "square-jelly-box" [fullScreen] = "true"></ngx-spinner>
+  <!-- /SPINNER -->    
+</section>

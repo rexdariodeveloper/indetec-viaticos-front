@@ -1,0 +1,88 @@
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Catálogos ></li>
+  <!-- <li class="active breadcrumb-item">Empleados</li> -->
+</ol>
+  <!-- HEAD -->
+<div class="form-group row">
+  <div class="col-10">
+    <h2><span class="fi flaticon-users px-3"></span>Empleados</h2>
+  </div>
+  <div class="col-2">
+    <div class="row justify-content-end">
+      <div class="pr-3">
+        <button class="btn btn-primary width-100" [routerLink]="['nuevo-empleado']">Nuevo</button>
+      </div>        
+    </div>
+  </div>
+</div>   
+<!-- / HEAD -->
+<!-- CONTENT -->
+<!-- TABLE -->
+<div class="row">
+  <div class="col-12">
+    <section class="widget" widget>
+      <div class="widget-body">
+        <div class="mt">
+          <div class="float-right mb">
+            <div class="input-group input-group-rounded">
+              <span class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="fa fa-search"></i>
+                </span>
+              </span>
+              <input class="form-control" (keyup)='searchEmpleado($event)' type="text" placeholder="Buscar">
+            </div>
+          </div> 
+          <ngx-datatable
+            class="material"  
+            [rows]="empleadosDataTable"            
+            [columnMode]="'force'"
+            [headerHeight]="50"
+            [footerHeight]="50"
+            [rowHeight]="'auto'"
+            [limit]="10"
+            [scrollbarH]="true"
+            (activate) = "onActivate($event)"
+            [messages]="{emptyMessage: 'Sin registros', totalMessage: 'Total', selectedMessage: false}"
+          >
+
+            <ngx-datatable-column prop="numeroEmpleado" name="No. empleado">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                {{row.numeroEmpleado}}
+              </ng-template>              
+            </ngx-datatable-column>
+
+            <ngx-datatable-column prop="fotografia" name="Foto">
+              <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                <img *ngIf="fotografias && !fotografias[row.id]" class="img-circle" src="assets/img/default_user.jpg" alt="" height="50">
+                <img *ngIf="fotografias && fotografias[row.id]" class="img-circle" [src]="fotografias[row.id] | SanitizeUrlPipe" alt="" height="50" width="50">
+              </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column prop="nombre" name="Nombre">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                {{row.nombre + ' ' + row.primerApellido + (!row.segundoApellido ? '' : ' ' + row.segundoApellido)}}
+              </ng-template>
+            </ngx-datatable-column>            
+
+            <ngx-datatable-column prop="areaAdscripcion.clave" name="Área de adscripción">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                {{row.areaAdscripcion ? row.areaAdscripcion.clave + ' - ' + row.areaAdscripcion.descripcion : ''}}
+              </ng-template>
+            </ngx-datatable-column>     
+
+            <ngx-datatable-column name="Estatus">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                {{row.estatus.valor}}
+              </ng-template>              
+            </ngx-datatable-column>
+          </ngx-datatable>
+        </div>
+      </div>
+    </section>
+  </div>
+  <!-- SPINNER -->
+  <ngx-spinner  bdOpacity=0.9 bdColor="rgba(51,51,51,0.49)" size="medium" color="#fff" type="square-jelly-box" [fullScreen]="false"></ngx-spinner>
+  <!-- /SPINNER -->    
+</div>
+

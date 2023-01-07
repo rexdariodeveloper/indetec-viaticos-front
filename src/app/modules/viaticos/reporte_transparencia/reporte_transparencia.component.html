@@ -1,0 +1,314 @@
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Viáticos ></li>
+</ol>
+
+<div class="form-group row">
+  <div class="col-10">
+      <h2><span class="fi flaticon-document px-3"></span>Reporte Transparencia</h2>
+  </div>
+  <div class="col-2">
+    <div class="row justify-content-end">
+      <div class="pr-3">
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12">
+      <section class="widget" widget>
+        <div class="widget-body">
+          <div class="mt">
+            <div class="row">
+              <div class="col">
+                <div class="float-right mb">
+                  <div class="input-group input-group-rounded">
+                    <span class="input-group-prepend">
+                      <span class="input-group-text">
+                        <i class="fa fa-search"></i>
+                      </span>
+                    </span>
+                    <input class="form-control" (keyup)='updateFilter($event)' type="text" placeholder="Buscar">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col">                        
+                <form name="datosForm" class="parsleyjsReporteTransparencia row pt-3" [formGroup]="datosForm" method="post"
+                  data-parsley-priority-enabled="false" novalidate="novalidate" (ngSubmit)="buscarReporte()">
+                  <div class="form-group col-6 col-lg-4">
+                    <div class="row">
+                      <label class="col-12 form-control-label"><strong>Fecha Inicio:</strong></label>
+                      <div class="col-12">
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text fa fa-calendar trigger"></span>
+                          </div>
+                          <input id="fechaInicio" readonly
+                            class="form-control pixvs-input-date" 
+                            formControlName="fechaInicio"
+                            [max]="maxFechaInicio"
+                            [owlDateTimeTrigger]="fechaInicio"
+                            (ngModelChange)="fechaInicioChange(false)"
+                            [owlDateTime]="fechaInicio" 
+                            (dateTimeInput)="validateDate('fechaInicio')" required>
+                          <owl-date-time [pickerType]="'calendar'" #fechaInicio ></owl-date-time>
+                        </div>
+                      </div>
+                    </div>                            
+                  </div>
+          
+                  <div class="form-group col-6 col-lg-4">
+                    <div class="row">
+                      <label class="col-12 form-control-label"><strong>Fecha Fin:</strong></label>
+                      <div class="col-12">
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text fa fa-calendar trigger"></span>
+                          </div>
+                          <input id="fechaFin" readonly
+                            class="form-control pixvs-input-date" 
+                            formControlName="fechaFin"
+                            [min]="minFechaFin"
+                            [owlDateTimeTrigger]="fechaFin" 
+                            [owlDateTime]="fechaFin"
+                            (ngModelChange)="fechaFinChange(false)"
+                            (dateTimeInput)="validateDate('fechaFin')" required>
+                          <owl-date-time [pickerType]="'calendar'" #fechaFin ></owl-date-time>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group col-12 col-lg-4 align-self-center">
+                    <label class="col-12">&nbsp;</label>
+                    <div class="row justify-content-end">
+                      <button type="submit" class="float-right btn btn-default btn-rounded width-100 mr-3">Filtrar</button>
+
+                      <div class="btn-group dropdown" container="body" dropdown>
+                        <button dropdownToggle type="button" class="float-right btn btn-default btn-rounded width-100 mr-3" (click)="$event.stopPropagation()">Exportar</button>
+                        <ul *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="dropdown-btn-two">
+                          <li role="menuitem" (click)="validarRegistrosSeleccionados(true)"><a class="dropdown-item">Reporte Transparencia</a></li>
+                          <li role="menuitem" (click)="validarRegistrosSeleccionados(false)"><a class="dropdown-item">Concentrado</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                    <label class="col-12">&nbsp;</label>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <ngx-datatable
+              class="material fullscreen"  
+              [rows]="dataTable"
+              [columnMode]="'force'"
+              [headerHeight]="50"
+              [footerHeight]="50"
+              [rowHeight]="'auto'"
+              [limit]="10"
+              [selected]="selected"
+              [selectionType]="'checkbox'"
+              [scrollbarH]="true"
+              [messages]="{emptyMessage: 'Sin registros', totalMessage: 'Total', selectedMessage: false}">
+
+              <ngx-datatable-column
+                [width]="45"
+                [canAutoResize]="false"
+                [draggable]="false"
+                [resizeable]="false"
+                headerClass="pixvs-div-checkbox"
+                cellClass="pixvs-div-checkbox">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                  <div class="form-check pixvs-checkbox">
+                    <input class="form-check-input" id="checkbox" type="checkbox" [checked]="dataTable.length > 0 && selected.length == dataTable.length" (change)="onSelectAll()">
+                    <label class="form-check-label" for="checkbox"></label>
+                  </div>
+                </ng-template>
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                  <div class="form-check pixvs-checkbox">
+                    <input class="form-check-input" id="checkbox{{row.id}}" type="checkbox" [checked]="getChecked(row)" (change)="onSelect(row)">
+                    <label class="form-check-label" for="checkbox{{row.id}}"></label>
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+
+              <ngx-datatable-column prop="numeroSolicitud" name="Número de Solicitud" [width]="200">
+                <ng-template ngx-datatable-cell-template let-rowIndex="row.id" let-value="value" let-row="row">
+                  <span> {{value}} </span>
+                </ng-template>
+              </ngx-datatable-column>
+
+              <ngx-datatable-column prop="solicitante" name="Solicitante" [width]="180">
+                <ng-template ngx-datatable-cell-template let-rowIndex="row.id" let-value="value" let-row="row">
+                  <span> {{value}} </span>
+                </ng-template>
+              </ngx-datatable-column>
+
+              <ngx-datatable-column prop="tipoViaje" name="Tipo de Viaje">
+                <ng-template ngx-datatable-cell-template let-rowIndex="row.id" let-value="value" let-row="row">
+                  <span> {{value}} </span>
+                </ng-template>
+              </ngx-datatable-column>
+
+              <ngx-datatable-column prop="totalErogado" name="Total Comisión">
+                <ng-template let-sort="sortFn" let-column="column" ngx-datatable-header-template>
+                  <div class="align-right">
+                    <span class="datatable-header-cell-wrapper" (click)="sort()">{{column.name}}</span>
+                  </div>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-rowIndex="row.id" let-value="value" let-row="row">
+                  <div class="align-right">
+                    <span> {{value | MoneyPipe}} </span>
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+
+              <ngx-datatable-column prop="fechaSalidaRegreso" name="Fecha Salida / Regreso" [width]="250">
+                <ng-template ngx-datatable-cell-template let-rowIndex="row.id" let-value="value" let-row="row">
+                  <span> {{value}} </span>
+                </ng-template>
+              </ngx-datatable-column>
+
+              <ngx-datatable-column prop="fechaFinalizacion" name="Fecha Finalización" [width]="200">
+                <ng-template ngx-datatable-cell-template let-rowIndex="row.id" let-value="value" let-row="row">
+                  <span> {{value}} </span>
+                </ng-template>
+              </ngx-datatable-column>
+
+              <ngx-datatable-column prop="notas" name="Notas" [width]="300">
+                <ng-template ngx-datatable-cell-template let-rowIndex="row.id" let-value="value" let-row="row">
+                  <input class="form-control" type="text" value="{{ value }}" (blur)="updateNotas($event.target.value, row.id)">
+                </ng-template>
+              </ngx-datatable-column>
+
+              <ngx-datatable-column [width]="45">
+                <ng-template ngx-datatable-cell-template let-rowIndex="row.id" let-value="value" let-row="row">
+                  <button class="btn btn-warning mr-3" *ngIf="row.id == 2"><i class="fa fa-warning"></i></button>
+                </ng-template>
+              </ngx-datatable-column>
+
+              <ngx-datatable-column [width]="45">
+                <ng-template ngx-datatable-cell-template let-rowIndex="row.id" let-value="value" let-row="row">
+                  <button class="btn btn-default" (click)="verResumen(row.id)"><i class="fa fa-eye"></i></button>
+                </ng-template>
+              </ngx-datatable-column>
+            </ngx-datatable>
+          </div>
+        </div>
+        
+        <!-- SPINNER -->
+        <ngx-spinner bdOpacity = 0.9 bdColor = "rgba(51,51,51,0.49)" size = "medium" color = "#fff" type = "square-jelly-box" [fullScreen] = "false"></ngx-spinner>
+        <!-- /SPINNER -->
+      </section>
+  </div>
+</div>
+
+<!-- MODAL EXPORTAR -->
+<div class="modal fade" bsModal #exportarModal="bs-modal" [config]="{backdrop: 'static'}">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">Exportar Reporte Transparencia</h4>
+        <button type="button" class="close pull-right" (click)="exportarModal.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="widget-body">
+          <form [formGroup]="modalForm" class="form-horizontal parsleyjsReporteTransparencia" (ngSubmit)="exportarReporteTransparencia()" method="post" data-parsley-validate>
+            <div class="row">
+              <div class="form-group col-6">
+                <label for="modalFechaInicio" class="col-12 form-control-label font-weight-bold">Fecha Inicio:</label>
+                <div class="col-12">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text fa fa-calendar trigger" [owlDateTimeTrigger]="modalFechaInicioComponent"></span>
+                    </div>
+                    <input id="modalFechaInicio" type="text" 
+                      class="form-control pixvs-input-date" 
+                      formControlName="fechaInicio"
+                      [max]="maxModalFechaInicio"
+                      [owlDateTimeTrigger]="modalFechaInicioComponent" 
+                      [owlDateTime]="modalFechaInicioComponent" 
+                      (ngModelChange)="fechaInicioChange(true)"
+                      (dateTimeInput)="validateDate('modalFechaInicio')" required>
+                    <owl-date-time [pickerType]="'calendar'" #modalFechaInicioComponent ></owl-date-time>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group col-6">
+                <label for="modalFechaFin" class="col-12 form-control-label font-weight-bold">Fecha Fin:</label>
+                <div class="col-12">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text fa fa-calendar trigger" [owlDateTimeTrigger]="modalFechaFinComponent"></span>
+                    </div>
+                    <input id="modalFechaFin" type="text" 
+                      class="form-control pixvs-input-date" 
+                      formControlName="fechaFin"
+                      [min]="minModalFechaFin"
+                      [owlDateTimeTrigger]="modalFechaFinComponent" 
+                      [owlDateTime]="modalFechaFinComponent" 
+                      (ngModelChange)="fechaFinChange(true)"
+                      (dateTimeInput)="validateDate('modalFechaFin')" required>
+                    <owl-date-time [pickerType]="'calendar'" #modalFechaFinComponent ></owl-date-time>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group col-6">
+                <label for="modalFechaValidacion" class="col-12 form-control-label font-weight-bold">Fecha Validación:</label>
+                <div class="col-12">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text fa fa-calendar trigger" [owlDateTimeTrigger]="modalFechaValidacionComponent"></span>
+                    </div>
+                    <input id="modalFechaValidacion" type="text" 
+                      class="form-control pixvs-input-date" 
+                      formControlName="fechaValidacion"
+                      [owlDateTimeTrigger]="modalFechaValidacionComponent" 
+                      [owlDateTime]="modalFechaValidacionComponent" (dateTimeInput)="validateDate('modalFechaValidacion')" required>
+                    <owl-date-time [pickerType]="'calendar'" #modalFechaValidacionComponent ></owl-date-time>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group col-6">
+                <label for="modalFechaActualizacion" class="col-12 form-control-label font-weight-bold">Fecha Actualización:</label>
+                <div class="col-12">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text fa fa-calendar trigger" [owlDateTimeTrigger]="modalFechaActualizacionComponent"></span>
+                    </div>
+                    <input id="modalFechaActualizacion" type="text" 
+                      class="form-control pixvs-input-date" 
+                      formControlName="fechaActualizacion"
+                      [owlDateTimeTrigger]="modalFechaActualizacionComponent" 
+                      [owlDateTime]="modalFechaActualizacionComponent" (dateTimeInput)="validateDate('modalFechaActualizacion')" required>
+                    <owl-date-time [pickerType]="'calendar'" #modalFechaActualizacionComponent ></owl-date-time>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="form-group row mt-3 mr-1">
+              <div class="col-12">
+                <div class="row justify-content-end">
+                  <button type="button" class="btn btn-default width-100 mr-3" (click)="exportarModal.hide()">Cancelar</button>
+                  <button type="submit" class="btn btn-success width-100 mr-3">Exportar</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /MODAL EXPORTAR -->

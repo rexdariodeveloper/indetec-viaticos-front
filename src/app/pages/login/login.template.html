@@ -1,0 +1,69 @@
+<div id="login" class="row justify-content-center divLogin">
+  <div id="login-form" class="col-lg-4 col-md-6 col-sm-7 col-9 align-self-center">
+    <form name="loginForm" [formGroup]="loginForm" novalidate><br>
+      <span class="text-center pt-4">        
+        <ng-container *ngIf="!cargandoLogo">          
+          <img *ngIf="!urlTmp" src="assets/logos/logo.png" class="img-fluid pr-2"/>
+          <img *ngIf="urlTmp" [src]="urlTmp | SanitizeUrlPipe" alt="no es una imagen" class="img-fluid pr-2" style="display: block; margin: auto;"/>
+        </ng-container>
+        <div *ngIf="cargandoLogo" class="text-xs-center">
+          <i class="fa fa-spinner fa-pulse px-3"></i>
+        </div>
+        <div>  
+          <h3 class="pt-3"><strong>Sistema de Control de Viáticos</strong></h3>
+           <!-- {{config.name}}  -->
+          <span><strong>Versión: {{config.version}}</strong> </span>   
+        </div>     
+      </span>
+      <span class="text-center">
+        <h4 class="pt-3">Ingresa a tu Cuenta</h4>
+      </span>  
+      <div class="form-group row">
+        <div class="col-12">
+            <label class="col-md-4 form-control-label" for="txtUsuario"><strong>Usuario:</strong></label>
+            <div class="col">
+              <div class="input-group input-group-transparent">
+                <input id="txtUsuario" type="text" class="form-control" formControlName="usuario" maxlength="50" autocomplete="off" required>
+                <span class="input-group-append">
+                  <span class="input-group-text">
+                    <i class="fa fa-user"></i>
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
+      </div>
+      <div class="form-group row">
+        <div class="col">
+            <label class="col-md-4 form-control-label" for="txtContrasenia"><strong>Contraseña:</strong></label>
+            <div class="col">
+              <div class="input-group input-group-transparent">
+                <input id="txtContrasenia" type="password" class="form-control" formControlName="contrasenia" maxlength="20" autocomplete="off" required>
+                <span class="input-group-append">
+                  <span class="input-group-text">
+                    <i class="fa fa-lock"></i>
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
+      </div>
+      <div class="form-group row">
+        <div class="col">
+            <div *ngIf="false" class="form-check abc-checkbox pl-4">
+                <input  class="form-check-input" id="chkRecordarme" type="checkbox" formControlName="recordar">
+                <label class="form-check-label" for="chkRecordarme">Recordarme</label>
+            </div>
+        </div>
+      </div>  
+      <div class="form-group row">
+        <div class="col mx-3 py-3">
+          <button type="submit" class="btn btn-inverse btn-block" (click)="onLogin()">Ingresar</button>
+        </div>
+      </div>
+    </form>    
+  </div>     
+</div>
+<footer class="content-footer">
+  <!-- {{config.name}} <strong>Versión: {{config.version}}</strong>      -->
+</footer> 

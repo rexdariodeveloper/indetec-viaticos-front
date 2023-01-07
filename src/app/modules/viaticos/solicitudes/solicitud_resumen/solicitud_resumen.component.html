@@ -1,0 +1,370 @@
+<!-- HEAD -->
+<div class="row" *ngIf="formularioCompleto">
+    <div class="col-12">
+        <h2><a class="fa fa-mail-reply px-3" (click)="cancelar()" data-toggle="tooltip" title="Regresar"></a>Solicitud de Viáticos</h2>
+    </div>
+</div>
+<!-- / HEAD -->
+
+<div class="widget">
+    <div class="row">
+        <div class="col-12">
+            <div class="float-right mb">
+                <button type="button" class="btn btn-primary round_button_blue" (click)="modalHistorial.show()">
+                    <i class="fa fa-clock-o"></i>
+                </button>
+            </div>
+            <section class="pt-4">
+                <header>
+                    <legend>
+                        Datos del Solicitante
+                    </legend>
+                </header>
+                <div class="widget-body">
+                    <div class="row">
+                        <div class="col-3 col-md-2 col-lg-2">
+                            <div class="d-flex justify-content-center align-items-center">
+                                <span class="thumb-xl avatar">
+                                    <img *ngIf="fotografias && !fotografias[solicitud.empleadoId]" class="img-circle" src="assets/img/default_user.jpg" alt="" height="50">
+                                    <img *ngIf="fotografias && fotografias[solicitud.empleadoId]" class="img-circle" [src]="fotografias[solicitud.empleadoId] | SanitizeUrlPipe" alt="" height="50">
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-9 col-md-10 col-lg-10">
+                            <div class="row">
+                                <div class="col-12 col-md-4 col-lg-4">
+                                    <label class="col-md-4 form-control-label"><strong>Nombre:</strong></label>
+                                    <div class="col">
+                                        <label class="form-control-label">{{ solicitud.solicitante }}</label>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-4 col-lg-4">
+                                    <label class="col-md-4 form-control-label"><strong>Puesto:</strong></label>
+                                    <div class="col">
+                                        <label class="form-control-label">{{ solicitud.puesto }}</label>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-4 col-lg-4">
+                                    <label class="col-md-4 form-control-label"><strong>Cargo:</strong></label>
+                                    <div class="col">
+                                        <label class="form-control-label">{{ solicitud.cargo }}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-12 col-md-4 col-lg-4">
+                                    <label class="col-12 form-control-label"><strong>Área de Adscripción:</strong></label>
+                                    <div class="col">
+                                        <label class="form-control-label">{{ solicitud.areaAdscripcion }}</label>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-4 col-lg-4">
+                                    <label class="col-12 form-control-label"><strong>Número de Solicitud:</strong></label>
+                                    <div class="col">
+                                        <label class="form-control-label">{{ solicitud.numeroSolicitud }}</label>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-4 col-lg-4">
+                                    <label class="col-12 form-control-label"><strong>Estatus de Solicitud:</strong></label>
+                                    <div class="col">
+                                        <label class="form-control-label">{{ solicitud.estatus }}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-12 col-md-4 col-lg-4">
+                                    <label class="col-12 form-control-label"><strong>Póliza Gasto Comprometido:</strong></label>
+                                    <div class="col">
+                                        <label class="form-control-label">{{solicitud.numeroPolizaComprometido}}</label>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-4 col-lg-4">
+                                    <label class="col-12 form-control-label"><strong>Póliza Gasto por Comprobar:</strong></label>
+                                    <div class="col">
+                                        <label class="form-control-label">{{ solicitud.numeroPolizaGastoPorComprobarId}}</label>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-4 col-lg-4">
+                                    <label class="col-12 form-control-label"><strong>Póliza Gasto Comprobado:</strong></label>
+                                    <div class="col">
+                                        <label class="form-control-label">{{ solicitud.numeroPolizaGastoComprobado}}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <div class="row" *ngIf="formularioCompleto">
+        <div class="col-12">
+            <section class="pt-2">
+                <header>
+                    <legend>
+                        Datos del Programa
+                    </legend>
+                </header>
+                <div class="widget-body">
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-3">
+                            <label class="col-md-6 form-control-label" for="cboPrograma"><strong>Programa:</strong></label>
+                            <div class="col-12">
+                                <label class="form-control-label">{{ solicitud.programaGobierno }}</label>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3">
+                            <label class="col-md-4 form-control-label" for="cboProyecto"><strong>Proyecto:</strong></label>
+                            <div class="col-12">
+                                <label class="form-control-label">{{ solicitud.proyecto }}</label>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3">
+                            <label class="col-12 form-control-label" for="cboFuenteFinanciamiento"><strong>Fuente Financiamiento:</strong></label>
+                            <div class="col-12">
+                                <label class="form-control-label">{{ solicitud.ramo }}</label>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3">
+                            <label class="col-12 form-control-label" for="cboDependencia"><strong>Dependencia Administrativa:</strong></label>
+                            <div class="col-12">
+                                <label class="form-control-label">{{ solicitud.dependencia }}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <section class="pt-2">
+                <header>
+                    <legend>
+                        Datos del Viaje
+                    </legend>
+                </header>
+                <div class="widget-body">
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-3" *ngIf="formularioCompleto">
+                            <label class="col-12 form-control-label" for="txtNoOficio"><strong>No. Acuerdo / Oficio:</strong></label>
+                            <div class="col-12">
+                                <label class="form-control-label">{{ solicitud.noOficio }}</label>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3">
+                            <label class="col-12 form-control-label" for="cboTipoViaje"><strong>Tipo Viaje:</strong></label>
+                            <div class="col-12">
+                                <label class="form-control-label">{{ solicitud.tipoViaje }}</label>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3">
+                            <label class="col-12 form-control-label" for="cboTipoRepresentacion"><strong>Tipo Representación:</strong></label>
+                            <div class="col-12">
+                                <label class="form-control-label">{{ solicitud.tipoRepresentacion }}</label>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3">
+                            <label class="col-12 form-control-label" for="txtDiasComision"><strong>Gasto Representación:</strong></label>
+                            <div class="col-12">
+                                <label class="form-control-label">{{ solicitud.gastoRepresentacion }}</label>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3">
+                            <label class="col-12 form-control-label" for="txtDiasComision"><strong>Días en Comisión:</strong></label>
+                            <div class="col-12">
+                                <label class="form-control-label">{{ solicitud.duracionComision }}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-3">
+                            <label class="col-12 form-control-label" for="txtFechaSalida"><strong>Fecha y Hora Salida:</strong></label>
+                            <div class="col-12">
+                                <label class="form-control-label">{{ solicitud.fechaSalida }}</label>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3">
+                            <label class="col-12 form-control-label" for="cboPaisOrigen"><strong>Origen:</strong></label>
+                            <div class="col-12">
+                                <label class="form-control-label">{{ solicitud.origen }}</label>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3">
+                            <label class="col-12 form-control-label" for="txtFechaRegreso"><strong>Fecha y Hora Regreso:</strong></label>
+                            <div class="col-12">
+                                <label class="form-control-label">{{ solicitud.fechaRegreso }}</label>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3">
+                            <label class="col-12 form-control-label" for="cboPaisDestino"><strong>Destino:</strong></label>
+                            <div class="col-12">
+                                <label class="form-control-label">{{ solicitud.destino }}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row importante" *ngIf="solicitud.sugerencias">
+                        <div class="col-12">
+                            <label class="col-12 form-control-label" for="txtSugerencias"><strong>Sugerencias:</strong></label>
+                            <div class="col-12">
+                                <label class="form-control-label">{{ solicitud.sugerencias }}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <section class="pt-2">
+                <header>
+                    <legend>
+                        Datos del Evento
+                    </legend>
+                </header>
+                <div class="widget-body">
+                    <div class="row">
+                        <div class="col-12 col-md-4 col-lg-4">
+                            <label class="col-12 form-control-label" for="txtFechaInicioEvento"><strong>Fecha y Hora Inicio Evento:</strong></label>
+                            <div class="col-12">
+                                <label class="form-control-label">{{ solicitud.fechaInicioEvento }}</label>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4 col-lg-4">
+                            <label class="col-12 form-control-label" for="txtFechaFinEvento"><strong>Fecha y Hora Fin Evento:</strong></label>
+                            <div class="col-12">
+                                <label class="form-control-label">{{ solicitud.fechaFinEvento }}</label>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4 col-lg-4">
+                            <label class="col-12 form-control-label" for="txtDiasEvento"><strong>Días de Evento:</strong></label>
+                            <div class="col-12">
+                                <label class="form-control-label">{{ solicitud.duracionEvento }}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="formularioCompleto">
+                        <div class="col-12 col-md-12 col-lg-12">
+                            <label class="col-md-6 form-control-label" for="txtMotivo"><strong>Motivo:</strong></label>
+                            <div class="col">
+                                <label class="form-control-label">{{ solicitud.motivo }}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="formularioCompleto">
+                        <div class="col-12 col-md-12 col-lg-12">
+                            <label class="col-md-6 form-control-label" for="txtDescripcionComision"><strong>Descripción de la Comisión:</strong></label>
+                            <div class="col-12">
+                                <label class="form-control-label">{{ solicitud.descripcionComision }}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="formularioCompleto">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <label class="col-md-6 form-control-label" for="txtOrganizador"><strong>Organizador:</strong></label>
+                            <div class="col-12">
+                                <label class="form-control-label">{{ solicitud.organizador }}</label>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <label class="col-md-6 form-control-label" for="txtLinkEvento"><strong>Link del Evento:</strong></label>
+                            <div class="col-12">
+                                <p><a [href]="'//' + solicitud.linkEvento" target="_blank">{{ solicitud.linkEvento }}</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <div class="form-actions" *ngIf="formularioCompleto && mostrarAcciones">
+        <div class="col-12">
+            <div class="row justify-content-end">
+                <button type="button" class="btn btn-danger width-100 mr-3" (click)="comentarios.show(); tipoBoton='rechazar'; motivo=null">Rechazar</button>
+                <button type="button" class="btn btn-warning width-100 mr-3" (click)="comentarios.show(); tipoBoton='revision'; motivo=null">Revisión</button>
+                <button type="button" class="btn btn-success width-100" (click)="modal.show(); tipoBoton='autorizar'">Autorizar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SPINNER -->
+    <ngx-spinner bdOpacity=0.9 bdColor="rgba(51,51,51,0.49)" size="medium" color="#fff" type="square-jelly-box"
+        [fullScreen]="false"></ngx-spinner>
+    <!-- /SPINNER -->
+
+    <div class="modal fade" bsModal #modal="bs-modal" [config]="{backdrop: 'static'}">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span>
+                        <h6><strong>
+                            La solicitud se va a {{ tipoBoton == 'autorizar' ? 'autorizar' : tipoBoton == 'rechazar' ? 'rechazar' : 'envíar a Revisión' }}.
+                        </strong></h6>¿Desea continuar?
+                    </span>
+                </div>
+                <div class="modal-body">
+                    <button class="btn btn-success btn-xs float-right width-100" (click)="modal.hide(); cambiarEstatus()">SI</button>
+                    <button class="btn btn-secondary btn-xs float-right width-100 mr-3" (click)="modal.hide()">NO</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" bsModal #comentarios="bs-modal" [config]="{backdrop: 'static'}">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span>
+                        <h6><strong>
+                            La solicitud se va {{ tipoBoton == 'autorizar' ? 'Autorizar' : tipoBoton == 'rechazar' ? 'Rechazar' : 'envíar a Revisión' }}.
+                        </strong></h6>Desea continuar?
+                    </span>
+                </div>
+                <div class="modal-body">
+                    <h6 class="modal-title"><span class="fw-semi-bold">Motivo:</span></h6>
+                    <textarea id="txtMotivo" rows="5" class="form-control mb-3 mt-3" maxlength="4000" [(ngModel)]="motivo"></textarea>                    
+                    <button class="btn btn-success btn-xs float-right width-100" (click)="comentarios.hide(); cambiarEstatus()">SI</button>
+                    <button class="btn btn-secondary btn-xs float-right width-100 mr-3" (click)="comentarios.hide()">NO</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" bsModal #modalHistorial="bs-modal" [config]="{backdrop: 'static'}">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span>
+                        Historial de Solicitud:
+                        <h6><strong>{{solicitud.numeroSolicitud}}</strong></h6>                
+                    </span>
+                    <button type="button" class="close pull-right" (click)="modalHistorial.hide()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="timeline">
+                                <div class="timeline-item" *ngFor="let row of historial">
+                                    <div class="timeline-badge"></div>
+                                    <div class="timeline-panel-right">
+                                        <div class="align-left">
+                                            <legend><h6 class="timeline-title fw-bold">{{row.proceso}}</h6></legend>
+                                            <small class="timeline-title fw-bold">{{row.empleado}}</small>
+                                            <p *ngIf="row.motivo"><small class="text-muted align-left">{{row.motivo}}</small></p>
+                                        </div>
+                                            <p class="deemphasize text-ellipsis no-margin">
+                                            <time class="text-link help float-right">{{row.fecha}}</time>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

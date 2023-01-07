@@ -1,0 +1,22 @@
+<div class="js-sidebar-content">
+  <header class="logo d-md-block" *ngIf="!cargandoLogo">
+      <a href="index.html">
+        <img *ngIf="!urlTmp" src="assets/logos/logo.png" class="img-fluid pr-2"/>
+        <img *ngIf="urlTmp" [src]="urlTmp | SanitizeUrlPipe" alt="no es una imagen" class="img-fluid pr-2"/>
+      </a>
+  </header>
+  <!-- every .sidebar-nav may have a title -->
+  <div *ngFor="let nodoPadre of menuPrincipal">
+    <h5 class="sidebar-nav-title" >{{nodoPadre.padre.etiqueta}}</h5>
+    <ul class="sidebar-nav">
+      <li routerLinkActive="active" *ngFor="let nodoHijo of nodoPadre.hijos">
+        <a [routerLink]="nodoHijo.url">
+          <span class="icon">
+            <i [className]="nodoHijo.icono"></i>
+          </span>
+          {{nodoHijo.etiqueta}}
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>

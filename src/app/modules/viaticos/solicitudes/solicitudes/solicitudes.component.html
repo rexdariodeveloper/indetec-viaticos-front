@@ -1,0 +1,110 @@
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Viáticos ></li>
+</ol>
+
+<div class="form-group row">
+    <!-- HEAD -->
+    <div class="col-10">
+      <h2><span class="fi flaticon-bookmark-1 px-3"></span>Solicitudes</h2>
+    </div>
+    <!-- / HEAD -->  
+    <div class="col-2">
+      <div class="row justify-content-end">
+        <div class="pr-3">
+          <button *ngIf="user.id!=1" class="btn btn-primary width-100" [routerLink]="['/app/viaticos/solicitudes/nueva']">Nueva</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <section class="widget" widget>
+          <div class="widget-body">
+            <div class="mt">
+              <div class="float-right mb">
+                <div class="input-group input-group-rounded">
+                  <span class="input-group-prepend">
+                    <span class="input-group-text">
+                      <i class="fa fa-search"></i>
+                    </span>
+                  </span>
+                  <input class="form-control" (keyup)='updateFilter($event)' type="text" placeholder="Buscar">
+                </div>
+              </div>
+              
+              <div>
+                <ngx-datatable
+                  class="material"  
+                  [rows]="dataTable"
+                  (activate) = "onActivate($event)"
+                  [columnMode]="'force'"
+                  [headerHeight]="50"
+                  [footerHeight]="50"
+                  [rowHeight]="'auto'"
+                  [limit]="10"
+                  [scrollbarH]="true"
+                  [messages]="{emptyMessage: 'Sin registros', totalMessage: 'Total', selectedMessage: false}">
+                  <ngx-datatable-column prop="numeroSolicitud" name="# SOLICITUD">
+                  </ngx-datatable-column>
+                  <ngx-datatable-column prop="solicitante" name="SOLICITANTE">
+                  </ngx-datatable-column>
+                  <ngx-datatable-column [resizeable]="true" prop="descripcionComision" name="DESCRIPCIÓN">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                      <small>
+                       {{row.descripcionComision}}
+                      </small>
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column name="ORIGEN / DESTINO">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                      <small>
+                        <span class="fw-semi-bold">Destino:</span>
+                        &nbsp; {{row.destino}}
+                      </small>
+                      <br>
+                      <small>
+                        <span class="fw-semi-bold">Origen:</span>
+                        &nbsp; {{row.origen}}
+                      </small>                      
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column name="FECHAS">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                      <small>
+                        <span class="fw-semi-bold">Salida:</span>
+                        &nbsp; {{row.fechaSalida}}
+                      </small>
+                      <br>
+                      <small>
+                        <span class="fw-semi-bold">Regreso:</span>
+                        &nbsp; {{row.fechaRegreso}}
+                      </small>
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column name="VIAJE">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                      <small>
+                        <span class="fw-semi-bold">Tipo Viaje:</span>
+                        &nbsp; {{row.tipoViaje}}
+                      </small>
+                      <br>
+                      <small>
+                        <span class="fw-semi-bold">Estancia:</span>
+                        &nbsp; {{row.duracionComision}}
+                      </small>
+                    </ng-template>
+                  </ngx-datatable-column>                
+                  <ngx-datatable-column prop="estatus" name="ESTATUS">
+                  </ngx-datatable-column>
+                </ngx-datatable>
+              </div>
+            </div>
+          </div>
+        <!-- SPINNER -->
+        <ngx-spinner  [fullScreen]="false" type="ball-spin-clockwise" size="medium"></ngx-spinner>
+        <!-- /SPINNER -->    
+      </section>
+    </div>
+  </div>
+  
+  

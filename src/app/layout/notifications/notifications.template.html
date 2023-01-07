@@ -1,0 +1,40 @@
+<section class="card notifications">
+  <header class="card-header">
+    <div class="text-center mb-sm">
+      <strong>Tiene {{totalAlertas}} Notificaciones</strong>
+    </div>
+    <div class="btn-group btn-group-sm" id="notifications-toggle" data-toggle="buttons">
+			<!-- Boton Autorizaciones -->
+			<label class="btn btn-secondary active" (click)="cambiarVista('autorizaciones')">
+				<input type="radio" notification-load data-ajax-trigger="change"> Autorizaciones
+				<span *ngIf="listAutorizaciones?.length > 0" class="badge badge-notifications badge-pill">
+					{{ listAutorizaciones.length }}
+				</span>
+			</label>
+
+			<!-- Boton Notificacion -->
+			<label class="btn btn-secondary" (click)="cambiarVista('notificaciones')">
+				<input type="radio" notification-load data-ajax-trigger="change"> Notificaciones
+				<span *ngIf="listNotificaciones?.length > 0" class="badge badge-notifications badge-pill">
+					{{ listNotificaciones.length }}
+				</span>
+			</label>
+    </div>
+  </header>
+  <!-- notification list with .thin-scroll which styles scrollbar for webkit -->
+  <div id="notifications-list" class="list-group thin-scroll">
+		<div *ngIf="mostrar === 'autorizaciones'">
+			<!-- <button *ngIf="!(autorizaciones.length<2)" type="button" class="btn btn-gray" (click)="limpiarAutorizaciones()" style="width: 100%; cursor: pointer;" id="limpiar">Limpiar autorizaciones</button> -->
+			<a autorizacion *ngFor="let autorizacion of listAutorizaciones" [autorizacion]="autorizacion"></a>
+		</div>
+		<div *ngIf="mostrar === 'notificaciones'">
+			<!-- <button *ngIf="!(notificaciones.length<2)" type="button" class="btn btn-gray" (click)="limpiarNotificaciones()" style="width: 100%; cursor: pointer;" id="limpiar">Limpiar notificaciones</button> -->
+			<a notificacion *ngFor="let notificacion of listNotificaciones ; index as i" [notificacion]="notificacion">
+			</a>
+		</div>
+  </div>
+  <footer class="card-footer text-sm">
+    <a class="float-right fa fa-refresh mt-1" (click) ="onRefresh();" ></a>
+    <span class="fs-mini">{{'Actualizado a: ' + (fechaActualizado | FechaPipe : true : true)}}</span>
+  </footer>
+</section>

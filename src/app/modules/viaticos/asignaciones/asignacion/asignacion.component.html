@@ -1,0 +1,655 @@
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Viáticos</li>
+  <li class="breadcrumb-item">Asignación de Viáticos ></li>  
+</ol>
+<section id="asignacion">
+  <!-- HEAD -->
+  <div class="row">
+    <div class="col-12">
+      <h2><a class="fa fa-mail-reply px-3" (click)="validaDeshacer(true)" data-toggle="tooltip" title="Regresar"></a>Asignación de Viáticos<small> - {{ asignacion.id == null ? 'Nuevo' : 'Editar ' }}</small></h2>
+    </div>
+  </div>
+  <!-- / HEAD -->
+  <!-- CONTENT -->
+  <!-- VISTA SOLICITUD VIATICO -->
+  <div class="row">
+    <div class="col-lg-12">
+      <solicitud_resumen ></solicitud_resumen>
+    </div>
+  </div>
+  <!-- /VISTA SOLICITUD VIATICO -->
+  <!-- TABS -->
+  <fieldset class="col-12">
+    <div class="row">
+      <div class="col-lg-12">
+
+        <div class="clearfix">
+          <ul class="nav nav-tabs float-left" id="myTab" role="tablist">
+            <!-- VIATICO -->
+            <li class="nav-item">
+              <a class="nav-link active"  id="viatico-tab" data-toggle="tab" href="#viatico" role="tab" aria-controls="viatico" aria-expanded="true" (click)="isTabs = 0">Viáticos</a>
+            </li>
+            <!-- /VIATICO -->
+            <!-- PASAJE -->
+            <li class="nav-item">
+              <a class="nav-link" id="pasaje-tab" data-toggle="tab" href="#pasaje" role="tab" aria-controls="pasaje" aria-expanded="false" (click)="isTabs= 1">Pasajes</a>
+            </li>
+            <!-- /PASAJE -->
+          </ul>
+        </div>
+        
+        <div class="tab-content mb-lg" id="myTabContent">
+          <!-- VIATICO -->
+          <div role="tabpanel" class="tab-pane active in clearfix" id="viatico" aria-labelledby="viatico-tab" aria-expanded="true">
+            <fieldset [disabled]="!isEdit">
+              <legend>
+                Recomendación de viáticos
+              </legend>
+              <div class="row" *ngIf="isEdit">
+                <div class="col">
+                  <div class="row justify-content-end pr-3">
+                    <button type="button" class="btn btn-primary width-100" (click)="modalConceptoViatico.show()">Nuevo</button>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="row mb-3" *ngIf="isTabs == 0">
+                <div class="col-12 col-lg-12">
+                  <ngx-datatable
+                    class="material"
+                    [rows]="viaticoDataToDataTable()"
+                    [columnMode]="'force'"
+                    [headerHeight]="50"
+                    [footerHeight]="0"
+                    [scrollbarH]="true"
+                    rowHeight="auto"
+                    [selected]="asignacionViaticoSelected"
+                    [selectionType]="'checkbox'"
+                    [selectAllRowsOnPage]="false"
+                    (select)="viaticoSelectAsignacionViatico($event)"
+                    [messages]="{emptyMessage: 'Sin registros', totalMessage: 'Total', selectedMessage: false}"
+                    (change)="hayCambios()"
+                    >
+                    <ngx-datatable-column
+                      [width]="45"
+                      [canAutoResize]="false"
+                      [draggable]="false"
+                      [resizeable]="false"
+                      headerClass="pixvs-div-checkbox"
+                      cellClass="pixvs-div-checkbox">
+                      <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected" let-selectFn="selectFn">
+                        <div class="pixvs-checkbox">
+                          <input class="form-check-input" id="checkboxAsignacionViatico" type="checkbox"  [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)">
+                          <label class="form-check-label" for="checkboxAsignacionViatico"></label>
+                        </div>
+                      </ng-template>
+                      <ng-template ngx-datatable-cell-template let-row="row" let-rowIndex="rowIndex" let-isSelected="isSelected" let-onCheckboxChangeFn="onCheckboxChangeFn">
+                        <div class="pixvs-checkbox">
+                          <input class="form-check-input" id="checkboxAsignacionViatico{{rowIndex}}" type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)">
+                          <label class="form-check-label" for="checkboxAsignacionViatico{{rowIndex}}"></label>
+                      </div>
+                      </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column prop="conceptoViaticoNombre" name="CONCEPTO VIÁTICO" [width]="200">
+                    </ngx-datatable-column>
+                    <ngx-datatable-column prop="montoConPernocta" name="CON PERNOCTA {{pernoctaCon > 1 ? pernoctaCon + ' DÍAS' : pernoctaCon + ' DÍA'}}" [width]="200">
+                      <ng-template let-column="column" ngx-datatable-header-template>
+                        <div class="align-right">
+                          <span>{{column.name}}</span>
+                        </div>
+                      </ng-template>
+                      <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                        <input
+                          class="form-control align-right"
+                          type="text"
+                          value="{{ value | MoneyPipe }}"
+                          (blur)="viaticoUpdateMoney($event, 'montoConPernocta' , rowIndex, row, false)"
+                          [textMask]="maskMoney"
+                        />
+                      </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column prop="montoSinPernocta" name="SIN PERNOCTA {{pernoctaSin > 1 ? pernoctaSin + ' DÍAS' : pernoctaSin + ' DÍA'}}" [width]="200">
+                      <ng-template let-column="column" ngx-datatable-header-template>
+                        <div class="align-right">
+                          <span>{{column.name}}</span>
+                        </div>
+                      </ng-template>
+                      <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                        <input
+                          class="form-control align-right"
+                          type="text"
+                          value="{{value | MoneyPipe}}"
+                          (blur)="viaticoUpdateMoney($event, 'montoSinPernocta' , rowIndex, row, false)"
+                          [textMask]="maskMoney"
+                          [disabled]="row.conceptoViatico.noPermitirSinPernocta"
+                        />
+                      </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column prop="montoPorTransferir" name="MONTO TRANSFERIR" [width]="200">
+                      <ng-template let-column="column" ngx-datatable-header-template>
+                        <div class="align-right">
+                          <span>{{column.name}}</span>
+                        </div>
+                      </ng-template>
+                      <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                        <input
+                          class="form-control align-right"
+                          type="text"
+                          value="{{value | MoneyPipe}}"
+                          (blur)="viaticoUpdateMoney($event, 'montoPorTransferir' , rowIndex, row, true)"
+                          [textMask]="maskMoney"
+                        />
+                      </ng-template>
+                    </ngx-datatable-column>
+                  </ngx-datatable>
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="col-12 col-lg-3 col-xl-5">
+                  <button *ngIf="isEdit" [disabled]="asignacionViaticoSelected.length === 0" type="button" class="btn btn-danger width-100" type="button" (click)="viaticoRemoveAsignacionViatico()">Eliminar</button>
+                </div>
+                <div class="col-12 col-lg-9 col-xl-7 table-responsive">
+                  <table class="table table-striped align-right">
+                    <thead>
+                      <tr>
+                        <th>CON PERNOCTA</th>
+                        <th>SIN PERNOCTA</th>
+                        <th>TOTAL VIÁTICO</th>
+                        <th>TOTAL TRANSFERIR</th>
+                      </tr>
+                    </thead>
+                    <tbody>                      
+                      <tr>
+                        <td>
+                          {{ asignacionViaticoResult.montoConPernocta | MoneyPipe }}
+                        </td>
+                        <td>
+                          {{ asignacionViaticoResult.montoSinPernocta | MoneyPipe }}
+                        </td>
+                        <td>
+                          {{ asignacionViaticoResult.montoViaticoTotal | MoneyPipe }}
+                        </td>
+                        <td>
+                          {{ asignacionViaticoResult.montoPorTransferir | MoneyPipe }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </fieldset>            
+          </div>
+          <!-- /VIATICO -->
+
+          <!-- PASAJE -->
+          <div role="tabpanel" class="tab-pane" id="pasaje" aria-labelledby="pasaje-tab" aria-expanded="true">
+            <fieldset [disabled]="!isEdit">
+              <legend>
+                Registro de pasajes
+              </legend>
+              <div class="row" *ngIf="isEdit">
+                <div class="col">
+                  <div class="row justify-content-end pr-3">
+                    <button type="button" class="btn btn-primary width-100" (click)="pasajeShowModalAddAsignacionPasaje()">Nuevo</button>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="row mb-3" *ngIf="isTabs == 1">
+                <div class="col-12 col-lg-12">
+                  <ngx-datatable
+                    class="material"
+                    [rows]="pasajeDataToDataTable()"
+                    [columnMode]="'force'"
+                    [headerHeight]="50"
+                    [footerHeight]="0"
+                    [scrollbarH]="true"
+                    rowHeight="auto"
+                    [selected]="asignacionPasajeSelected"
+                    [selectionType]="'checkbox'"
+                    [selectAllRowsOnPage]="false"
+                    (select)="pasajeSelectAsignacionPasaje($event)"
+                    (activate) = "pasajeActivateAsignacionPasaje($event)"
+                    [messages]="{emptyMessage: 'Sin registros', totalMessage: 'Total', selectedMessage: false}"
+                    (change)="hayCambios()"
+                    >
+                    <ngx-datatable-column
+                      [width]="45"
+                      [canAutoResize]="false"
+                      [draggable]="false"
+                      [resizeable]="false"
+                      headerClass="pixvs-div-checkbox"
+                      cellClass="pixvs-div-checkbox">
+                      <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected" let-selectFn="selectFn">
+                        <div class="pixvs-checkbox">
+                          <input class="form-check-input" id="checkboxAsignacionPasaje" type="checkbox"  [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)">
+                          <label class="form-check-label" for="checkboxAsignacionPasaje"></label>
+                        </div>
+                      </ng-template>
+                      <ng-template ngx-datatable-cell-template let-row="row" let-rowIndex="rowIndex" let-isSelected="isSelected" let-onCheckboxChangeFn="onCheckboxChangeFn">
+                        <div class="pixvs-checkbox">
+                          <input class="form-check-input" id="checkboxAsignacionPasaje{{rowIndex}}" type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)">
+                          <label class="form-check-label" for="checkboxAsignacionPasaje{{rowIndex}}"></label>
+                      </div>
+                      </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column prop="conceptoViatico.concepto" name="VIAJE" [flexGrow]="1" [width]="80">
+                      <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                        <span>
+                          {{value}}
+                        </span>
+                      </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column prop="viajeRedondo" name="TIPO" [flexGrow]="1" [width]="80">
+                      <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                        <span>
+                          {{ row.asignadoAFuncionario ? '' : value ? 'Redondo' : 'Sencillo'}}
+                        </span>
+                      </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="PERIODO VIAJE" [flexGrow]="1" [width]="250">
+                      <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                        <div *ngIf="row.fechaSalida">
+                          <small>
+                            <span class="fw-semi-bold">Salida:</span>
+                            &nbsp; {{row.fechaSalida | FechaPipe : true}}
+                          </small>
+                        </div>
+                        <div *ngIf="row.fechaRegreso">
+                          <small>
+                            <span class="fw-semi-bold">Regreso:</span>
+                            &nbsp; {{row.fechaRegreso | FechaPipe : true}}
+                          </small>
+                        </div>
+                      </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column prop="codigoReservacion" name="CODIGO RESERVACIÓN" [flexGrow]="1" [width]="200">
+                      <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                        <span>
+                          {{value}}
+                        </span>
+                      </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column prop="nombreLinea" name="LÍNEA" [flexGrow]="1" [width]="150">
+                      <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                        <span>
+                          {{value}}
+                        </span>
+                      </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="COSTO" [width]="150">
+                      <ng-template let-column="column" ngx-datatable-header-template>
+                        <div class="align-right">
+                          <span>{{column.name}}</span>
+                        </div>
+                      </ng-template>
+                      <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                        <div class="align-right">
+                          <span>{{value | MoneyPipe}}</span>
+                        </div>
+                      </ng-template>
+                    </ngx-datatable-column>
+                  </ngx-datatable>
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="col-12 col-lg-3 col-xl-5">
+                  <button *ngIf="isEdit" [disabled]="asignacionPasajeSelected.length === 0" type="button" class="btn btn-danger width-100" type="button" (click)="pasajeRemoveAsignacionPasaje()">Eliminar</button>
+                </div>
+                <div class="col-12 col-lg-9 col-xl-7 table-responsive">
+                  <table class="table table-striped align-right">
+                    <thead>
+                    <tr>
+                      <th>AÉREO</th>
+                      <th>TERRESTRE</th>
+                      <th>MARÍTIMO</th>
+                      <th>TOTAL PASAJE</th>
+                      <th>TOTAL TRANSFERIR</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                      <td>
+                        {{ asignacionPasajeTotal.aereoTotal | MoneyPipe }}
+                      </td>
+                      <td>
+                        {{ asignacionPasajeTotal.terrestreTotal | MoneyPipe }}
+                      </td>
+                      <td>
+                        {{ asignacionPasajeTotal.maritimoTotal | MoneyPipe }}
+                      </td>
+                      <td>
+                        {{ asignacionPasajeTotal.pasajeTotal | MoneyPipe }}
+                      </td>
+                      <td>
+                        {{ asignacionPasajeTotal.transferirTotal | MoneyPipe }}
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+          <!-- /PASAJE -->
+          <fieldset   [disabled]="(solicitudViatico.estatusId == listadoCMM.EstatusSolicitud.RECURSOS_ASIGNADOS || solicitudViatico.estatusId == listadoCMM.EstatusSolicitud.ENVIADA_FINANZAS || isEdit==false) && !existPolizaGC">  
+            <div class="d-flex flex-row justify-content-end" *ngIf="asignacion.id != null && !asignacionViaticoFormArray.dirty && !asignacionPasajeFormArray.dirty">            
+              <div class="form-group col-12 col-sm-6 col-md-6 col-lg-5 col-xl-4">
+                <label class="col-12 form-control-label" for="txtFechaComprometido"><strong>{{existPolizaGC?'Fecha Cancelación:':'Fecha Comprometido:'}} </strong></label>
+                <div class="col-12">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text fa fa-calendar trigger pixvs-cursor"></span>
+                    </div>
+                    <input id="txtFechaComprometido" readonly                  
+                      class="form-control pixvs-cursor pixvs-input-date"
+                      [min]="minFechaAsignacion"
+                      [max]="maxFechaAsignacion"
+                      [value]="asignacion.fechaComprometido"
+                      [owlDateTimeTrigger]="fechaComprometidoComponent"
+                      [owlDateTime]="fechaComprometidoComponent"
+                      (dateTimeChange)="onFechaComprometidoChange($event)" data-parsley-errors-messages-disabled [attr.data-parsley-range-message]="">
+                    <owl-date-time #fechaComprometidoComponent></owl-date-time>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+          <div class="tab-pane active" *ngIf="isEdit || existPolizaGC">
+              <div class="form-actions d-flex flex-row justify-content-end" *ngIf="solicitudViatico.estatusId != listadoCMM.EstatusSolicitud.RECURSOS_ASIGNADOS" >                
+                <button type="button" class="btn btn-warning width-100" (click)="revision.show()" *ngIf="asignacion.polizaComprometidoId == null">Revisión</button>
+
+                <button *ngIf="!asignacion.numeroPolizaComprometido" type="button" class="btn btn-default width-100 ml-3" (click)="validaDeshacer(!cambios)" [disabled]="!cambios && asignacion.id != null">{{ asignacion.id != null ? 'Deshacer' : 'Cancelar' }}</button>
+             
+                
+                <button type="submit" class="btn btn-success width-100" [disabled]="!asignacionViaticoFormArray.dirty && !asignacionPasajeFormArray.dirty" (click)="saveAsignacion(false)" *ngIf="asignacion.id != null ? !asignacionViaticoFormArray.dirty && !asignacionPasajeFormArray.dirty ? false : true : true">Guardar</button>
+
+                <button type="submit" class="btn btn-success max-auto ml-3 " (click)="confirmModal.show()" *ngIf="asignacion.id != null ? !asignacionViaticoFormArray.dirty && !asignacionPasajeFormArray.dirty && !asignacion.numeroPolizaComprometido? true : false : false">Asignar Gasto</button>
+
+                <button type="submit" class="btn btn-danger" (click)="confirmModal.show()" *ngIf="existPolizaGC">Cancelar Póliza {{asignacion.numeroPolizaComprometido}}</button>
+              </div>
+          </div>
+        </div>        
+      </div>
+    </div>
+  </fieldset>
+  <!-- /TABS -->
+  <!-- / CONTENT -->
+
+  <!-- MODAL CONCEPTO VIATICO -->
+  <div class="modal fade" bsModal #modalConceptoViatico="bs-modal" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title pull-left">Concepto Viático</h4>
+          <button type="button" class="close pull-right" (click)="modalConceptoViatico.hide()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-12">
+              <select2 id="default-select" (valueChanged)="viaticoIsSelectedConceptoViatico($event)" [value]="select2Options.text" 
+                        [data]="conceptoViaticoSelect2" [options]="select2Options" [width]="'100%'"></select2>
+            </div>
+          </div>
+          
+          <div class="form-group row mt-3">
+            <div class="col-12">
+              <div class="row justify-content-end">
+                <button type="button" class="btn btn-default width-100 mr-3" (click)="modalConceptoViatico.hide()">Cancelar</button>
+                <button type="button" class="btn btn-success width-100 mr-3" [disabled]="conceptoViaticoSelected.length === 0" (click)="viaticoAddConceptoViatico(); modalConceptoViatico.hide();">Agregar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /MODAL CONCEPTO VIATICO -->
+
+  <!-- MODAL PASAJE -->
+  <div class="modal fade" bsModal #modalAsignacionPasaje="bs-modal" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title pull-left">Nuevo Registro Pasaje</h4>
+          <button type="button" class="close pull-right" (click)="modalAsignacionPasaje.hide()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div class="widget-body">
+            <form [formGroup]="asignacionPasajeForm" class="form-horizontal parsleyjsModalPasaje" (ngSubmit)="pasajeAddAsignacionPasaje()" method="post" data-parsley-validate>
+              <div class="row">
+                <div class="form-group col-12 col-md-12 col-lg-8">
+                  <label for="apConceptoViatico" class="col-12 form-control-label font-weight-bold">Tipo Pasaje:</label>
+                  <div class="col-12">
+                    <select2 id="apConceptoViatico" 
+                      (valueChanged)="pasajeIsSelectedConceptoViatico($event)" 
+                      [value]="asignacionPasajeForm.controls.conceptoViaticoId.value ? asignacionPasajeForm.controls.conceptoViaticoId.value : ''" 
+                      [data]="asignacionPasajeSelect2" 
+                      [options]="select2OptionsPasaje" 
+                      [width]="'100%'" 
+                      [ngClass]="{'select2-border': !conceptoViaticoSelect2Valid}">
+                    </select2>
+                    <ul *ngIf="!conceptoViaticoSelect2Valid" class="parsley-errors-list filled" aria-hidden="false">
+                      <li class="parsley-required">Este valor es requerido.</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="form-group col-12 col-md-12 col-lg-4 d-flex justify-content-end">
+                  <div class="d-lg-flex flex-lg-row align-items-lg-center">
+                    <div class="form-check abc-checkbox mr-3">
+                      <input class="form-check-input" id="apAsignadoAFuncionario" formControlName="asignadoAFuncionario" type="checkbox">
+                      <label class="form-check-label" for="apAsignadoAFuncionario">Asignar a funcionario</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row" *ngIf="!asignacionPasajeForm.controls.asignadoAFuncionario.value">
+                <div class="form-group col-12 col-md-12 col-lg-4">
+                  <label for="apFechaCompra" class="col-12 form-control-label font-weight-bold">Fecha de Compra:</label>
+                  <div class="col-12">
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text fa fa-calendar trigger" [owlDateTimeTrigger]="apFechaCompraComponent"></span>
+                      </div>
+                      <input id="apFechaCompra" readonly
+                        class="form-control pixvs-input-date" 
+                        formControlName="fechaCompra"
+                        [min]="minFechaCompra"
+                        [max]="maxFechaCompra"
+                        [owlDateTimeTrigger]="apFechaCompraComponent" 
+                        [owlDateTime]="apFechaCompraComponent"
+                        (dateTimeChange)="onChangeFechaCompra()"
+                        (dateTimeInput)="pasajeValidateDate('apFechaCompra')" data-parsley-errors-messages-disabled [attr.data-parsley-required]="!asignacionPasajeForm.controls.asignadoAFuncionario.value">
+                      <owl-date-time [pickerType]="'calendar'" #apFechaCompraComponent></owl-date-time>
+                    </div>
+                    <ul *ngIf="mostrarErroresForm && !asignacionPasajeForm.controls.fechaCompra.value" class="parsley-errors-list filled" aria-hidden="false">
+                      <li class="parsley-required">Este valor es requerido.</li>
+                    </ul>
+                    <ul *ngIf="mostrarErroresForm && asignacionPasajeForm.controls.fechaCompra.value && asignacionPasajeForm.controls.fechaCompra.invalid" class="parsley-errors-list filled" aria-hidden="false">
+                      <li class="parsley-required">{{ 'Este valor debe ser mayor que ' + (maxFechaCompra | FechaPipe : true) }}</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="form-group col-12 col-md-12 col-lg-4">
+                  <label for="apCodigoReservacion" class="col-12 form-control-label font-weight-bold">Código de Reservación:</label>
+                  <div class="col-12">
+                    <input id="apCodigoReservacion" type="text" class="form-control" formControlName="codigoReservacion" maxlength="50" [attr.data-parsley-required]="!asignacionPasajeForm.controls.asignadoAFuncionario.value">
+                  </div>
+                </div>
+                <div class="form-group col-12 col-md-12 col-lg-4 d-flex justify-content-center align-items-center">
+                  <div class="d-flex flex-row">
+                    <div class="form-check abc-checkbox abc-checkbox-success abc-checkbox-circle mr-4">
+                      <input class="form-check-input" name="viajeRedondo" id="viajeRedondoSencillo" [value]="false" formControlName="viajeRedondo" type="radio">
+                      <label class="form-check-label" for="viajeRedondoSencillo">Sencillo</label>
+                    </div>
+  
+                    <div class="form-check abc-checkbox abc-checkbox-success abc-checkbox-circle mr-3">
+                      <input class="form-check-input" name="viajeRedondo" id="viajeRedondoIdaYVuelta" [value]="true" formControlName="viajeRedondo" type="radio"  checked>
+                      <label class="form-check-label" for="viajeRedondoIdaYVuelta">Ida y Vuelta</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row" *ngIf="!asignacionPasajeForm.controls.asignadoAFuncionario.value">
+                <div class="form-group col-12">
+                  <label for="apNombreLinea" class="col-12 form-control-label font-weight-bold">Nombre de Línea:</label>
+                  <div class="col-12">
+                    <input id="apNombreLinea" type="text" class="form-control" formControlName="nombreLinea" maxlength="50" [attr.data-parsley-required]="!asignacionPasajeForm.controls.asignadoAFuncionario.value">
+                  </div>
+                </div>
+              </div>
+
+              <div class="row" *ngIf="!asignacionPasajeForm.controls.asignadoAFuncionario.value">
+                <div class="form-group col-12 col-md-12 col-lg-6 col-xl-6">
+                  <label for="apFechaSalida" class="col-12 form-control-label font-weight-bold">Fecha y Hora de Salida:</label>
+                  <div class="col-12">
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text fa fa-calendar trigger" [owlDateTimeTrigger]="apFechaSalidaComponent"></span>
+                      </div>
+                      <input id="apFechaSalida" readonly                                   
+                          class="form-control pixvs-input-date"
+                          formControlName="fechaSalida"
+                          [min]="minFechaSalida"
+                          [max]="maxFechaSalida"
+                          [owlDateTimeTrigger]="apFechaSalidaComponent"
+                          [owlDateTime]="apFechaSalidaComponent" 
+                          (dateTimeChange)="onChangeFechaSalida()"
+                          (dateTimeInput)="pasajeValidateDate('apFechaSalida')" data-parsley-errors-messages-disabled [attr.data-parsley-required]="!asignacionPasajeForm.controls.asignadoAFuncionario.value">
+                      <owl-date-time #apFechaSalidaComponent [disabled]="dtpSalidaActivo" ></owl-date-time>
+                    </div>
+                    <ul *ngIf="mostrarErroresForm && !asignacionPasajeForm.controls.fechaSalida.value" class="parsley-errors-list filled" aria-hidden="false">
+                      <li class="parsley-required">Este valor es requerido.</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div *ngIf="asignacionPasajeForm.controls.viajeRedondo.value" class="form-group col-12 col-md-12 col-lg-6 col-xl-6">
+                  <label for="apFechaRegreso" class="col-12 form-control-label font-weight-bold">Fecha y Hora de Regreso:</label>
+                  <div class="col-12">
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text fa fa-calendar trigger" [owlDateTimeTrigger]="apFechaRegresoComponent"></span>
+                      </div>
+                      <input id="apFechaRegreso" readonly
+                          class="form-control pixvs-input-date"
+                          formControlName="fechaRegreso"
+                          [min]="minFechaRegreso"
+                          [max]="maxFechaRegreso"
+                          [owlDateTimeTrigger]="apFechaRegresoComponent"
+                          [owlDateTime]="apFechaRegresoComponent" 
+                          (dateTimeChange)="onChangeFechaRegreso()"
+                          (dateTimeInput)="pasajeValidateDate('apFechaRegreso')" data-parsley-errors-messages-disabled [attr.data-parsley-required]="!asignacionPasajeForm.controls.asignadoAFuncionario.value && asignacionPasajeForm.controls.viajeRedondo.value">
+                      <owl-date-time #apFechaRegresoComponent [disabled]="dtpRegresoActivo" ></owl-date-time>
+                    </div>
+                    <ul *ngIf="mostrarErroresForm && asignacionPasajeForm.controls.viajeRedondo.value && !asignacionPasajeForm.controls.fechaRegreso.value" class="parsley-errors-list filled" aria-hidden="false">
+                      <li class="parsley-required">Este valor es requerido.</li>
+                    </ul>
+                  </div>
+                </div>                
+              </div>
+
+              <div class="row">
+                <div class="form-group col-12 col-md-12 col-lg-6 col-xl-6" [ngClass]="{'offset-lg-6 offset-xl-6': asignacionPasajeForm.controls.viajeRedondo.value}">
+                  <label for="apCosto" class="col-12 form-control-label font-weight-bold">Costo:</label>
+                  <div class="col-12">
+                    <div class="input-group">
+                      <span class="input-group-prepend">
+                        <span class="input-group-text">$</span>
+                      </span>
+                      <input id="apCosto" type="text" class="form-control align-right" (blur)="pasajeUpdateMonto($event)" formControlName="costo" [textMask]="maskMoneyPasaje" required>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="form-group row mt-3">
+                <div class="col-12">
+                  <div class="row justify-content-end">
+                    <button type="button" class="btn btn-default width-100 mr-3" (click)="modalAsignacionPasaje.hide()">Cancelar</button>
+                    <button type="submit" class="btn btn-success width-100 mr-3">{{asignacionPasajeForm.controls.id.value === null ? 'Agregar' : 'Actualizar'}}</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /MODAL PASAJE -->
+
+  <!-- MODAL DESHACER -->
+  <div class="modal fade" bsModal #deshacerModal="bs-modal" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <span>
+              <h6><strong>Se perderán los cambios realizados.</strong></h6>
+              ¿Desea continuar? 
+            </span>               
+          </div>
+          <div class="modal-body">
+            <button class="btn btn-success btn-xs float-right width-100" (click)="deshacer(); deshacerModal.hide();">SI</button>
+            <button class="btn btn-secondary btn-xs float-right width-100 mr-3" (click)="deshacerModal.hide()">NO</button>
+          </div>
+        </div>
+    </div>
+  </div>
+  <!-- /MODAL DESHACER -->
+
+  <!-- MODAL CONFIRMAR -->
+  <div class="modal fade" bsModal #confirmModal="bs-modal" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <span>
+              <h6><strong>{{existPolizaGC? 'Cancelara la Póliza Gasto Comprometido':'Se asignarán viáticos y creara la Póliza Gasto Comprometido.'}}</strong></h6>
+              ¿Desea continuar? 
+            </span>                
+          </div>
+          <div class="modal-body">
+            <button class="btn btn-success btn-xs float-right width-100" (click)="confirmModal.hide(); existPolizaGC? polizaGastoComprometido('C') : saveAsignacion(true);">SI</button>
+            <button class="btn btn-secondary btn-xs float-right width-100 mr-3" (click)="confirmModal.hide()">NO</button>
+          </div>
+        </div>
+    </div>
+  </div>
+  <!-- /MODAL CONFIRMAR -->
+
+  <!-- MODAL ENVIAR A REVISION-->
+  <div class="modal fade" bsModal #revision="bs-modal" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>
+                    <h6><strong>
+                        La solicitud será enviada a Revisión.
+                    </strong></h6>¿Desea continuar?
+                </span>
+            </div>
+            <div class="modal-body">
+                <h6 class="modal-title"><span class="fw-semi-bold">Motivo:</span></h6>
+                <textarea id="txtMotivo" rows="5" class="form-control mb-3 mt-3" maxlength="4000" [(ngModel)]="motivo"></textarea>                    
+                <button class="btn btn-success btn-xs float-right width-100" (click)="revision.hide(); enviarRevision()">SI</button>
+                <button class="btn btn-secondary btn-xs float-right width-100 mr-3" (click)="revision.hide()">NO</button>
+            </div>
+        </div>
+    </div>
+</div>  
+
+  <!-- SPINNER -->
+  <ngx-spinner bdOpacity = 0.9 bdColor = "rgba(51,51,51,0.49)" size = "medium" color = "#fff" type = "square-jelly-box" [fullScreen] = "true"></ngx-spinner>
+  <!-- /SPINNER -->
+</section>

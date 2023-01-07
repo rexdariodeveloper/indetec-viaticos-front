@@ -1,0 +1,223 @@
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Alertas ></li>
+  <!-- <li class="active breadcrumb-item"></li> -->
+</ol>
+  <!-- HEAD -->
+<div class="form-group row">
+  <div class="col-12">
+    <h2><span class="fi flaticon-alarm px-3"></span>Autorizaciones & Notificaciones</h2>
+  </div>
+</div>   
+<!-- / HEAD -->
+<!-- CONTENT -->
+<!-- TABLE -->                
+<div class="form-group row">
+  <div class="col-12">
+    <section class="widget" widget>
+      <header>
+        <legend>
+          Mostrar
+        </legend>
+        <div class="widget-controls">
+          <h6><a (click)="onRefresh()" data-toggle="tooltip" title="Refrescar" ><i class="la la-refresh mr-1"></i></a></h6>
+        </div>
+      </header>
+      <div class="widget-body">          
+        <div class="row" [formGroup]="alertasForm">
+            <div class="form-group col-5 col-md-3 col-lg-2">
+              <div class="form-check abc-radio">
+                <input class="form-check-input" type="radio" name="tipoAlerta" id="rdAutorizacion" formControlName="tipoAlerta" (click) ="onRadioTipoAlertaSelected(tipoAlertaAutorizacion)" value="{{tipoAlertaAutorizacion}}">
+                <label class="form-check-label" for="rdAutorizacion">Autorizaciones</label>
+              </div>
+            </div>
+            <div class="form-group col-5 col-md-3 col-lg-2">
+              <div class="form-check abc-radio">
+                <input class="form-check-input" type="radio" name="tipoAlerta" id="rdNotificacion" formControlName="tipoAlerta" (click) ="onRadioTipoAlertaSelected(tipoAlertaNotificacion)" value="{{tipoAlertaNotificacion}}">
+                <label class="form-check-label" for="rdNotificacion">Notificaciones</label>
+              </div>
+            </div>
+            <div class="form-group col-2 col-md-2 col-lg-2"></div>            
+            <div class="form-group col-12 col-md-4 col-lg-6">
+              <div class="input-group input-group-rounded">
+                <span class="input-group-prepend">
+                  <span class="input-group-text">
+                    <i class="fa fa-search"></i>
+                  </span>
+                </span>
+                <input class="form-control" (keyup)='buscaAlerta($event)' type="text" placeholder="Buscar">
+              </div>
+            </div>          
+        </div>       
+        <div class="row">
+          <div class="col-12" *ngIf="alertasForm.controls.tipoAlerta.value === tipoAlertaAutorizacion">
+            <ngx-datatable
+              #tblAutorizaciones
+              class="material"  
+              [rows]="autorizacionesDataTable"  
+              [columnMode]="'force'"            
+              [headerHeight]="50"
+              [footerHeight]="50"
+              [rowHeight]="'auto'"
+              [scrollbarH]="true"
+              [limit]="10"
+              (activate) = "onActivate($event)"
+              [messages]="{emptyMessage: 'Sin registros', totalMessage: 'Total', selectedMessage: false}"
+            >
+            <ngx-datatable-column prop="alertaIniciadaPor" name="Alerta Iniciada Por">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                  {{row.alertaIniciadaPor}}
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="fecha" name="Fecha">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                  {{row.fecha}}
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="tipoMovimiento" name="Tipo Trámite">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <small><strong>{{row.tipoMovimiento}}</strong></small>
+              </ng-template>
+            </ngx-datatable-column>   
+            <ngx-datatable-column prop="tramite" name="Trámite">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <p [innerHTML]="row.tramite | AlertaPipe"></p>
+              </ng-template>
+            </ngx-datatable-column>  
+            <!-- <ngx-datatable-column prop="estatus" name="Estatus">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                  {{row.estatus}}
+              </ng-template>
+            </ngx-datatable-column> -->
+            <ngx-datatable-column name="Acciones">
+              <ng-template let-column="column" ngx-datatable-header-template>
+                  <span>{{column.name}}</span>
+              </ng-template>
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <div class="width-100 text-center">
+                  <div class="btn-group dropdown" container="body" dropdown>
+                    <button class="btn btn-outline-secondary mr-4" dropdownToggle (click)="onClickStopper($event)">
+                      <i class="glyphicon glyphicon-th"></i>
+                    </button>                  
+                    <ul *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="dropdown-btn-two">
+                      <li role="menuitem" *ngIf="row.etapaAccionAlAutorizarId" (click)="confirmModal.row = row; confirmModal.accion = accionAutorizar; confirmModal.show()"><a class="dropdown-item">Autorizar</a></li>
+                      <li role="menuitem" *ngIf="row.etapaAccionAlRevisionId" (click)="rejectModal.row = row; rejectModal.accion = accionRevision; rejectModal.show()"><a class="dropdown-item">Enviar a Revisión</a></li>
+                      <li role="menuitem" *ngIf="row.etapaAccionAlRechazarId" (click)="rejectModal.row = row; rejectModal.accion = accionRechazar; rejectModal.show()"><a class="dropdown-item">Rechazar</a></li>
+                    </ul>
+                  </div>   
+                </div>               
+              </ng-template>
+            </ngx-datatable-column>
+            </ngx-datatable>
+          </div>
+          <div class="col-12" *ngIf="alertasForm.controls.tipoAlerta.value === tipoAlertaNotificacion">
+            <ngx-datatable
+              #tblNotificaciones
+              class="material"  
+              [rows]="notificacionesDataTable"  
+              [columnMode]="'force'"            
+              [headerHeight]="50"
+              [footerHeight]="50"
+              [rowHeight]="'auto'"
+              [scrollbarH]="true"
+              [limit]="10"
+              [selected]="selected"
+              [selectionType]="SelectionType.checkbox"
+              (activate) = "onActivate($event)"
+              [messages]="{emptyMessage: 'Sin registros', totalMessage: 'Total', selectedMessage: false}"
+            >
+            <ngx-datatable-column [width]="45" [sortable]="false" [canAutoResize]="false" [draggable]="false" [resizeable]="false">
+            <ng-template ngx-datatable-header-template>
+              <div class="form-check pixvs-checkbox">
+                <input class="form-check-input" id="chkHeader" type="checkbox" [checked]="notificacionesDataTable.length > 0 && selected.length == notificacionesDataTable.length" (change)="onCheckAll($event)">
+                <label class="form-check-label" for="chkHeader"></label>
+              </div>
+            </ng-template>
+            <ng-template ngx-datatable-cell-template let-row="row">
+              <div class="form-check pixvs-checkbox" (click)="onClickStopper()">
+                <input class="form-check-input" id="checkbox{{row.alertaId}}" type="checkbox" [checked]="selected.includes(row.alertaId)" (change)="onCheck(row.alertaId, $event)">
+                <label class="form-check-label" for="checkbox{{row.alertaId}}"></label>
+              </div>
+            </ng-template>
+          </ngx-datatable-column>
+            <ngx-datatable-column prop="alertaIniciadaPor" name="Alerta Iniciada Por">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                  {{row.alertaIniciadaPor}}
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="fecha" name="Fecha">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                  {{row.fecha}}
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="tipoMovimiento" name="Tipo Trámite">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <small><strong>{{row.tipoMovimiento}}</strong></small>
+              </ng-template>
+            </ngx-datatable-column>               
+            <ngx-datatable-column prop="tramite" name="Trámite">
+              <ng-template let-row="row" ngx-datatable-cell-template>                
+                <p [innerHTML]="row.tramite | AlertaPipe"></p>                  
+              </ng-template>
+            </ngx-datatable-column>  
+            <!-- <ngx-datatable-column prop="estatus" name="Estatus">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                  {{row.estatus}}
+              </ng-template>
+            </ngx-datatable-column> -->
+            </ngx-datatable>     
+            <button type="button" class="btn btn-default" [disabled]="selected.length == 0"
+            (click)="onOcultar()">Ocultar</button>    
+          </div>                
+        </div> 
+      </div>
+    </section>
+  </div>
+
+  <!-- MODAL AUTORIZAR -->
+  <div class="modal fade" bsModal #confirmModal="bs-modal" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+              <span>
+                <h6><strong>Se autorizará el trámite.</strong></h6>
+                ¿Desea continuar? 
+              </span>                
+            </div>
+            <div class="modal-body">
+                <button class="btn btn-success btn-xs float-right width-100" (click)="onAutorizar(confirmModal.row); confirmModal.hide();">SI</button>
+                <button class="btn btn-secondary btn-xs float-right width-100 mr-3" (click)="confirmModal.hide()">NO</button>
+            </div>
+        </div>
+    </div>
+  </div>
+  <!-- /MODAL AUTORIZAR -->
+
+  <!-- MODAL REVISION/RECHAZAR -->
+  <div class="modal fade" bsModal #rejectModal="bs-modal" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+              <span>
+                <h6 *ngIf="rejectModal.accion === accionRevision"><strong>Se enviará a revisión el tramite.</strong></h6>
+                <h6 *ngIf="rejectModal.accion === accionRechazar"><strong>Se rechazará el tramite.</strong></h6>
+                ¿Desea continuar? 
+              </span>
+            </div>
+            <div class="modal-body">
+              <div class="pb-3">
+                <label for="txtMotivo">Escriba un motivo:</label>
+                <div>
+                  <textarea id="txtMotivo" rows="3" class="form-control" [(ngModel)]="motivo" maxlength="2000"></textarea>
+                </div>
+              </div>
+              <button class="btn btn-success btn-xs float-right width-100" (click)="onRevisionRechazar(rejectModal.row, rejectModal.accion); rejectModal.hide();">SI</button>
+              <button class="btn btn-secondary btn-xs float-right width-100 mr-3" (click)="rejectModal.hide()">NO</button>
+            </div>
+        </div>
+    </div>
+  </div>
+  <!-- /MODAL REVISION/RECHAZAR -->  
+  <!-- SPINNER -->
+  <ngx-spinner  bdOpacity=0.9 bdColor="rgba(51,51,51,0.49)" size="medium" color="#fff" type="square-jelly-box" [fullScreen]="false"></ngx-spinner>
+  <!-- /SPINNER -->    
+</div>

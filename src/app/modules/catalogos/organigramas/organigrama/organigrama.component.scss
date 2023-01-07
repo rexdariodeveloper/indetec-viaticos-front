@@ -1,0 +1,459 @@
+
+  @import "../../../../styles/helpers";
+  @import "~@ng-select/ng-select/themes/default.theme.css";
+  @import '../../../../styles/pixvs.scss';
+  
+///////////////////////////
+/// NESTABLE
+//////////////////////////
+.dd {
+  position: relative;
+  display: block;
+  margin: 0;
+  padding: 0;
+  max-width: 600px;
+  list-style: none;
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.dd-list {
+  display: block;
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dd-list .dd-list {
+  padding-left: 30px;
+}
+
+.dd-collapsed .dd-list {
+  display: none;
+}
+
+.dd-item,
+.dd-empty,
+.dd-placeholder {
+  display: block;
+  position: relative;
+  margin: 0;
+  padding: 0;
+  min-height: 20px;
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.dd-handle {
+  display: block;
+  height: 30px;
+  margin: 5px 0;
+  padding: 5px 10px;
+  color: $text-color;
+  text-decoration: none;
+  background: $white;
+  border: 1px solid $list-group-border-color;
+  border-radius: $border-radius;
+
+  box-sizing: border-box;
+}
+
+.dd-item > button {
+  display: block;
+  position: relative;
+  cursor: pointer;
+  float: left;
+  width: 25px;
+  height: 20px;
+  margin: 5px 0;
+  padding: 0;
+  text-indent: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  border: 0;
+  background: transparent;
+  font-size: 12px;
+  line-height: 1;
+  text-align: center;
+  font-weight: bold;
+  color: $text-color;
+
+  &:focus,
+  &:active{
+    outline: 0;
+  }
+}
+
+.dd-placeholder,
+.dd-empty {
+  margin: 5px 0;
+  padding: 0;
+  min-height: 30px;
+  background: $gray-light;
+  border: 1px dashed $gray-600;
+  box-sizing: border-box;
+  border-radius: $border-radius;
+}
+
+.dd-empty {
+  border: 1px dashed $gray-600;
+  min-height: 100px;
+  background-size: 60px 60px;
+  background-position: 0 0, 30px 30px;
+
+  background-image: -moz-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff),
+  -moz-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff);
+  background-image: linear-gradient(45deg, #FFF 25%, rgba(0, 0, 0, 0) 25%, rgba(0, 0, 0, 0) 75%, #FFF 75%, #FFF),
+  linear-gradient(45deg, #FFF 25%, rgba(0, 0, 0, 0) 25%, rgba(0, 0, 0, 0) 75%, #FFF 75%, #FFF);
+}
+
+.dd-dragel {
+  position: absolute;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.dd-dragel > .dd-item .dd-handle {
+  margin-top: 0;
+}
+
+.dd-dragel .dd-handle {
+  -webkit-box-shadow: 2px 4px 6px 0 rgba(0, 0, 0, .1);
+  box-shadow: 2px 4px 6px 0 rgba(0, 0, 0, .1);
+}
+
+/**
+ * Nestable Extras
+ */
+@media only screen and (min-width: 700px) {
+  .dd + .dd {
+    margin-left: 2%;
+  }
+}
+
+.dd-hover > .dd-handle {
+  background: #2ea8e5 !important;
+}
+
+/**
+ * Nestable Draggable Handles
+ */
+.dd3-content {
+  display: block;
+  height: 30px;
+  margin: 5px 0;
+  padding: 5px 10px 5px 40px;
+  color: #333;
+  text-decoration: none;
+  font-weight: bold;
+  border: 1px solid #ccc;
+  background: #fafafa;
+  background: linear-gradient(to bottom, #fafafa 0%, #eee 100%);
+  border-radius: 3px;
+  box-sizing: border-box;
+}
+
+.dd3-content:hover {
+  color: #2ea8e5;
+  background: #fff;
+}
+
+.dd-dragel > .dd3-item > .dd3-content {
+  margin: 0;
+}
+
+.dd3-item > button {
+  margin-left: 30px;
+}
+
+.dd3-handle {
+  position: absolute;
+  margin: 0;
+  left: 0;
+  top: 0;
+  cursor: pointer;
+  width: 30px;
+  text-indent: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  border: 1px solid #aaa;
+  background: #ddd;
+  background: -webkit-linear-gradient(to bottom, #ddd 0%, #bbb 100%);
+  background: -moz-linear-gradient(to bottom, #ddd 0%, #bbb 100%);
+  background: linear-gradient(to bottom, #ddd 0%, #bbb 100%);
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.dd3-handle:before {
+  content: '≡';
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 2px;
+  width: 100%;
+  text-align: center;
+  text-indent: 0;
+  color: rgb(122, 122, 122);
+  font-size: 20px;
+  font-weight: normal;
+  cursor: move;
+  transform:scale(1.3, 1);
+}
+
+.dd3-handle:hover {
+  background: #ddd;
+}
+
+////////////////////
+/// PIXVS
+///////////////////
+.pixvs-dd-hundle{
+  padding: 0;
+    position: absolute;
+    margin: 0;
+    left: 0;
+    top: 0;
+    width: 35px;
+    height: 35px;
+    background: linear-gradient(to bottom, #ddd 0%, #bbb 100%);
+    cursor: move;
+}
+
+.pixvs-dd-content {
+
+  display: block;
+
+  padding-left: 35px;
+  padding-top: 4px;
+  font-weight: bold;
+  background-color: white;
+  overflow: hidden;
+  height: 30px;
+
+  margin: 6px 0;
+  color: $text-color;
+  text-decoration: none;
+  border: 1px solid $list-group-border-color;
+  border-radius: $border-radius;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.pixvs-dd-button > button{
+  border: 0px black solid;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  margin-left: -15px;
+}
+
+.dd-item > button:before {
+  content: '▼';
+  display: block;
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  text-indent: 0;
+}
+
+.dd-item > button[data-action="collapse"]:before {
+  content: '▲';
+}
+
+.pixvs-dd-menu{
+  position: absolute;
+  margin: 0;
+  left: 10px;
+  top: 2px;
+  width: 0px;
+  height: 0px;
+  text-indent: 100%;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  border-radius: $border-radius;
+  background: transparent;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.pixvs-dd-menu:before {
+  content: '✎';
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 2px;
+  width: 100%;
+  text-align: center;
+  text-indent: 0;
+  color: #008645;
+  font-size: 20px;
+  font-weight: normal;
+  cursor: pointer;
+  transform:scale(1.3, 1);
+
+  z-index: 1;
+}
+
+.pixvs-dd-menu:hover {
+  background: #ddd;
+}
+
+.pixvs-menu-organigrama{
+  background-color: white;
+  display: inline-flex;
+  flex-direction: column;
+  border: 0px solid;
+  border-radius: 5px;
+}
+
+.pixvs-position-relative{
+  position: relative;
+}
+
+[data-tooltip]:before {
+  white-space: normal;
+  /* needed - do not touch */
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 0px;
+  left: 0;
+  opacity: 0;
+  
+  /* customizable */
+  transition: all 0.15s ;
+  padding: 10px;
+  color: #333;
+  border-radius: 10px;
+  box-shadow: 2px 2px 1px silver;    
+}
+
+[data-tooltip]:hover:before {
+  /* needed - do not touch */
+  opacity: 1;
+  transition-delay: 1s;
+  
+  /* customizable */
+  background: #008645;
+  color: white;
+  bottom: 30px;
+  left: 0px;
+
+  z-index: 9999;
+}
+
+[data-tooltip]:not([data-tooltip-persistent]):before {
+  pointer-events: none;
+}
+
+// Overlay
+.cdk-overlay-container {
+  position: fixed;
+  z-index: 1000;
+  pointer-events: none;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.cdk-overlay-pane {
+  position: absolute !important;
+  pointer-events: auto !important;
+  box-sizing: border-box;
+}
+
+// not required but can help with mobile right click
+.target {
+  user-select: none;
+}
+
+/* Animatinons */
+@-webkit-keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1.0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1.0;
+  }
+}
+
+@-webkit-keyframes fadeOut {
+  from {
+    opacity: 1.0;
+  }
+  to {
+    opacity: 0.0;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1.0;
+  }
+  to {
+    opacity: 0.0;
+  }
+}
+
+.is-fadingIn {
+  -webkit-animation: fadeIn 0.1s ease-out;
+  animation: fadeIn 0.1s ease-out;
+  opacity: 1.0;
+  display: block;
+}
+
+.is-fadingOut {
+  -webkit-animation: fadeOut 0.1s ease-out;
+  animation: fadeOut 0.1s ease-out;
+  opacity: 0.0;
+  display: block;
+}
+
+/***********************************/
+/**            PARSLEY            **/
+/***********************************/
+input.parsley-error{
+  border-color: theme-color('danger');
+}
+
+.parsley-errors-list{
+  font-size: $small-font-size;
+  padding-left: 0;
+  margin-bottom: 5px;
+
+  li{
+      list-style: none;
+      color: theme-color('danger');
+  }
+}
+
+.outline-none-cursor{
+  outline: none;
+  cursor: pointer;
+}
+
+.isSelectedNodo{
+  border-color: black;
+  border: 2px solid;
+}
+
+div.sticky {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  background-color: #F4F6F6;
+  font-size: 20px;
+  z-index: 3;
+}

@@ -1,0 +1,100 @@
+<ol class="breadcrumb">
+	<li class="breadcrumb-item">Catálogos ></li>
+</ol>
+
+<!-- HEAD -->
+<div class="row">
+	<div class="col-12">
+	  <h2><span class="fi flaticon-equal px-3"></span>Matriz Viáticos</h2>
+	</div>
+  </div>
+<!-- / HEAD -->
+  
+<div class="row pt-3">
+	<div class="col-12">
+
+    <div class="sticky">
+      <div class="form-actions">
+				<div class="col-12">
+					<div class="row justify-content-end">
+						<button type="button" class="btn btn-default width-100 mr-3" [disabled]="!isBloquearGrupos()" (click)="deshacerModal.show()">Deshacer</button>
+						<button type="button" class="btn btn-success width-100" [disabled]="!isBloquearGrupos()" (click)="guardar()">Guardar</button>
+					</div>
+				</div>
+			</div>
+    </div>
+
+		<section class="widget" widget>
+			<div class="widget-body">
+				<div class="mt">
+					<div class="row">
+						<div class="col-12 col-md-3 mb-3">
+							<h4>Grupo Jerárquico</h4>              
+							<button *ngFor="let item of grupoJerarquico" [disabled]="isBloquearGrupos()"
+								class="btn btn-secondary w-100 mb-xs" [ngClass]="{
+									'btn-secondary': grupoJerarquicoId == item.id,
+									'btn-outline-secondary': grupoJerarquicoId != item.id
+								}" type="button" (click)="isSelectedGrupoJerarquico(item.id)">
+								{{ item.nombre }}
+							</button>
+						</div>
+
+						<div class="col-12 col-md-9">
+              <!-- / TABLA -->
+							<ngx-datatable
+                *ngIf="dataTableRows.length > 0"
+                class="material"
+                [rows]="dataTableRows"
+                [loadingIndicator]="isLoading"
+                [columnMode]="'force'"
+                [headerHeight]="50"
+                [footerHeight]="0"
+                [scrollbarH]="true"
+                rowHeight="auto"
+              >
+                <ngx-datatable-column prop="concepto" name="Viáticos" [width]="200">
+                </ngx-datatable-column>
+                <ngx-datatable-column prop="{{item.prop}}" name="{{item.name}}" *ngFor="let item of dataTableColumns" [width]="200">
+                  <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <input
+                      class="form-control align-right"
+                      type="text"
+                      [value]="value"
+                      (blur)="updateViaticos($event, item.prop ,rowIndex, row)"
+                      [textMask]="maskMoney"
+                    />
+                  </ng-template>
+                </ngx-datatable-column>
+              </ngx-datatable>
+							<!-- / TABLA -->
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<!-- SPINNER -->
+			<ngx-spinner bdOpacity = 0.9 bdColor = "rgba(51,51,51,0.49)" size = "medium" color = "#fff" type = "square-jelly-box" [fullScreen] = "false"></ngx-spinner>
+			<!-- /SPINNER -->
+		</section>
+	</div>
+</div>
+
+<!-- MODAL CONFIRM -->
+<div class="modal fade" bsModal #deshacerModal="bs-modal" [config]="{backdrop: 'static'}">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span>
+          <h6><strong>Se perderán los cambios realizados.</strong></h6>
+          ¿Desea continuar? 
+        </span> 
+      </div>
+      <div class="modal-body">
+        <button class="btn btn-success btn-xs float-right width-100"
+          (click)="cancelar(); deshacerModal.hide(); grupoJerarquicoId = null">SI</button>
+        <button class="btn btn-secondary btn-xs float-right width-100 mr-3" (click)="deshacerModal.hide()">NO</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /MODAL CONFIRM -->

@@ -1,0 +1,57 @@
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Catálogos ></li>
+</ol>
+
+<div class="form-group row">
+  <div class="col-10">
+    <h2><span class="fi flaticon-layers px-3"></span>Grupos Jerárquicos</h2>
+  </div>
+  <div class="col-2">
+    <div class="row justify-content-end">
+      <div class="pr-3">
+        <button class="btn btn-primary width-100"
+          [routerLink]="['/app/catalogos/grupos_jerarquicos/nuevo']">Nuevo</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-12">
+    <section class="widget" widget>
+      <div class="widget-body">
+        <div class="mt">
+          <div class="float-right mb">
+            <div class="input-group input-group-rounded">
+              <span class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="fa fa-search"></i>
+                </span>
+              </span>
+              <input class="form-control" (keyup)='updateFilter($event)' type="text" placeholder="Buscar">
+            </div>
+          </div>
+
+          <div>
+            <ngx-datatable 
+              class="material" 
+              [rows]="dataTable" 
+              [columns]="columnas" 
+              (activate)="onActivate($event)"
+              [columnMode]="'force'" 
+              [headerHeight]="50" 
+              [footerHeight]="50" 
+              [rowHeight]="'auto'" 
+              [limit]="10"
+              [messages]="{emptyMessage: 'Sin registros', totalMessage: 'Total', selectedMessage: false}">
+            </ngx-datatable>
+          </div>
+        </div>
+      </div>
+      
+      <!-- SPINNER -->
+      <ngx-spinner bdOpacity=0.9 bdColor="rgba(51,51,51,0.49)" size="medium" color="#fff" type="square-jelly-box"
+        [fullScreen]="false"></ngx-spinner>
+      <!-- /SPINNER -->
+    </section>
+  </div>
+</div>

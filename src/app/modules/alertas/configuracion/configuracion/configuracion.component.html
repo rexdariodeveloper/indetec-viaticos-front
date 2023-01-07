@@ -1,0 +1,301 @@
+<ol class="breadcrumb">
+	<li class="breadcrumb-item">Alertas ></li>
+</ol>
+
+<!-- HEAD -->
+<div class="row">
+	<div class="col-12">
+	  <h2><span class="fa fa-cog px-3"></span>Configuración</h2>
+	</div>
+  </div>
+<!-- / HEAD -->
+  
+<div class="row pt-3">
+	<div class="col-12">
+
+		<div class="sticky">
+			<div class="form-actions">
+				<div class="col-12">
+					<div class="row justify-content-end">
+						<button type="button" class="btn btn-default width-100 mr-3" [disabled]="!bloquearEtapas" (click)="deshacerModal.show()">Deshacer</button>
+						<button type="button" class="btn btn-success width-100" [disabled]="!bloquearEtapas" (click)="guardar()">Guardar</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+
+		<section class="widget" widget>
+			<div class="widget-body">
+				<div class="mt">
+					<div class="row">
+						<div class="col-sm-12 col-md-3 mb-3">
+							<h4>Etapas Solicitud Viáticos</h4>							
+							<button *ngFor="let etapa of listadoEtapas"
+							[title]="titleEtapas(etapa.id)" 
+							[disabled]="bloquearEtapas"
+								class="btn btn-secondary w-100 mb-xs" [ngClass]="{
+									'btn-secondary': etapaSeleccionadaId == etapa.id,
+									'btn-outline-secondary': etapaSeleccionadaId != etapa.id
+								}" type="button" (click)="onSeleccionarEtapa(etapa.id)">
+								{{ etapa.valor }}
+							</button>
+						</div>
+
+						<div *ngIf="!!etapaSeleccionadaId" class="col-sm-12 col-md-9">
+							<!-- FORMULARIO ACCIÓN -->
+							<div class="row">
+								<div class="col">
+									<form name="accionForm" class="row" [formGroup]="accionForm" (ngSubmit)="agregar()" data-parsley-validate>
+										<!-- DIV.ROW (ACCION) -->
+										<div class="form-group col-sm-12 col-md-6">
+											<div class="row">
+												<label class="form-control-label col-12" for="basic"><strong>Acción:</strong></label>
+												<div class="col-12">
+													<ng-select #cboAccion (close)="cboAccion.blur(); cboAccion.focus()" [searchable]="true" [formControl]="accionFormControl"
+														[items]="listadoEtapaAcciones" bindLabel="accion.valor"
+														bindValue="id" (change)="onAccionSelect2($event)"
+														placeholder="Seleccionar">	
+														
+														<ng-template ng-option-tmp let-item="item">		
+															<div [title]="titleAcciones(item.accion)"> 
+																{{item.accion.valor}} 
+															</div>
+														</ng-template>
+																					
+													</ng-select>
+													<ul *ngIf="mostrarErroresForm && accionFormControl?.invalid"
+														class="parsley-errors-list filled" aria-hidden="false">
+														<li class="parsley-required">Este valor es requerido.</li>
+													</ul>
+												</div>
+											</div>
+										</div>
+										<!-- {{listadoEtapaAcciones|json}} -->
+										<!-- /DIV.ROW (ACCION) -->
+
+										<!-- DIV.ROW (EMPLEADO) -->
+										<div class="form-group col-sm-12 col-md-6">
+											<div class="row">
+												<label class="form-control-label col-12" for="basic"><strong>Usuario:</strong></label>
+												<div class="col-12">
+													<ng-select #cboUsuario (close)="cboUsuario.blur(); cboUsuario.focus()" [searchable]="true" [formControl]="empleadoFormControl"
+														[items]="listadoEmpleadosFiguras" bindLabel="nombre" bindValue="id"
+														(change)="onEmpleadoSelect2($event)" placeholder="Seleccionar">
+													</ng-select>
+													<ul *ngIf="mostrarErroresForm && empleadoFormControl?.invalid"
+														class="parsley-errors-list filled" aria-hidden="false">
+														<li class="parsley-required">Este valor es requerido.</li>
+													</ul>
+												</div>
+											</div>
+										</div>
+										<!-- /DIV.ROW (EMPLEADO) -->
+
+										<!-- DIV.ROW (TIPO ALERTA) -->
+										<div class="form-group col-sm-12 col-md-4">
+											<div class="row">
+												<label class="form-control-label col-12" for="basic"><strong>Tipo Alerta:</strong></label>
+												<div class="col-12">
+													<div *ngIf="accionSeleccionada?.permiteAutorizacion"
+														class="form-check abc-radio">
+														<input class="form-check-input" type="radio" name="tipo-alerta-radio"
+															id="tipo-alerta-radio-aut" [formControl]="tipoAlertaFormControl"
+															[value]="TipoNotificacion.AUTORIZACION"
+															(click)="plataformaFormControl.value = true">
+														<label class="form-check-label mr-5" for="tipo-alerta-radio-aut">
+															Autorización
+														</label>
+													</div>
+													<div *ngIf="accionSeleccionada?.permiteNotificacion"
+														class="form-check abc-radio">
+														<input class="form-check-input" type="radio" name="tipo-alerta-radio"
+															id="tipo-alerta-radio-not" [formControl]="tipoAlertaFormControl"
+															[value]="TipoNotificacion.NOTIFICACION">
+														<label class="form-check-label" for="tipo-alerta-radio-not">
+															Notificación
+														</label>
+													</div>
+													<ul *ngIf="mostrarErroresForm && tipoAlertaFormControl?.invalid" class="parsley-errors-list filled"
+														aria-hidden="false">
+														<li class="parsley-required">Este valor es requerido.</li>
+													</ul>
+												</div>
+											</div>
+										</div>
+										<!-- /DIV.ROW (TIPO ALERTA) -->
+
+										<!-- DIV.ROW (MEDIO NOTIFICACION) -->
+										<div class="form-group col-sm-12 col-md-5">
+											<div class="row">
+												<label class="form-control-label col-12" for="basic"><strong>Medio Notificación:</strong></label>
+												<div class="col-12">
+													<div class="form-check pixvs-checkbox">
+														<input class="form-check-input" id="medio-plataforma-chk"
+															type="checkbox" name="plataformaFormControl"
+															[checked]="plataformaFormControl.value"
+															(click)="disableCheck($event)"
+															[formControl]="plataformaFormControl">
+														<label class="form-check-label pr-5" for="medio-plataforma-chk">
+															Plataforma
+														</label>
+													</div>
+													<div class="form-check pixvs-checkbox">
+														<input class="form-check-input" id="medio-correo-chk" type="checkbox"
+															name="correoElectronicoFormControl"
+															[formControl]="correoElectronicoFormControl">
+														<label class="form-check-label" for="medio-correo-chk">
+															Correo electrónico
+														</label>
+													</div>
+													<ul *ngIf="mostrarErroresForm && !plataformaFormControl?.value && !correoElectronicoFormControl?.value" class="parsley-errors-list filled"
+														aria-hidden="false">
+														<li class="parsley-required">Este valor es requerido.</li>
+													</ul>
+												</div>
+											</div>
+										</div>
+										<!-- /DIV.ROW (MEDIO NOTIFICACION) -->
+
+										<!-- DIV.ROW (BTN AGREGAR) -->
+										<div class="form-group col-sm-12 col-md-3 align-self-center">
+											<button type="submit" class="float-right btn btn-primary width-100" 
+													[ngClass]="{ 'btn-primary': !configuracionSeleccionada, 'btn-outline-primary': configuracionSeleccionada }">
+													{{ !!configuracionSeleccionada ? 'Actualizar' : 'Agregar' }}</button>
+										</div>
+										<!-- /DIV.ROW (BTN AGREGAR) -->
+									</form>
+								</div>
+							</div>
+							<!-- / FORMULARIO ACCIÓN -->
+
+							<!-- TABLA CONFIGURACIONES -->
+							<div class="row">
+								<ngx-datatable 
+									class="material"
+									[rows]="(listadoConfiguraciones | FiltrarConfiguracionesEstatusPipe)"
+									[columnMode]="'force'" 
+									[headerHeight]="50" 
+									[footerHeight]="50"
+									[rowHeight]="auto" 
+									[limit]="10"
+									[offset]="tableOffset"
+									[scrollbarH]="true"
+									[selected]="selected"
+                        			[selectionType]="SelectionType.checkbox"
+									(activate)="onActivate($event)"
+									(page)="onPageChange($event)"
+									[messages]="{emptyMessage: 'Sin registros', totalMessage: 'Total', selectedMessage: false}">
+
+									<!-- COLUMNA BORRAR -->
+									<ngx-datatable-column
+										[width]="45"
+										[canAutoResize]="false"
+										[draggable]="false"
+										[resizeable]="false">
+										<ng-template let-column="column" ngx-datatable-header-template>
+											<div class="form-check pixvs-checkbox">
+												<input class="form-check-input" id="checkbox" type="checkbox" [checked]="selected.length == (listadoConfiguraciones | FiltrarConfiguracionesEstatusPipe).length && (listadoConfiguraciones | FiltrarConfiguracionesEstatusPipe).length > 0" (change)="onSelectAll()">
+												<label class="form-check-label" for="checkbox"></label>
+											</div>
+										</ng-template>
+										<ng-template let-row="row" ngx-datatable-cell-template>
+											<div class="form-check pixvs-checkbox">
+												<input class="form-check-input" id="checkbox{{row.selectId}}" type="checkbox" [checked]="row | GetCheckedPipe : selected" (change)="onSelect(row)">
+												<label class="form-check-label" for="checkbox{{row.selectId}}"></label>
+											</div>
+										</ng-template>
+									</ngx-datatable-column>
+									<!-- / COLUMNA BORRAR -->
+
+									<!-- COLUMNA ACCIÓN -->
+									<ngx-datatable-column prop="etapaAccion.accion.valor" name="ACCIÓN">
+										<ng-template let-row="row" ngx-datatable-cell-template>
+											{{row.etapaAccion.accion.valor}}
+										</ng-template>
+									</ngx-datatable-column>
+									<!-- / COLUMNA ACCIÓN -->
+
+									<!-- COLMNA USUARIO -->
+									<ngx-datatable-column prop="figura.valor" name="USUARIO">
+										<ng-template let-row="row" ngx-datatable-cell-template>
+											{{ row.empleado ? row.empleado.nombre + row.empleado.primerApellido + (row.empleado.segundoApellido || '') : row.figura.valor }}
+										</ng-template>
+									</ngx-datatable-column>
+									<!-- / COLMNA USUARIO -->
+
+									<!-- COLUMNA TIPO ALERTA -->
+									<ngx-datatable-column prop="tipoNotificacion.valor" name="TIPO ALERTA">
+										<ng-template let-row="row" ngx-datatable-cell-template>
+											{{row.tipoNotificacion.valor}}
+										</ng-template>
+									</ngx-datatable-column>
+									<!-- / COLUMNA TIPO ALERTA -->
+
+									<!-- COLUMNA PLATAFORMA -->
+									<ngx-datatable-column name="PLATAFORMA">
+										<ng-template let-column="column" ngx-datatable-header-template>
+											<span>{{column.name}}</span>
+										</ng-template>
+										<ng-template let-row="row" ngx-datatable-cell-template>
+											<div class="form-check pixvs-checkbox">
+												<input class="form-check-input" id="checkboxPlataforma{{row.selectId}}"
+													type="checkbox" [checked]="row.enPlataforma" disabled>
+												<label class="form-check-label" for="checkboxPlataforma{{row.selectId}}"></label>
+											</div>
+										</ng-template>
+									</ngx-datatable-column>
+									<!-- COLUMNA PLATAFORMA -->
+
+									<!-- COLUMNA CORREO ELECTRÓNICO -->
+									<ngx-datatable-column name="CORREO ELECTRÓNICO">
+										<ng-template let-column="column" ngx-datatable-header-template>
+											<span>{{column.name}}</span>
+										</ng-template>
+										<ng-template let-row="row" ngx-datatable-cell-template>
+											<div class="form-check pixvs-checkbox">
+												<input class="form-check-input" id="checkboxCorreo{{row.selectId}}"
+													type="checkbox" [checked]="row.enCorreoElectronico" disabled>
+												<label class="form-check-label" for="checkboxCorreo{{row.selectId}}"></label>
+											</div>
+										</ng-template>
+									</ngx-datatable-column>
+									<!-- / COLUMNA CORREO ELECTRÓNICO -->
+								</ngx-datatable>
+							</div>
+							<!-- / TABLA CONFIGURACIONES -->
+
+							<div class="row">
+								<button type="button" class="btn btn-danger width-100" [disabled]="selected.length == 0" (click)="borrar()">Eliminar</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<!-- SPINNER -->
+			<ngx-spinner bdOpacity = 0.9 bdColor = "rgba(51,51,51,0.49)" size = "medium" color = "#fff" type = "square-jelly-box" [fullScreen] = "false"></ngx-spinner>
+			<!-- /SPINNER -->
+		</section>
+	</div>
+</div>
+
+<!-- MODAL CONFIRM -->
+<div class="modal fade" bsModal #deshacerModal="bs-modal" [config]="{backdrop: 'static'}">
+	<div class="modal-dialog modal-sm">
+	  <div class="modal-content">
+		<div class="modal-header">
+            <span>
+				<h6><strong>Se perderán los cambios realizados.</strong></h6>
+				¿Desea continuar? 
+			  </span> 
+		</div>
+		<div class="modal-body">
+		  <button class="btn btn-success btn-xs float-right width-100"
+			(click)="cancelar(); deshacerModal.hide()">SI</button>
+		  <button class="btn btn-secondary btn-xs float-right width-100 mr-3" (click)="deshacerModal.hide()">NO</button>
+		</div>
+	  </div>
+	</div>
+  </div>
+<!-- /MODAL CONFIRM -->
